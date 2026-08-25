@@ -7,18 +7,18 @@ import { motion } from 'framer-motion';
 
 export default function Amenities() {
   const amenities = [
-    { title: "24×7 Gated Security", subtitle: "Guard room & perimeter surveillance", icon: ShieldCheck },
-    { title: "Grand Entrance Plaza", subtitle: "3 Dedicated entry gateways", icon: DoorOpen },
-    { title: "30 Ft Wide CC Roads", subtitle: "Concrete avenues & pedestrian paths", icon: Layers },
-    { title: "Underground Power", subtitle: "Concealed electric lines & streetlights", icon: Zap },
-    { title: "Underground Water", subtitle: "Concealed pipeline to every plot", icon: Droplets },
-    { title: "Stormwater Drainage", subtitle: "Heavy-duty underground sewer system", icon: Waves },
-    { title: "Overhead Water Tank", subtitle: "High-capacity dedicated reservoir", icon: Database },
-    { title: "Exclusive Borewells", subtitle: "Sustainable 24/7 water supply", icon: Sparkles },
-    { title: "Landscaped Gardens", subtitle: "Manicured parks & evergreen trees", icon: Trees },
-    { title: "Children's Play Area", subtitle: "Safe outdoor activity arena", icon: Gamepad2 },
-    { title: "Leisure Gazebos", subtitle: "Seating zones for relaxation", icon: Armchair },
-    { title: "Jogging Tracks", subtitle: "Walk-friendly tree-lined avenues", icon: Footprints },
+    { title: "24/7 Gated Security", tag: "Guardhouse & CCTV", icon: ShieldCheck },
+    { title: "Grand 3-Gate Entry", tag: "Architectural Arch", icon: DoorOpen },
+    { title: "30 Ft Wide CC Roads", tag: "Concrete Avenues", icon: Layers },
+    { title: "Underground Power", tag: "Concealed Grid", icon: Zap },
+    { title: "Piped Water to Plots", tag: "Dedicated Line", icon: Droplets },
+    { title: "Storm Water Drainage", tag: "Heavy-Duty Drains", icon: Waves },
+    { title: "Overhead Water Tank", tag: "High-Pressure OHT", icon: Database },
+    { title: "Deep Borewells", tag: "24/7 Supply", icon: Sparkles },
+    { title: "Landscaped Gardens", tag: "Green Parks", icon: Trees },
+    { title: "Children's Play Area", tag: "Safe Soft Turf", icon: Gamepad2 },
+    { title: "Leisure Gazebos", tag: "Seating Alcoves", icon: Armchair },
+    { title: "Jogging Tracks", tag: "Tree-Lined Path", icon: Footprints },
   ];
 
   return (
@@ -26,41 +26,44 @@ export default function Amenities() {
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
         
         {/* Section Header */}
-        <div className="text-center max-w-xl mx-auto mb-12">
+        <motion.div 
+          initial={{ opacity: 0, y: 15 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.4 }}
+          className="text-center max-w-xl mx-auto mb-10"
+        >
           <span className="text-[11px] font-semibold text-amber-500 uppercase tracking-widest px-3 py-1 rounded-full badge-luxury">
             Infrastructure
           </span>
           <h2 className="font-serif-luxury text-2xl sm:text-4xl font-bold text-main-color mt-3">
             World-Class <span className="gold-gradient-text">Amenities</span>
           </h2>
-          <p className="text-xs text-sub-color mt-1">
-            Concealed underground utilities • Zero wire clutter • Enduring concrete roads
-          </p>
-        </div>
+        </motion.div>
 
         {/* 12 Amenities Minimalist Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-3">
           {amenities.map((item, idx) => {
             const Icon = item.icon;
             return (
               <motion.div
                 key={idx}
-                initial={{ opacity: 0, y: 12 }}
+                initial={{ opacity: 0, y: 10 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.3, delay: idx * 0.025 }}
-                className="glass-panel glass-panel-hover rounded-2xl p-4 flex flex-col justify-between space-y-3 group"
+                transition={{ duration: 0.3, delay: idx * 0.02 }}
+                className="glass-panel glass-panel-hover rounded-2xl p-3.5 sm:p-4 flex items-center gap-3 group"
               >
-                <div className="w-8 h-8 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-500 group-hover:bg-amber-400 group-hover:text-slate-950 transition-colors">
+                <div className="w-9 h-9 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-500 group-hover:bg-amber-400 group-hover:text-slate-950 transition-colors shrink-0">
                   <Icon className="w-4 h-4" />
                 </div>
 
-                <div>
-                  <h3 className="text-xs sm:text-sm font-bold text-main-color group-hover:text-amber-500 transition-colors">
+                <div className="min-w-0">
+                  <h3 className="text-xs sm:text-sm font-bold text-main-color group-hover:text-amber-500 transition-colors truncate">
                     {item.title}
                   </h3>
-                  <p className="text-[11px] text-sub-color mt-0.5 leading-snug">
-                    {item.subtitle}
+                  <p className="text-[10px] text-sub-color mt-0.5 truncate">
+                    {item.tag}
                   </p>
                 </div>
               </motion.div>
@@ -72,5 +75,6 @@ export default function Amenities() {
     </section>
   );
 }
+
 
 

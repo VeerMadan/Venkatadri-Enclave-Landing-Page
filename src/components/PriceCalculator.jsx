@@ -31,17 +31,24 @@ export default function PriceCalculator({ onOpenModal }) {
       <div className="max-w-5xl mx-auto px-4 sm:px-6">
         
         {/* Section Header */}
-        <div className="text-center max-w-xl mx-auto mb-10">
+        <motion.div 
+          initial={{ opacity: 0, y: 15 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.4 }}
+          className="text-center max-w-xl mx-auto mb-10"
+        >
           <span className="text-[11px] font-semibold text-amber-500 uppercase tracking-widest px-3 py-1 rounded-full badge-luxury">
-            Transparent Pricing
+            Transparency
           </span>
           <h2 className="font-serif-luxury text-2xl sm:text-4xl font-bold text-main-color mt-3">
-            Plot Cost & <span className="gold-gradient-text">EMI Estimator</span>
+            Price & <span className="gold-gradient-text">EMI Calculator</span>
           </h2>
-        </div>
+        </motion.div>
 
         {/* Minimalist Glass Card */}
         <div className="glass-panel rounded-3xl p-6 sm:p-8 border-theme-subtle grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
+
           
           {/* Controls */}
           <div className="md:col-span-7 space-y-6">

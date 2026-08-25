@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Maximize2, X } from 'lucide-react';
+import { motion } from 'framer-motion';
 import { GALLERY_ITEMS } from '../data/projectData';
 
 export default function Gallery() {
@@ -10,23 +11,34 @@ export default function Gallery() {
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
         
         {/* Section Header */}
-        <div className="text-center max-w-xl mx-auto mb-10">
+        <motion.div 
+          initial={{ opacity: 0, y: 15 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.4 }}
+          className="text-center max-w-xl mx-auto mb-10"
+        >
           <span className="text-[11px] font-semibold text-amber-500 uppercase tracking-widest px-3 py-1 rounded-full badge-luxury">
             Gallery
           </span>
           <h2 className="font-serif-luxury text-2xl sm:text-4xl font-bold text-main-color mt-3">
             Visual <span className="gold-gradient-text">Showcase</span>
           </h2>
-        </div>
+        </motion.div>
 
         {/* Minimal Gallery Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {GALLERY_ITEMS.map((item, idx) => (
-            <div
+            <motion.div
               key={idx}
+              initial={{ opacity: 0, y: 15 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.4, delay: idx * 0.08 }}
               onClick={() => setSelectedImg(item)}
               className="glass-panel rounded-2xl overflow-hidden group cursor-pointer relative"
             >
+
               <div className="relative h-64 sm:h-72 overflow-hidden bg-black/40">
                 <img
                   src={item.src}
@@ -48,9 +60,10 @@ export default function Gallery() {
                   </div>
                 </div>
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
+
 
       </div>
 

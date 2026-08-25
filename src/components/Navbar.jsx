@@ -18,7 +18,8 @@ export default function Navbar({ onOpenModal }) {
 
   const links = [
     { label: "Overview", href: "#overview" },
-    { label: "Plots & Price", href: "#plots" },
+    { label: "Plot Matrix", href: "#plot-finder" },
+    { label: "Plot Sizes", href: "#plots" },
     { label: "Calculator", href: "#calculator" },
     { label: "Master Plan", href: "#master-plan" },
     { label: "Amenities", href: "#amenities" },

@@ -115,6 +115,13 @@ export default function PlotConfigurations({ onOpenModal }) {
                 <span>Request Detailed Quote</span>
                 <ArrowRight className="w-3.5 h-3.5" />
               </button>
+
+              <a
+                href="#plot-finder"
+                className="text-center text-[11px] text-amber-500 font-semibold hover:underline block pt-1"
+              >
+                Explore Live 111-Plot Inventory Matrix ↓
+              </a>
             </div>
 
           </div>
@@ -124,5 +131,6 @@ export default function PlotConfigurations({ onOpenModal }) {
     </section>
   );
 }
+
 
 

@@ -83,8 +83,17 @@ export default function MasterPlanViewer({ onOpenModal }) {
             </div>
           </div>
 
-          <div className="mt-4 px-2 flex flex-wrap items-center justify-between text-xs text-sub-color">
-            <span>Numbered Plots 1 to 111 • Immediate Demarcation</span>
+          <div className="mt-4 px-2 flex flex-wrap items-center justify-between gap-2 text-xs text-sub-color">
+            <div className="flex items-center gap-3">
+              <span>Numbered Plots 1 to 111 • Immediate Demarcation</span>
+              <a
+                href="#plot-finder"
+                className="inline-flex items-center gap-1 text-amber-500 font-bold hover:underline"
+              >
+                <span>Interactive Plot Matrix</span>
+                <ArrowRight className="w-3 h-3" />
+              </a>
+            </div>
             <button
               onClick={() => onOpenModal('visit')}
               className="text-amber-500 font-semibold hover:underline flex items-center gap-1 cursor-pointer"
@@ -93,6 +102,7 @@ export default function MasterPlanViewer({ onOpenModal }) {
               <ArrowRight className="w-3.5 h-3.5" />
             </button>
           </div>
+
         </div>
 
       </div>
