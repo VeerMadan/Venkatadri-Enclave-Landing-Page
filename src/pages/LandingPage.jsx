@@ -5,6 +5,7 @@ import ProjectStats from '../components/ProjectStats';
 import Pillars from '../components/Pillars';
 import PlotConfigurations from '../components/PlotConfigurations';
 import InteractivePlotSelector from '../components/InteractivePlotSelector';
+import AmbientBackground from '../components/AmbientBackground';
 import PriceCalculator from '../components/PriceCalculator';
 import MasterPlanViewer from '../components/MasterPlanViewer';
 import Amenities from '../components/Amenities';
@@ -41,6 +42,7 @@ export default function LandingPage() {
 
   return (
     <div className="min-h-screen bg-page-main text-main-color font-sans selection:bg-amber-400 selection:text-black">
+      <AmbientBackground />
       {/* Top Floating Navigation */}
       <Navbar onOpenModal={handleOpenModal} />
 
