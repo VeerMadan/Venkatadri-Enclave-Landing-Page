@@ -451,46 +451,50 @@ export default function InteractivePlotSelector({ onOpenModal }) {
                               <motion.button
                                 key={plot.id}
                                 onClick={() => setSelectedPlotId(plot.id)}
-                                whileHover={{ scale: 1.03 }}
-                                whileTap={{ scale: 0.98 }}
-                                className={`relative p-2 rounded-xl text-left transition-all cursor-pointer flex flex-col justify-between min-h-[76px] ${
+                                whileHover={{ scale: 1.05, y: -2 }}
+                                whileTap={{ scale: 0.95 }}
+                                className={`relative p-3 rounded-2xl text-left transition-all cursor-pointer flex flex-col justify-center items-center min-h-[90px] overflow-hidden ${
                                   isSelected
-                                    ? 'bg-amber-400/20 border-2 border-amber-400 shadow-md ring-1 ring-amber-400'
-                                    : `glass-panel ${badge.cardBorder} ${badge.cellBg} border-theme-subtle`
+                                    ? 'shadow-[0_0_20px_rgba(251,191,36,0.3)] ring-2 ring-amber-400 z-10'
+                                    : 'hover:shadow-lg'
                                 }`}
                               >
-                                {/* Top: Plot # & Status Dot */}
-                                <div className="flex items-center justify-between w-full">
-                                  <span className={`text-[11px] font-black font-mono ${
-                                    isSelected ? 'text-amber-500' : 'text-main-color'
+                                {/* Gradient Background based on status */}
+                                <div className={`absolute inset-0 opacity-[0.15] dark:opacity-20 ${
+                                  plot.status === 'available' ? 'bg-gradient-to-br from-emerald-400 to-emerald-600' :
+                                  plot.status === 'booked' ? 'bg-gradient-to-br from-amber-400 to-orange-500' :
+                                  'bg-gradient-to-br from-rose-500 to-red-600'
+                                }`}></div>
+                                
+                                {/* Glass Overlay */}
+                                <div className="absolute inset-0 glass-panel backdrop-blur-md opacity-80 border-t border-white/10"></div>
+
+                                {/* Content */}
+                                <div className="relative z-10 flex flex-col items-center justify-center w-full">
+                                  <span className={`text-2xl sm:text-3xl font-black font-serif-luxury tracking-tighter ${
+                                    plot.status === 'available' ? 'text-emerald-500 dark:text-emerald-400 drop-shadow-[0_2px_4px_rgba(16,185,129,0.2)]' :
+                                    plot.status === 'booked' ? 'text-amber-500 dark:text-amber-400 drop-shadow-[0_2px_4px_rgba(245,158,11,0.2)]' :
+                                    'text-rose-500/80 dark:text-rose-400/80 drop-shadow-[0_2px_4px_rgba(225,29,72,0.2)]'
                                   }`}>
-                                    #{plot.number}
+                                    {plot.number}
                                   </span>
-                                  <span 
-                                    className={`w-2 h-2 rounded-full ${badge.dot} shrink-0`}
-                                    title={badge.label}
-                                  ></span>
-                                </div>
-
-                                {/* Middle: Dimensions */}
-                                <div className="my-0.5">
-                                  <span 
-                                    className="text-[9px] font-bold px-1.5 py-0.2 rounded text-white inline-block leading-tight"
-                                    style={{ backgroundColor: plot.color }}
-                                  >
-                                    {plot.type === 'corner' ? 'Corner' : plot.type === 'odd' ? 'Odd' : plot.dimensions.replace(' Ft', '')}
-                                  </span>
-                                  <p className="text-[8.5px] text-sub-color mt-0.5 truncate">
-                                    {plot.areaSqFt} SqFt
-                                  </p>
-                                </div>
-
-                                {/* Bottom: Facing & Price */}
-                                <div className="flex items-center justify-between text-[8px] text-sub-color pt-0.5 border-t border-theme-subtle">
-                                  <span className="font-semibold">{plot.facing.split('-')[0]}</span>
-                                  <span className="font-mono text-amber-500 font-bold">
-                                    {plot.status === 'sold' ? 'Sold' : `${(plot.totalPrice / 100000).toFixed(0)}L`}
-                                  </span>
+                                  
+                                  <div className="flex items-center gap-1 mt-1 opacity-90">
+                                    <span 
+                                      className={`w-1.5 h-1.5 rounded-full shadow-sm ${
+                                        plot.status === 'available' ? 'bg-emerald-500 shadow-emerald-500/50' :
+                                        plot.status === 'booked' ? 'bg-amber-500 shadow-amber-500/50' :
+                                        'bg-rose-500 shadow-rose-500/50'
+                                      }`}
+                                    ></span>
+                                    <span className={`text-[9px] font-bold uppercase tracking-widest ${
+                                      plot.status === 'available' ? 'text-emerald-600 dark:text-emerald-400' :
+                                      plot.status === 'booked' ? 'text-amber-600 dark:text-amber-400' :
+                                      'text-rose-600/80 dark:text-rose-400/80'
+                                    }`}>
+                                      {plot.status === 'available' ? 'Avail' : plot.status === 'booked' ? 'Booked' : 'Sold'}
+                                    </span>
+                                  </div>
                                 </div>
                               </motion.button>
                             );
