@@ -27,7 +27,7 @@ export default function PriceCalculator({ onOpenModal }) {
   };
 
   return (
-    <section id="calculator" className="py-20 bg-page-main relative border-t border-theme-subtle">
+    <section id="calculator" className="py-12 sm:py-20 bg-page-main relative border-t border-theme-subtle">
       <div className="max-w-5xl mx-auto px-4 sm:px-6">
         
         {/* Section Header */}

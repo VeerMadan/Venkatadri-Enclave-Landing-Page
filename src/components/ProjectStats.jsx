@@ -13,7 +13,7 @@ export default function ProjectStats() {
   ];
 
   return (
-    <section className="py-14 bg-page-alt border-y border-theme-subtle relative">
+    <section className="py-10 sm:py-14 bg-page-alt border-y border-theme-subtle relative">
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
         
         {/* Minimal Grid */}

@@ -147,7 +147,7 @@ export default function InteractivePlotSelector({ onOpenModal }) {
   }, [filteredPlots]);
 
   return (
-    <section id="plot-finder" className="py-16 sm:py-20 bg-page-main relative border-t border-theme-subtle">
+    <section id="plot-finder" className="py-12 sm:py-20 bg-page-main relative border-t border-theme-subtle">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Header */}
@@ -370,10 +370,10 @@ export default function InteractivePlotSelector({ onOpenModal }) {
         </div>
 
         {/* Main Work Area: Grid/Canvas + Detail Inspector */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        <div className="flex flex-col-reverse lg:grid lg:grid-cols-12 gap-6 items-start">
           
           {/* Left Column: Visual Plot Matrix / Blueprint / List (8 cols) */}
-          <div className="lg:col-span-8 space-y-4">
+          <div className="w-full lg:col-span-8 space-y-4">
             
             {/* VIEW 1: INTERACTIVE AVENUE MATRIX GRID */}
             {viewMode === 'matrix' && (
@@ -442,7 +442,7 @@ export default function InteractivePlotSelector({ onOpenModal }) {
                         </div>
 
                         {/* Plots Matrix Grid for this Block */}
-                        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2">
+                        <div className="grid grid-cols-2 min-[400px]:grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2">
                           {block.plots.map((plot) => {
                             const badge = getStatusBadge(plot.status);
                             const isSelected = selectedPlotId === plot.id;
@@ -642,7 +642,7 @@ export default function InteractivePlotSelector({ onOpenModal }) {
           </div>
 
           {/* Right Column: Plot Detail Dossier Inspector (4 cols) */}
-          <div className="lg:col-span-4 sticky top-20 space-y-3">
+          <div className="w-full lg:col-span-4 sticky top-20 space-y-3">
             
             {selectedPlot ? (
               <motion.div

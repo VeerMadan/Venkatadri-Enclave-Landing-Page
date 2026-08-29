@@ -15,7 +15,7 @@ export default function MasterPlanViewer({ onOpenModal }) {
   ];
 
   return (
-    <section id="master-plan" className="py-20 bg-page-alt relative border-t border-theme-subtle">
+    <section id="master-plan" className="py-12 sm:py-20 bg-page-alt relative border-t border-theme-subtle">
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
         
         {/* Section Header */}

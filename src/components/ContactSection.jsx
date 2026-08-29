@@ -14,7 +14,7 @@ export default function ContactSection({ onOpenModal }) {
   };
 
   return (
-    <section id="contact" className="py-20 bg-page-main relative border-t border-theme-subtle">
+    <section id="contact" className="py-12 sm:py-20 bg-page-main relative border-t border-theme-subtle">
       <div className="max-w-4xl mx-auto px-4 sm:px-6">
         
         <div className="glass-panel rounded-3xl p-6 sm:p-10 border-theme-subtle relative overflow-hidden">

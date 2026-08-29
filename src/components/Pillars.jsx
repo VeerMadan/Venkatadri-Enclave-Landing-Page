@@ -25,7 +25,7 @@ export default function Pillars({ onOpenModal }) {
   ];
 
   return (
-    <section className="py-20 bg-page-main relative">
+    <section className="py-12 sm:py-20 bg-page-main relative">
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
         
         {/* Section Header */}

@@ -15,7 +15,7 @@ export default function LocationMatrix() {
   const list = LOCATION_DATA[activeTab] || [];
 
   return (
-    <section id="location" className="py-20 bg-page-alt relative border-t border-theme-subtle">
+    <section id="location" className="py-12 sm:py-20 bg-page-alt relative border-t border-theme-subtle">
       <div className="max-w-5xl mx-auto px-4 sm:px-6">
         
         {/* Section Header */}

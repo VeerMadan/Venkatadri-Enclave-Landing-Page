@@ -50,7 +50,7 @@ export default function StickyMobileBar({ onOpenModal }) {
 
         <button
           onClick={() => onOpenModal('visit')}
-          className="flex-1.5 py-2 rounded-xl bg-amber-400 text-slate-950 flex flex-col items-center justify-center text-[10px] font-bold shadow"
+          className="flex-[1.5] py-2 rounded-xl bg-amber-400 text-slate-950 flex flex-col items-center justify-center text-[10px] font-bold shadow"
         >
           <Calendar className="w-3.5 h-3.5 mb-0.5" />
           <span>Book Visit</span>

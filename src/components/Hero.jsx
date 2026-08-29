@@ -39,7 +39,7 @@ export default function Hero({ onOpenModal }) {
           transition={{ duration: 0.5, delay: 0.1 }}
           className="space-y-3"
         >
-          <h1 className="font-serif-luxury text-4xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-main-color leading-none">
+          <h1 className="font-serif-luxury text-3xl min-[400px]:text-4xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-main-color leading-none">
             VENKATADRI <span className="gold-gradient-text">ENCLAVE</span>
           </h1>
           <p className="font-serif italic text-sm sm:text-lg text-amber-500 font-light max-w-xl mx-auto">
@@ -71,9 +71,9 @@ export default function Hero({ onOpenModal }) {
           </div>
 
           <div className="glass-panel glass-panel-hover rounded-2xl p-3.5 text-center border-amber-500/30">
-            <p className="text-[10px] font-semibold text-amber-500 uppercase tracking-wider">Available</p>
-            <p className="text-lg sm:text-xl font-extrabold text-amber-500 font-serif-luxury mt-0.5">Only 55</p>
-            <span className="text-[10px] text-rose-500 font-medium">Limited Phase 1</span>
+            <p className="text-[10px] font-semibold text-amber-500 uppercase tracking-wider">Property Type</p>
+            <p className="text-lg sm:text-xl font-extrabold text-amber-500 font-serif-luxury mt-0.5">Premium</p>
+            <span className="text-[10px] text-rose-500 font-medium">Villa Plots</span>
           </div>
 
           <div className="glass-panel glass-panel-hover rounded-2xl p-3.5 text-center">

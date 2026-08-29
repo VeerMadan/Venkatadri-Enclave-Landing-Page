@@ -8,7 +8,7 @@ export default function PlotConfigurations({ onOpenModal }) {
   const current = PLOT_TYPES.find((p) => p.id === activeId) || PLOT_TYPES[0];
 
   return (
-    <section id="plots" className="py-20 bg-page-alt relative border-t border-theme-subtle">
+    <section id="plots" className="py-12 sm:py-20 bg-page-alt relative border-t border-theme-subtle">
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
         
         {/* Section Header */}
