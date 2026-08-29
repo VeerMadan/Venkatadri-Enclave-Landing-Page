@@ -82,21 +82,25 @@ export default function Navbar({ onOpenModal }) {
             </motion.div>
           </button>
 
-          <button
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
             onClick={() => onOpenModal('brochure')}
             className="px-3 py-1.5 rounded-full text-xs font-semibold text-sub-color hover:text-main-color glass-panel hover:border-amber-400/40 transition-all cursor-pointer flex items-center gap-1"
           >
             <Download className="w-3 h-3 text-amber-500" />
             <span>Brochure</span>
-          </button>
+          </motion.button>
 
-          <button
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
             onClick={() => onOpenModal('visit')}
             className="px-3.5 py-1.5 rounded-full text-xs font-bold text-slate-950 bg-gradient-to-r from-amber-400 via-amber-300 to-amber-500 hover:brightness-110 shadow-sm transition-all cursor-pointer flex items-center gap-1"
           >
             <Calendar className="w-3 h-3" />
             <span>Book Visit</span>
-          </button>
+          </motion.button>
         </div>
 
         {/* Mobile Nav & Toggle */}

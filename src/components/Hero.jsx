@@ -36,7 +36,7 @@ export default function Hero({ onOpenModal }) {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.1 }}
+          transition={{ type: "spring", stiffness: 350, damping: 25, delay: 0.1 }}
           className="space-y-3"
         >
           <h1 className="font-serif-luxury text-3xl min-[400px]:text-4xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-main-color leading-none">
@@ -87,24 +87,28 @@ export default function Hero({ onOpenModal }) {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
+          transition={{ type: "spring", stiffness: 400, damping: 25, delay: 0.2 }}
           className="flex flex-wrap items-center justify-center gap-2.5"
         >
-          <button
+          <motion.button
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.95 }}
             onClick={() => onOpenModal('visit')}
-            className="px-6 py-2.5 rounded-full bg-gradient-to-r from-amber-400 via-amber-300 to-amber-500 hover:brightness-110 text-slate-950 font-bold text-xs sm:text-sm shadow-md flex items-center gap-1.5 transition-all cursor-pointer transform hover:-translate-y-0.5"
+            className="px-6 py-2.5 rounded-full bg-gradient-to-r from-amber-400 via-amber-300 to-amber-500 hover:brightness-110 text-slate-950 font-bold text-xs sm:text-sm shadow-md flex items-center gap-1.5 cursor-pointer"
           >
             <span>Book Free Site Visit</span>
             <ArrowRight className="w-3.5 h-3.5" />
-          </button>
+          </motion.button>
 
-          <button
+          <motion.button
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.95 }}
             onClick={() => onOpenModal('brochure')}
-            className="px-5 py-2.5 rounded-full glass-panel text-main-color font-semibold text-xs sm:text-sm flex items-center gap-1.5 transition-all cursor-pointer hover:border-amber-400/40"
+            className="px-5 py-2.5 rounded-full glass-panel text-main-color font-semibold text-xs sm:text-sm flex items-center gap-1.5 cursor-pointer hover:border-amber-400/40"
           >
             <Download className="w-3.5 h-3.5 text-amber-500" />
             <span>Download Brochure</span>
-          </button>
+          </motion.button>
         </motion.div>
 
         {/* Minimalist Trust Badges */}

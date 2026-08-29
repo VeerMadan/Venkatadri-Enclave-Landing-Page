@@ -48,10 +48,11 @@ export default function Amenities() {
             return (
               <motion.div
                 key={idx}
-                initial={{ opacity: 0, y: 10 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.3, delay: idx * 0.02 }}
+                initial={{ opacity: 0, y: 15, scale: 0.98 }}
+                whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                viewport={{ once: true, margin: "-50px" }}
+                whileHover={{ scale: 1.05 }}
+                transition={{ type: "spring", stiffness: 350, damping: 20, delay: idx * 0.05 }}
                 className="glass-panel glass-panel-hover rounded-2xl p-3.5 sm:p-4 flex items-center gap-3 group"
               >
                 <div className="w-9 h-9 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-500 group-hover:bg-amber-400 group-hover:text-slate-950 transition-colors shrink-0">

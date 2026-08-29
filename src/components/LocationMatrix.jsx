@@ -62,9 +62,9 @@ export default function LocationMatrix() {
         {/* Minimal Distance Grid */}
         <motion.div
           key={activeTab}
-          initial={{ opacity: 0, y: 8 }}
+          initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.25 }}
+          transition={{ type: "spring", stiffness: 400, damping: 25 }}
           className="flex overflow-x-auto sm:grid sm:grid-cols-2 md:grid-cols-3 gap-2.5 pb-4 -mx-4 px-4 sm:mx-0 sm:px-0 snap-x snap-mandatory scrollbar-none"
         >
           {list.map((item, idx) => (

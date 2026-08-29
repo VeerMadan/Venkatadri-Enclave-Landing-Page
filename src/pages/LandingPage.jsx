@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { motion, useScroll, useSpring } from 'framer-motion';
 import Navbar from '../components/Navbar';
 import Hero from '../components/Hero';
 import ProjectStats from '../components/ProjectStats';
@@ -40,9 +41,20 @@ export default function LandingPage() {
     });
   };
 
+  const { scrollYProgress } = useScroll();
+  const scaleX = useSpring(scrollYProgress, {
+    stiffness: 100,
+    damping: 30,
+    restDelta: 0.001
+  });
+
   return (
     <div className="min-h-screen bg-page-main text-main-color font-sans selection:bg-amber-400 selection:text-black">
       <AmbientBackground />
+      <motion.div 
+        className="fixed top-0 left-0 right-0 h-1 bg-gradient-to-r from-amber-400 via-emerald-400 to-amber-500 z-[100] origin-left"
+        style={{ scaleX }}
+      />
       {/* Top Floating Navigation */}
       <Navbar onOpenModal={handleOpenModal} />
 

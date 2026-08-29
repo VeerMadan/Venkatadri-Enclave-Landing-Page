@@ -45,10 +45,12 @@ export default function Pillars({ onOpenModal }) {
             return (
               <motion.div
                 key={item.title}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.45, delay: idx * 0.08 }}
+                initial={{ opacity: 0, y: 30, scale: 0.95 }}
+                whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                viewport={{ once: true, margin: "-50px" }}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                transition={{ type: "spring", stiffness: 300, damping: 25, delay: idx * 0.1 }}
                 className="glass-panel glass-panel-hover rounded-2xl overflow-hidden group flex flex-col justify-between min-w-[85vw] sm:min-w-[400px] md:min-w-0 snap-center shrink-0"
               >
                 <div className="relative h-48 overflow-hidden">
