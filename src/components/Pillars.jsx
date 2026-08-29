@@ -39,7 +39,7 @@ export default function Pillars({ onOpenModal }) {
         </div>
 
         {/* 3 Pillars */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="flex overflow-x-auto md:grid md:grid-cols-3 gap-6 pb-6 -mx-4 px-4 sm:mx-0 sm:px-0 snap-x snap-mandatory scrollbar-none">
           {pillars.map((item, idx) => {
             const Icon = item.icon;
             return (
@@ -49,7 +49,7 @@ export default function Pillars({ onOpenModal }) {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.45, delay: idx * 0.08 }}
-                className="glass-panel glass-panel-hover rounded-2xl overflow-hidden group flex flex-col justify-between"
+                className="glass-panel glass-panel-hover rounded-2xl overflow-hidden group flex flex-col justify-between min-w-[85vw] sm:min-w-[400px] md:min-w-0 snap-center shrink-0"
               >
                 <div className="relative h-48 overflow-hidden">
                   <img

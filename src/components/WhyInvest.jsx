@@ -34,7 +34,7 @@ export default function WhyInvest() {
         </motion.div>
 
         {/* 4 Reasons Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-14">
+        <div className="flex overflow-x-auto sm:grid sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-14 pb-4 -mx-4 px-4 sm:mx-0 sm:px-0 snap-x snap-mandatory scrollbar-none">
           {reasons.map((item, idx) => {
             const Icon = item.icon;
             return (
@@ -44,7 +44,7 @@ export default function WhyInvest() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.3, delay: idx * 0.03 }}
-                className="glass-panel glass-panel-hover rounded-2xl p-4 space-y-2 group"
+                className="glass-panel glass-panel-hover rounded-2xl p-4 space-y-2 group min-w-[70vw] sm:min-w-0 snap-center shrink-0"
               >
                 <div className="w-8 h-8 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-500 group-hover:scale-105 transition-transform">
                   <Icon className="w-4 h-4" />

@@ -377,22 +377,19 @@ export default function InteractivePlotSelector({ onOpenModal }) {
             
             {/* VIEW 1: INTERACTIVE AVENUE MATRIX GRID */}
             {viewMode === 'matrix' && (
-              <div className="space-y-4">
+              <div className="space-y-4 max-h-[65vh] lg:max-h-none overflow-y-auto overflow-x-hidden pr-2 scrollbar-thin">
                 
                 {/* Visual Landmark Signage */}
-                <div className="p-2.5 rounded-2xl neo-inset flex flex-wrap items-center justify-between gap-2 text-xs">
+                <div className="p-2.5 rounded-2xl neo-inset flex flex-wrap items-center justify-between gap-2 text-xs sticky top-0 z-20 bg-page-main/90 backdrop-blur-md">
                   <div className="flex items-center gap-2">
                     <div className="w-5 h-5 rounded-lg bg-amber-500/20 text-amber-500 flex items-center justify-center">
-                      <Building2 className="w-3 h-3" />
+                       <Building2 className="w-3 h-3" />
                     </div>
                     <span className="font-semibold text-main-color">Grand 3-Gateway Entrance</span>
                   </div>
                   <div className="flex items-center gap-1.5 text-emerald-500 font-medium">
                     <Trees className="w-3 h-3" />
-                    <span>Park Zone & Gazebo</span>
-                  </div>
-                  <div className="text-[10px] text-sub-color font-mono">
-                    30 FT CC ROADS
+                    <span>Park Zone</span>
                   </div>
                 </div>
 
@@ -553,10 +550,10 @@ export default function InteractivePlotSelector({ onOpenModal }) {
 
             {/* VIEW 3: INVENTORY TABLE LIST */}
             {viewMode === 'list' && (
-              <div className="glass-panel rounded-3xl p-4 border-theme-subtle overflow-hidden">
-                <div className="overflow-x-auto">
+              <div className="glass-panel rounded-3xl p-4 border-theme-subtle overflow-hidden max-h-[65vh] lg:max-h-none flex flex-col">
+                <div className="overflow-x-auto overflow-y-auto pr-2 scrollbar-thin flex-1">
                   <table className="w-full text-left text-xs">
-                    <thead>
+                    <thead className="sticky top-0 bg-page-alt/90 backdrop-blur z-10">
                       <tr className="border-b border-theme-subtle text-sub-color uppercase text-[10px] tracking-wider">
                         <th className="pb-2.5 px-2.5">Plot #</th>
                         <th className="pb-2.5 px-2.5">Block</th>

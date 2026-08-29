@@ -65,12 +65,12 @@ export default function LocationMatrix() {
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.25 }}
-          className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2.5"
+          className="flex overflow-x-auto sm:grid sm:grid-cols-2 md:grid-cols-3 gap-2.5 pb-4 -mx-4 px-4 sm:mx-0 sm:px-0 snap-x snap-mandatory scrollbar-none"
         >
           {list.map((item, idx) => (
             <div
               key={idx}
-              className={`glass-panel rounded-2xl p-3.5 flex items-center justify-between transition-all ${
+              className={`glass-panel rounded-2xl p-3.5 flex items-center justify-between transition-all min-w-[80vw] sm:min-w-0 snap-center shrink-0 ${
                 idx === 0 && activeTab === 'education'
                   ? 'border-amber-400/50 bg-amber-500/[0.05]'
                   : 'hover:border-amber-400/30'
