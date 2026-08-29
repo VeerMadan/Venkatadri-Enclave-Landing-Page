@@ -642,7 +642,7 @@ export default function InteractivePlotSelector({ onOpenModal }) {
           </div>
 
           {/* Right Column: Plot Detail Dossier Inspector (4 cols) */}
-          <div className="w-full lg:col-span-4 sticky top-20 space-y-3">
+          <div className="w-full lg:col-span-4 lg:sticky lg:top-24 space-y-3 relative z-30">
             
             {selectedPlot ? (
               <motion.div
