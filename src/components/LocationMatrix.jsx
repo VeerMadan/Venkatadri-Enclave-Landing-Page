@@ -56,7 +56,7 @@ export default function LocationMatrix() {
                 <Icon className="w-3.5 h-3.5" />
                 <span>{t.label}</span>
                 <span className="text-[10px] opacity-75">({t.count})</span>
-              </button>
+              </motion.button>
             );
           })}
         </div>
