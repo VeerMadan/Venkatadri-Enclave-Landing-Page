@@ -47,7 +47,7 @@ export default function Hero({ onOpenModal }) {
           </p>
           <p className="text-xs sm:text-sm text-sub-color tracking-wide max-w-lg mx-auto flex items-center justify-center gap-1.5">
             <MapPin className="w-3.5 h-3.5 text-amber-500 shrink-0" />
-            <span>Gundur, Hoskote – Bengaluru North Growth Corridor</span>
+            <span>Bagaluru Main Road, Yelahanka, Bengaluru - 560064</span>
           </p>
         </motion.div>
 

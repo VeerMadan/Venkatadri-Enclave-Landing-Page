@@ -744,7 +744,7 @@ export default function InteractivePlotSelector({ onOpenModal }) {
                         </button>
 
                         <a
-                          href={`https://wa.me/919845012345?text=Hi%20MVK%20Team%2C%20I%20am%20interested%20in%20reserving%20${selectedPlot.plotNo}%20(${selectedPlot.dimensions}%2C%20${selectedPlot.areaSqFt}%20SqFt)%20at%20Venkatadri%20Enclave.`}
+                          href={`https://wa.me/919900090049?text=Hi%20MVK%20Team%2C%20I%20am%20interested%20in%20reserving%20${selectedPlot.plotNo}%20(${selectedPlot.dimensions}%2C%20${selectedPlot.areaSqFt}%20SqFt)%20at%20Venkatadri%20Enclave.`}
                           target="_blank"
                           rel="noreferrer"
                           className="py-2 px-2 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-500 hover:bg-emerald-500/20 text-[10.5px] font-semibold flex items-center justify-center gap-1 cursor-pointer transition-all"
@@ -816,7 +816,7 @@ export default function InteractivePlotSelector({ onOpenModal }) {
                       </button>
 
                       <a
-                        href={`https://wa.me/919845012345?text=Hi%20MVK%20Team%2C%20I%20noticed%20${selectedPlot.plotNo}%20is%20sold.%20Can%20you%20share%20other%20available%20options%20in%20${selectedPlot.block}%3F`}
+                        href={`https://wa.me/919900090049?text=Hi%20MVK%20Team%2C%20I%20noticed%20${selectedPlot.plotNo}%20is%20sold.%20Can%20you%20share%20other%20available%20options%20in%20${selectedPlot.block}%3F`}
                         target="_blank"
                         rel="noreferrer"
                         className="w-full py-2 rounded-xl glass-panel text-emerald-500 hover:border-emerald-500/40 text-xs font-semibold flex items-center justify-center gap-1 cursor-pointer"

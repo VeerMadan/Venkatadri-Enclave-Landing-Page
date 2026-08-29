@@ -33,8 +33,8 @@ export default function WhyInvest() {
           </h2>
         </motion.div>
 
-        {/* 4 Reasons Grid */}
-        <div className="flex overflow-x-auto sm:grid sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-14 pb-4 -mx-4 px-4 sm:mx-0 sm:px-0 snap-x snap-mandatory scrollbar-none">
+        {/* 4 Reasons Grid - Clean 2x2 on Mobile, 4-col on Desktop */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3 mb-10">
           {reasons.map((item, idx) => {
             const Icon = item.icon;
             return (
@@ -42,19 +42,19 @@ export default function WhyInvest() {
                 key={idx}
                 initial={{ opacity: 0, y: 20, scale: 0.95 }}
                 whileInView={{ opacity: 1, y: 0, scale: 1 }}
-                viewport={{ once: false, margin: "-50px" }}
+                viewport={{ once: false, margin: "-30px" }}
                 whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.96 }}
                 transition={{ type: "spring", stiffness: 350, damping: 25, delay: idx * 0.08 }}
-                className="glass-panel glass-panel-hover rounded-2xl p-4 space-y-2 group min-w-[70vw] sm:min-w-0 snap-center shrink-0"
+                className="glass-panel glass-panel-hover rounded-2xl p-3 sm:p-4 space-y-1.5 group cursor-pointer"
               >
-                <div className="w-8 h-8 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-500 group-hover:scale-105 transition-transform">
-                  <Icon className="w-4 h-4" />
+                <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-500 group-hover:scale-105 transition-transform">
+                  <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                 </div>
                 <h3 className="text-xs font-bold text-main-color group-hover:text-amber-500 transition-colors">
                   {item.title}
                 </h3>
-                <p className="text-[11px] text-sub-color leading-relaxed">
+                <p className="text-[10px] sm:text-[11px] text-sub-color leading-tight">
                   {item.subtitle}
                 </p>
               </motion.div>

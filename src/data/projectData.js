@@ -2,8 +2,8 @@ export const PROJECT_INFO = {
   name: "MVK VENKATADRI ENCLAVE",
   tagline: "Where artistry and nature flourish in harmonious abundance",
   subtitle: "A Premium Address. A Limited Opportunity. A Future Worth Building.",
-  location: "Gunduru village, Bidarahalli hobali, Bangalore East Taluk, Bangalore Urban District - 560049",
-  shortLocation: "Gundur, Hoskote – Bengaluru North Growth Corridor",
+  location: "Bagaluru Main Road, Yelahanka, Bengaluru - 560064",
+  shortLocation: "Bagaluru Main Road, Yelahanka, Bengaluru - 560064",
   projectSize: "6 Acres Gated Community",
   totalPlots: 111,
   availablePlots: 55,
@@ -18,8 +18,8 @@ export const PROJECT_INFO = {
     name: "MVK Builders & Developers LLP",
     slogan: "Build Better With MVK",
     website: "https://www.mvkdevelopers.com",
-    phone: "+91 98450 12345", // Standard contact trigger
-    whatsapp: "+919845012345",
+    phone: "+91 99000 90049",
+    whatsapp: "+919900090049",
     email: "sales@mvkdevelopers.com"
   }
 };
@@ -227,7 +227,7 @@ export const WHY_INVEST = [
   },
   {
     title: "Rapid Growth Corridor",
-    description: "Gundur & Hoskote are at the epicenter of Bengaluru's exponential expansion, connecting STRR, PRR, and KIA Airport corridor.",
+    description: "Bagaluru Main Road & Yelahanka are at the epicenter of Bengaluru's exponential expansion, connecting STRR, PRR, and KIA Airport corridor.",
     icon: "TrendingUp"
   },
   {
@@ -282,7 +282,7 @@ export const GALLERY_ITEMS = [
 export const FAQS = [
   {
     q: "What is the exact location of MVK Venkatadri Enclave?",
-    a: "The project is located at Gunduru Village, Bidarahalli Hobali, Bangalore East Taluk, Bangalore Urban District - 560049 (Near Hoskote / Budigere corridor). It is situated right opposite Discovery National School."
+    a: "The project is located at Bagaluru Main Road, Yelahanka, Bengaluru - 560064 with seamless connectivity to the Airport and North Bangalore IT corridors."
   },
   {
     q: "What authorities have approved this project?",
@@ -302,6 +302,6 @@ export const FAQS = [
   },
   {
     q: "How can I schedule a site visit?",
-    a: "You can click on the 'Book Site Visit' button on this page, call our sales desk directly at +91 98450 12345, or reach us on WhatsApp. We also arrange complimentary cab pickups for families."
+    a: "You can click on the 'Book Site Visit' button on this page, call our sales desk directly at +91 99000 90049, or reach us on WhatsApp. We also arrange complimentary cab pickups for families."
   }
 ];

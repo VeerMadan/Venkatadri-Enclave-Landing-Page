@@ -23,7 +23,7 @@ export default function Footer() {
               </span>
             </div>
             <p className="text-[11px] text-sub-color">
-              Gunduru village, Bidarahalli hobali, Bangalore East Taluk (PIN: 560049)
+              Bagaluru Main Road, Yelahanka, Bengaluru - 560064
             </p>
           </div>
 

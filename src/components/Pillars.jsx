@@ -45,7 +45,7 @@ export default function Pillars({ onOpenModal }) {
         </motion.div>
 
         {/* 3 Pillars */}
-        <div className="flex overflow-x-auto md:grid md:grid-cols-3 gap-6 pb-6 -mx-4 px-4 sm:mx-0 sm:px-0 snap-x snap-mandatory scrollbar-none">
+        <div className="flex overflow-x-auto md:grid md:grid-cols-3 gap-4 sm:gap-6 pb-4 -mx-4 px-4 sm:mx-0 sm:px-0 snap-x snap-mandatory scrollbar-none">
           {pillars.map((item, idx) => {
             const Icon = item.icon;
             return (
@@ -57,9 +57,9 @@ export default function Pillars({ onOpenModal }) {
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 transition={{ type: "spring", stiffness: 300, damping: 25, delay: idx * 0.1 }}
-                className="glass-panel glass-panel-hover rounded-2xl overflow-hidden group flex flex-col justify-between min-w-[85vw] sm:min-w-[400px] md:min-w-0 snap-center shrink-0"
+                className="glass-panel glass-panel-hover rounded-2xl overflow-hidden group flex flex-col justify-between w-[72vw] max-w-[280px] md:w-auto md:max-w-none snap-start shrink-0"
               >
-                <div className="relative h-48 overflow-hidden">
+                <div className="relative h-36 sm:h-44 overflow-hidden">
                   <img
                     src={item.img}
                     alt={item.title}
@@ -67,18 +67,18 @@ export default function Pillars({ onOpenModal }) {
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-[var(--bg-surface)] via-transparent to-transparent"></div>
                   
-                  <div className="absolute bottom-3 left-4 flex items-center gap-2">
-                    <div className="w-7 h-7 rounded-lg bg-amber-500/20 backdrop-blur-md border border-amber-500/30 flex items-center justify-center text-amber-400">
-                      <Icon className="w-3.5 h-3.5" />
+                  <div className="absolute bottom-2.5 left-3 flex items-center gap-2">
+                    <div className="w-6 h-6 rounded-lg bg-amber-500/20 backdrop-blur-md border border-amber-500/30 flex items-center justify-center text-amber-400">
+                      <Icon className="w-3 h-3" />
                     </div>
-                    <h3 className="font-serif-luxury text-lg font-bold text-white">
+                    <h3 className="font-serif-luxury text-base sm:text-lg font-bold text-white">
                       {item.title}
                     </h3>
                   </div>
                 </div>
 
-                <div className="p-5 space-y-4">
-                  <p className="text-xs text-sub-color leading-relaxed">
+                <div className="p-3.5 sm:p-4 space-y-3">
+                  <p className="text-xs text-sub-color leading-relaxed line-clamp-2 sm:line-clamp-none">
                     {item.caption}
                   </p>
 

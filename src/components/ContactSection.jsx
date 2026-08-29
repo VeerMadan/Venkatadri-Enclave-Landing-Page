@@ -107,14 +107,14 @@ export default function ContactSection({ onOpenModal }) {
               {/* Direct Instant Action Links */}
               <div className="flex items-center justify-center gap-4 pt-3 text-xs text-sub-color">
                 <a
-                  href="tel:+919845012345"
+                  href="tel:+919900090049"
                   className="flex items-center gap-1 hover:text-amber-500 transition-colors"
                 >
-                  <Phone className="w-3.5 h-3.5 text-amber-500" /> +91 98450 12345
+                  <Phone className="w-3.5 h-3.5 text-amber-500" /> +91 99000 90049
                 </a>
                 <span>•</span>
                 <a
-                  href="https://wa.me/919845012345?text=Hi%20MVK%20Team%2C%20I%20would%20like%20to%20book%20a%20site%20visit%20for%20Venkatadri%20Enclave."
+                  href="https://wa.me/919900090049?text=Hi%20MVK%20Team%2C%20I%20would%20like%20to%20book%20a%20site%20visit%20for%20Venkatadri%20Enclave."
                   target="_blank"
                   rel="noreferrer"
                   className="flex items-center gap-1 text-emerald-500 hover:underline"

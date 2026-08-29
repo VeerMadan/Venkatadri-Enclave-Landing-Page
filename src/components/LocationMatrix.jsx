@@ -33,12 +33,12 @@ export default function LocationMatrix() {
             Strategic <span className="gold-gradient-text">Location</span>
           </h2>
           <p className="text-xs text-sub-color mt-1">
-            Gundur, Bidarahalli Hobli, Bangalore East (PIN 560049)
+            Bagaluru Main Road, Yelahanka, Bengaluru - 560064
           </p>
         </motion.div>
 
         {/* Minimal Tabs */}
-        <div className="flex flex-wrap items-center justify-center gap-2 mb-8">
+        <div className="flex flex-wrap items-center justify-center gap-2 mb-6">
           {tabs.map((t) => {
             const Icon = t.icon;
             return (
@@ -47,7 +47,7 @@ export default function LocationMatrix() {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => setActiveTab(t.id)}
-                className={`px-4 py-2 rounded-full text-xs font-semibold transition-all cursor-pointer flex items-center gap-2 shrink-0 ${
+                className={`px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 shrink-0 ${
                   activeTab === t.id
                     ? 'bg-amber-400 text-slate-950 font-bold shadow-md'
                     : 'glass-panel text-sub-color hover:text-main-color hover:border-amber-400/40'
@@ -63,15 +63,15 @@ export default function LocationMatrix() {
 
         <motion.div
           key={activeTab}
-          initial={{ opacity: 0, x: -50, scale: 0.95 }}
-          animate={{ opacity: 1, x: 0, scale: 1 }}
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
           transition={{ type: "spring", stiffness: 400, damping: 25 }}
-          className="flex overflow-x-auto sm:grid sm:grid-cols-2 md:grid-cols-3 gap-2.5 pb-4 -mx-4 px-4 sm:mx-0 sm:px-0 snap-x snap-mandatory scrollbar-none"
+          className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 max-h-[340px] sm:max-h-none overflow-y-auto pr-1 scrollbar-thin"
         >
           {list.map((item, idx) => (
             <div
               key={idx}
-              className={`glass-panel rounded-2xl p-3.5 flex items-center justify-between transition-all min-w-[80vw] sm:min-w-0 snap-center shrink-0 ${
+              className={`glass-panel rounded-xl p-3 flex items-center justify-between transition-all ${
                 idx === 0 && activeTab === 'education'
                   ? 'border-amber-400/50 bg-amber-500/[0.05]'
                   : 'hover:border-amber-400/30'
@@ -80,7 +80,7 @@ export default function LocationMatrix() {
               <div className="space-y-0.5 pr-2 min-w-0">
                 {idx === 0 && activeTab === 'education' && (
                   <span className="text-[9px] font-bold text-emerald-500 uppercase tracking-wider block">
-                    Opposite Layout (350M)
+                    Near Layout (350M)
                   </span>
                 )}
                 <h4 className="text-xs font-bold text-main-color truncate">
@@ -104,15 +104,15 @@ export default function LocationMatrix() {
         </motion.div>
 
         {/* Map link button */}
-        <div className="mt-8 text-center">
+        <div className="mt-6 text-center">
           <a
-            href="https://maps.google.com/?q=Gunduru+village+Bangalore+East+Taluk"
+            href="https://maps.google.com/?q=Bagaluru+Main+Road+Yelahanka+Bengaluru+560064"
             target="_blank"
             rel="noreferrer"
             className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full glass-panel text-xs font-semibold text-amber-500 hover:border-amber-400/40 transition-all"
           >
             <MapPin className="w-3.5 h-3.5 text-amber-500" />
-            <span>Open Gundur on Google Maps</span>
+            <span>Open Location on Google Maps</span>
             <ExternalLink className="w-3 h-3 ml-0.5 text-sub-color" />
           </a>
         </div>
