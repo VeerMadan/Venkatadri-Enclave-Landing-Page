@@ -10,7 +10,7 @@ export function ThemeProvider({ children }) {
     } catch (e) {
       // fallback
     }
-    return 'dark';
+    return 'light';
   });
 
   useEffect(() => {
@@ -43,7 +43,7 @@ export function ThemeProvider({ children }) {
 export function useTheme() {
   const context = useContext(ThemeContext);
   if (!context) {
-    return { theme: 'dark', toggleTheme: () => {} };
+    return { theme: 'light', toggleTheme: () => {} };
   }
   return context;
 }
