@@ -420,7 +420,7 @@ export default function InteractivePlotSelector({ onOpenModal }) {
                         key={bIdx} 
                         initial={{ opacity: 0, y: 15 }}
                         whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true, margin: "-50px" }}
+                        viewport={{ once: false, margin: "-50px" }}
                         transition={{ type: "spring", stiffness: 350, damping: 25, delay: bIdx * 0.1 }}
                         className="glass-panel rounded-2xl p-3.5 sm:p-4 border-theme-subtle relative overflow-hidden"
                       >

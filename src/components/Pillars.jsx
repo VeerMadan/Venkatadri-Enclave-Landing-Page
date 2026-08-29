@@ -29,14 +29,20 @@ export default function Pillars({ onOpenModal }) {
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
         
         {/* Section Header */}
-        <div className="text-center max-w-xl mx-auto mb-12">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: false }}
+          transition={{ type: "spring", stiffness: 300, damping: 25 }}
+          className="text-center max-w-xl mx-auto mb-12"
+        >
           <span className="text-[11px] font-semibold text-amber-500 uppercase tracking-widest px-3 py-1 rounded-full badge-luxury">
             Philosophy
           </span>
           <h2 className="font-serif-luxury text-2xl sm:text-4xl font-bold text-main-color mt-3">
             Designed for Tomorrow, <span className="gold-gradient-text">Rooted in Harmony</span>
           </h2>
-        </div>
+        </motion.div>
 
         {/* 3 Pillars */}
         <div className="flex overflow-x-auto md:grid md:grid-cols-3 gap-6 pb-6 -mx-4 px-4 sm:mx-0 sm:px-0 snap-x snap-mandatory scrollbar-none">
@@ -47,7 +53,7 @@ export default function Pillars({ onOpenModal }) {
                 key={item.title}
                 initial={{ opacity: 0, y: 30, scale: 0.95 }}
                 whileInView={{ opacity: 1, y: 0, scale: 1 }}
-                viewport={{ once: true, margin: "-50px" }}
+                viewport={{ once: false, margin: "-50px" }}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 transition={{ type: "spring", stiffness: 300, damping: 25, delay: idx * 0.1 }}

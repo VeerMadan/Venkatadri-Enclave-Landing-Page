@@ -134,10 +134,11 @@ export default function Navbar({ onOpenModal }) {
       <AnimatePresence>
         {mobileOpen && (
           <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            className="md:hidden mt-2 max-w-6xl mx-auto glass-panel rounded-2xl p-4 border space-y-3"
+            initial={{ opacity: 0, height: 0, overflow: 'hidden' }}
+            animate={{ opacity: 1, height: 'auto', overflow: 'hidden' }}
+            exit={{ opacity: 0, height: 0, overflow: 'hidden' }}
+            transition={{ type: "spring", stiffness: 300, damping: 25 }}
+            className="md:hidden mt-2 max-w-6xl mx-auto glass-panel rounded-2xl p-4 border space-y-3 origin-top"
           >
             <div className="grid grid-cols-2 gap-2 text-xs font-medium">
               {links.map((link) => (

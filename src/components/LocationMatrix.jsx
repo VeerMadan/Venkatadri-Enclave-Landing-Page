@@ -42,10 +42,12 @@ export default function LocationMatrix() {
           {tabs.map((t) => {
             const Icon = t.icon;
             return (
-              <button
+              <motion.button
                 key={t.id}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
                 onClick={() => setActiveTab(t.id)}
-                className={`px-4 py-2 rounded-full text-xs font-semibold transition-all cursor-pointer flex items-center gap-2 ${
+                className={`px-4 py-2 rounded-full text-xs font-semibold transition-all cursor-pointer flex items-center gap-2 shrink-0 ${
                   activeTab === t.id
                     ? 'bg-amber-400 text-slate-950 font-bold shadow-md'
                     : 'glass-panel text-sub-color hover:text-main-color hover:border-amber-400/40'
@@ -59,11 +61,10 @@ export default function LocationMatrix() {
           })}
         </div>
 
-        {/* Minimal Distance Grid */}
         <motion.div
           key={activeTab}
-          initial={{ opacity: 0, y: 15 }}
-          animate={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0, x: -50, scale: 0.95 }}
+          animate={{ opacity: 1, x: 0, scale: 1 }}
           transition={{ type: "spring", stiffness: 400, damping: 25 }}
           className="flex overflow-x-auto sm:grid sm:grid-cols-2 md:grid-cols-3 gap-2.5 pb-4 -mx-4 px-4 sm:mx-0 sm:px-0 snap-x snap-mandatory scrollbar-none"
         >

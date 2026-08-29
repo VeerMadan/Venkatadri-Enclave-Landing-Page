@@ -27,10 +27,10 @@ export default function Amenities() {
         
         {/* Section Header */}
         <motion.div 
-          initial={{ opacity: 0, y: 15 }}
+          initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.4 }}
+          viewport={{ once: false }}
+          transition={{ type: "spring", stiffness: 300, damping: 25 }}
           className="text-center max-w-xl mx-auto mb-10"
         >
           <span className="text-[11px] font-semibold text-amber-500 uppercase tracking-widest px-3 py-1 rounded-full badge-luxury">
@@ -48,11 +48,12 @@ export default function Amenities() {
             return (
               <motion.div
                 key={idx}
-                initial={{ opacity: 0, y: 15, scale: 0.98 }}
+                initial={{ opacity: 0, y: 30, scale: 0.9 }}
                 whileInView={{ opacity: 1, y: 0, scale: 1 }}
-                viewport={{ once: true, margin: "-50px" }}
+                viewport={{ once: false, margin: "-50px" }}
                 whileHover={{ scale: 1.05 }}
-                transition={{ type: "spring", stiffness: 350, damping: 20, delay: idx * 0.05 }}
+                whileTap={{ scale: 0.9 }}
+                transition={{ type: "spring", stiffness: 350, damping: 20, delay: (idx % 4) * 0.1 }}
                 className="glass-panel glass-panel-hover rounded-2xl p-3.5 sm:p-4 flex items-center gap-3 group"
               >
                 <div className="w-9 h-9 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-500 group-hover:bg-amber-400 group-hover:text-slate-950 transition-colors shrink-0">

@@ -53,34 +53,35 @@ export default function Hero({ onOpenModal }) {
 
         {/* 4 Minimalist Glassmorphic Metrics */}
         <motion.div
-          initial={{ opacity: 0, y: 25 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.15 }}
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: false, margin: "-20px" }}
+          transition={{ type: "spring", stiffness: 400, damping: 25 }}
           className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 max-w-3xl mx-auto my-8"
         >
-          <div className="glass-panel glass-panel-hover rounded-2xl p-3.5 text-center">
+          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="glass-panel glass-panel-hover rounded-2xl p-3.5 text-center cursor-pointer">
             <p className="text-[10px] font-medium text-sub-color uppercase tracking-wider">Project Size</p>
             <p className="text-lg sm:text-xl font-bold text-main-color font-serif-luxury mt-0.5">6 Acres</p>
             <span className="text-[10px] text-sub-color">Gated Layout</span>
-          </div>
+          </motion.div>
 
-          <div className="glass-panel glass-panel-hover rounded-2xl p-3.5 text-center">
+          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="glass-panel glass-panel-hover rounded-2xl p-3.5 text-center cursor-pointer">
             <p className="text-[10px] font-medium text-sub-color uppercase tracking-wider">Total Inventory</p>
             <p className="text-lg sm:text-xl font-bold text-main-color font-serif-luxury mt-0.5">111 Plots</p>
             <span className="text-[10px] text-sub-color">East / West / Corner</span>
-          </div>
+          </motion.div>
 
-          <div className="glass-panel glass-panel-hover rounded-2xl p-3.5 text-center border-amber-500/30">
+          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="glass-panel glass-panel-hover rounded-2xl p-3.5 text-center border-amber-500/30 cursor-pointer">
             <p className="text-[10px] font-semibold text-amber-500 uppercase tracking-wider">Property Type</p>
             <p className="text-lg sm:text-xl font-extrabold text-amber-500 font-serif-luxury mt-0.5">Premium</p>
             <span className="text-[10px] text-rose-500 font-medium">Villa Plots</span>
-          </div>
+          </motion.div>
 
-          <div className="glass-panel glass-panel-hover rounded-2xl p-3.5 text-center">
+          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="glass-panel glass-panel-hover rounded-2xl p-3.5 text-center cursor-pointer">
             <p className="text-[10px] font-medium text-emerald-500 uppercase tracking-wider">Starting Price</p>
             <p className="text-lg sm:text-xl font-bold text-main-color font-serif-luxury mt-0.5">₹7,699</p>
             <span className="text-[10px] text-sub-color">/ Sq.Ft</span>
-          </div>
+          </motion.div>
         </motion.div>
 
         {/* Minimal CTAs */}
