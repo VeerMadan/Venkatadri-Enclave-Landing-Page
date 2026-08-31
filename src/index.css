@@ -69,17 +69,17 @@
 /* Glassmorphism Classes */
 .glass-panel {
   background: var(--glass-bg);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border: 1px solid var(--glass-border);
   box-shadow: var(--glass-shadow);
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: border-color 0.25s ease, background-color 0.25s ease, box-shadow 0.25s ease;
 }
 
 .glass-panel-hover:hover {
   border-color: var(--border-hover);
   transform: translateY(-2px);
-  box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.2), 0 0 15px rgba(245, 158, 11, 0.1);
+  box-shadow: 0 16px 32px -8px rgba(0, 0, 0, 0.15), 0 0 12px rgba(245, 158, 11, 0.08);
 }
 
 .neo-inset {

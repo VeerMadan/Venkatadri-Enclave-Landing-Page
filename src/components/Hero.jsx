@@ -1,84 +1,71 @@
 import React, { useRef } from 'react';
 import { ShieldCheck, MapPin, ArrowRight, Download, ChevronDown, Sparkles } from 'lucide-react';
-import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
+import { motion, useScroll, useTransform } from 'framer-motion';
 import { PROJECT_INFO } from '../data/projectData';
 
 export default function Hero({ onOpenModal }) {
   const containerRef = useRef(null);
 
-  // Track scroll progress exclusively through this hero container
+  // Direct GPU-accelerated scroll progress (Zero extra RAF overhead)
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start start", "end start"]
   });
 
-  // Smooth out scroll physics with springs for buttery-smooth response
-  const smoothProgress = useSpring(scrollYProgress, {
-    stiffness: 120,
-    damping: 24,
-    restDelta: 0.001
-  });
+  // Foreground Content Transformations (Pure GPU compositor properties: translate3d, opacity, scale)
+  const contentY = useTransform(scrollYProgress, [0, 0.5], [0, -110]);
+  const contentOpacity = useTransform(scrollYProgress, [0, 0.38], [1, 0]);
+  const contentScale = useTransform(scrollYProgress, [0, 0.4], [1, 0.94]);
+  const pointerEvents = useTransform(scrollYProgress, (v) => (v > 0.35 ? "none" : "auto"));
 
-  // Foreground Content Transformations (Text, Cards, CTAs rise up and disappear)
-  const contentY = useTransform(smoothProgress, [0, 0.55], [0, -120]);
-  const contentOpacity = useTransform(smoothProgress, [0, 0.42], [1, 0]);
-  const contentScale = useTransform(smoothProgress, [0, 0.45], [1, 0.92]);
-  const pointerEvents = useTransform(smoothProgress, (v) => (v > 0.4 ? "none" : "auto"));
+  // Background Veil Dissolve
+  const overlayOpacity = useTransform(scrollYProgress, [0, 0.5], [1, 0.15]);
 
-  // Background Gradient Overlay (White/Dark veil dissolves away revealing the full scene)
-  const overlayOpacity = useTransform(smoothProgress, [0, 0.55], [1, 0.15]);
+  // Background Image Zoom & Illumination (Direct GPU scale & translation)
+  const imageScale = useTransform(scrollYProgress, [0, 0.8], [1.0, 1.14]);
+  const imageY = useTransform(scrollYProgress, [0, 0.8], ["0%", "-2.5%"]);
 
-  // Background Image Transformations (Zooms forward into full view with enhanced brightness)
-  const imageScale = useTransform(smoothProgress, [0, 0.85], [1.0, 1.16]);
-  const imageY = useTransform(smoothProgress, [0, 0.85], ["0%", "-3%"]);
-  const imageBrightness = useTransform(smoothProgress, [0, 0.65], [0.88, 1.12]);
+  // Sunrise Glow Bloom (Hardware accelerated opacity)
+  const glowOpacity = useTransform(scrollYProgress, [0.05, 0.45, 0.8], [0, 0.65, 0.25]);
 
-  // Ambient Sunrise Entrance Glow (Blooms majestically as you scroll)
-  const glowOpacity = useTransform(smoothProgress, [0.08, 0.5, 0.85], [0, 0.85, 0.4]);
-  const glowScale = useTransform(smoothProgress, [0.08, 0.7], [0.75, 1.3]);
-
-  // Scroll Hint Indicator (Disappears immediately on scroll)
-  const hintOpacity = useTransform(smoothProgress, [0, 0.12], [1, 0]);
+  // Scroll Hint Indicator
+  const hintOpacity = useTransform(scrollYProgress, [0, 0.1], [1, 0]);
 
   return (
-    <div ref={containerRef} className="relative h-[155vh] sm:h-[165vh] w-full">
+    <div ref={containerRef} className="relative h-[135vh] sm:h-[145vh] w-full">
       {/* Sticky Viewport Stage */}
       <section 
         id="overview" 
-        className="sticky top-0 h-screen w-full flex items-center justify-center overflow-hidden pt-20 sm:pt-24 pb-8"
+        className="sticky top-0 h-screen w-full flex items-center justify-center overflow-hidden pt-20 sm:pt-24 pb-8 select-none"
       >
         {/* Background Architectural Canvas */}
-        <div className="absolute inset-0 z-0 overflow-hidden">
+        <div className="absolute inset-0 z-0 overflow-hidden transform-gpu translate-z-0">
           <motion.img
             src="/images/grand-entrance.jpg"
             alt="MVK Venkatadri Enclave Grand Entrance"
             style={{
               scale: imageScale,
-              y: imageY,
-              filter: useTransform(imageBrightness, (b) => `brightness(${b}) contrast(1.06) saturate(1.08)`)
+              y: imageY
             }}
-            className="w-full h-full object-cover object-center origin-center will-change-transform"
+            className="w-full h-full object-cover object-center origin-center transform-gpu will-change-transform"
           />
 
-          {/* Majestic Golden Sunrise Bloom Glow behind the Arch */}
+          {/* Golden Sunrise Glow */}
           <motion.div
-            style={{
-              opacity: glowOpacity,
-              scale: glowScale
-            }}
-            className="absolute inset-0 flex items-center justify-center pointer-events-none"
+            style={{ opacity: glowOpacity }}
+            className="absolute inset-0 flex items-center justify-center pointer-events-none transform-gpu translate-z-0 will-change-transform"
           >
-            <div className="w-[85vw] max-w-[700px] h-[85vw] max-w-[700px] rounded-full bg-gradient-to-tr from-amber-500/40 via-amber-300/30 to-orange-400/25 blur-[100px] mix-blend-screen pointer-events-none" />
+            <div className="w-[80vw] max-w-[600px] h-[80vw] max-h-[600px] rounded-full bg-gradient-to-tr from-amber-500/35 via-amber-300/25 to-orange-400/20 blur-[70px] pointer-events-none" />
           </motion.div>
 
           {/* Theme-Adaptive Gradient Veil (Dissolves upward on scroll) */}
           <motion.div
             style={{ opacity: overlayOpacity }}
-            className="absolute inset-0 bg-gradient-to-t from-[var(--bg-page)] via-[var(--bg-page)]/85 to-[var(--bg-page)]/25 transition-colors duration-300 pointer-events-none"
+            className="absolute inset-0 bg-gradient-to-t from-[var(--bg-page)] via-[var(--bg-page)]/85 to-[var(--bg-page)]/25 transition-colors duration-300 pointer-events-none will-change-opacity"
           />
 
           {/* Subtle Radial Vignette for Contrast */}
-          <div className="absolute inset-0 bg-radial from-transparent via-transparent to-black/30 pointer-events-none" />
+          <div className="absolute inset-0 bg-radial from-transparent via-transparent to-black/25 pointer-events-none" />
         </div>
 
         {/* Floating Foreground Content Stage */}
