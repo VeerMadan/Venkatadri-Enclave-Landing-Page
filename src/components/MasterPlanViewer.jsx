@@ -36,7 +36,7 @@ export default function MasterPlanViewer({ onOpenModal }) {
           <div className="flex items-center gap-1.5 p-1 rounded-full neo-inset">
             <button
               onClick={() => setActiveView('blueprint')}
-              className={`px-4 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${
+              className={`px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${
                 activeView === 'blueprint'
                   ? 'bg-amber-400 text-slate-950 font-bold shadow'
                   : 'text-sub-color hover:text-main-color'
@@ -46,8 +46,19 @@ export default function MasterPlanViewer({ onOpenModal }) {
               <span>Blueprint Map</span>
             </button>
             <button
+              onClick={() => setActiveView('panoramic')}
+              className={`px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${
+                activeView === 'panoramic'
+                  ? 'bg-amber-400 text-slate-950 font-bold shadow'
+                  : 'text-sub-color hover:text-main-color'
+              }`}
+            >
+              <Eye className="w-3.5 h-3.5" />
+              <span>Sunset Boulevard</span>
+            </button>
+            <button
               onClick={() => setActiveView('aerial')}
-              className={`px-4 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${
+              className={`px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${
                 activeView === 'aerial'
                   ? 'bg-amber-400 text-slate-950 font-bold shadow'
                   : 'text-sub-color hover:text-main-color'
@@ -70,17 +81,25 @@ export default function MasterPlanViewer({ onOpenModal }) {
         </div>
 
         {/* Layout Visualizer Window */}
-        <div className="glass-panel rounded-3xl p-3 sm:p-5 border-theme-subtle relative overflow-hidden group">
+        <div className="glass-panel rounded-3xl p-3 sm:p-5 border-theme-subtle relative overflow-hidden group shadow-lg">
           <div className="relative rounded-2xl overflow-hidden bg-black/5 dark:bg-black/40 flex items-center justify-center min-h-[380px] sm:min-h-[500px]">
             <img
-              src={activeView === 'blueprint' ? "/images/master-layout-plan.jpg" : "/images/aerial-layout-view.jpg"}
+              src={
+                activeView === 'blueprint' 
+                  ? "/images/master-layout-plan.jpg" 
+                  : activeView === 'panoramic'
+                  ? "/images/grand-entrance-panoramic.jpg"
+                  : "/images/aerial-layout-view.jpg"
+              }
               alt="MVK Venkatadri Enclave Master Plan"
               className="w-full h-auto max-h-[700px] object-contain rounded-xl transition-all duration-300"
             />
-            <div className="absolute top-3 right-3 px-3 py-1 rounded-full neo-inset text-[10px] text-amber-500 font-mono flex items-center gap-1">
-              <Compass className="w-3 h-3" />
-              <span>NORTH ⬆</span>
-            </div>
+            {activeView === 'blueprint' && (
+              <div className="absolute top-3 right-3 px-3 py-1 rounded-full neo-inset text-[10px] text-amber-500 font-mono flex items-center gap-1">
+                <Compass className="w-3 h-3" />
+                <span>NORTH ⬆</span>
+              </div>
+            )}
           </div>
 
           <div className="mt-4 px-2 flex flex-wrap items-center justify-between gap-2 text-xs text-sub-color">

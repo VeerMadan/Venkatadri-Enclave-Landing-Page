@@ -255,9 +255,15 @@ export const WHY_INVEST = [
 export const GALLERY_ITEMS = [
   {
     src: "/images/grand-entrance.jpg",
-    title: "Grand Entrance Plaza",
+    title: "Grand Entrance Plaza & Archway",
     category: "Architecture",
     subtitle: "Majestic security gateway with architectural lighting and palm boulevard"
+  },
+  {
+    src: "/images/grand-entrance-panoramic.jpg",
+    title: "Panoramic Sunset Boulevard",
+    category: "Corridor View",
+    subtitle: "Expansive wide-angle view of the landscaped entrance corridor and boulevard"
   },
   {
     src: "/images/master-layout-plan.jpg",
