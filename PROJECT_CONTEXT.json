@@ -1,0 +1,96 @@
+﻿{
+  "project": {
+    "name": "MVK VENKATADRI ENCLAVE",
+    "developer": "MVK Builders & Developers LLP",
+    "slogan": "Build Better With MVK",
+    "website": "https://www.mvkdevelopers.com",
+    "salesEmail": "sales@mvkdevelopers.com",
+    "salesPhone": "+91 99000 90049",
+    "salesPhoneRaw": "9900090049",
+    "whatsappUrl": "https://wa.me/919900090049",
+    "address": {
+      "full": "Bagaluru Main Road, Yelahanka, Bengaluru - 560064",
+      "short": "Bagaluru Main Road, Yelahanka",
+      "pincode": "560064",
+      "city": "Bengaluru",
+      "state": "Karnataka",
+      "country": "India"
+    },
+    "metrics": {
+      "projectSize": "6 Acres Gated Community",
+      "totalPlots": 111,
+      "availablePhase1": 55,
+      "baseRatePerSqFt": 7699,
+      "roadWidth": "30 Ft Wide Concrete Avenues",
+      "gateways": "3 Dedicated Grand Gateways"
+    },
+    "approvals": [
+      "HPA Approved (Hoskote Planning Authority)",
+      "BMRDA Approved (Bangalore Metropolitan Region Development Authority)",
+      "100% Clear Titles with Individual A & E Khata",
+      "Immediate Registration & Bank Loan Eligible"
+    ]
+  },
+  "deployment": {
+    "repository": "https://github.com/VeerMadan/Venkatadri-Enclave-Landing-Page.git",
+    "branch": "main",
+    "productionUrl": "https://venkatadri-enclave-landing-page.vercel.app/",
+    "adminPortalUrl": "https://venkatadri-enclave-landing-page.vercel.app/admin-portal/"
+  },
+  "adminSecurity": {
+    "portalRoute": "/admin-portal/",
+    "passcode": "MVK@enclave123",
+    "sessionTokenKey": "mvk_admin_auth_token",
+    "sessionTokenValue": "mvk_secure_session_token_granted",
+    "storageKey": "mvk_plot_inventory_v1",
+    "syncEventName": "mvk_inventory_updated"
+  },
+  "techStack": {
+    "frontend": "React 19",
+    "buildTool": "Vite 8",
+    "styling": "Tailwind CSS v4",
+    "animations": "Framer Motion 13",
+    "icons": "Lucide React",
+    "fx": "canvas-confetti",
+    "fonts": ["Outfit", "Cinzel", "Playfair Display"]
+  },
+  "themeConfig": {
+    "defaultTheme": "light",
+    "storageKey": "venkatadri_theme",
+    "lightBackground": "#FAF9F6",
+    "darkBackground": "#06090B",
+    "accentColor": "#F59E0B"
+  },
+  "componentsMap": {
+    "Navbar": "src/components/Navbar.jsx",
+    "Hero": "src/components/Hero.jsx",
+    "ProjectStats": "src/components/ProjectStats.jsx",
+    "Pillars": "src/components/Pillars.jsx",
+    "PlotConfigurations": "src/components/PlotConfigurations.jsx",
+    "InteractivePlotSelector": "src/components/InteractivePlotSelector.jsx",
+    "PriceCalculator": "src/components/PriceCalculator.jsx",
+    "MasterPlanViewer": "src/components/MasterPlanViewer.jsx",
+    "Amenities": "src/components/Amenities.jsx",
+    "LocationMatrix": "src/components/LocationMatrix.jsx",
+    "WhyInvest": "src/components/WhyInvest.jsx",
+    "Gallery": "src/components/Gallery.jsx",
+    "ContactSection": "src/components/ContactSection.jsx",
+    "Footer": "src/components/Footer.jsx",
+    "StickyMobileBar": "src/components/StickyMobileBar.jsx",
+    "LeadModal": "src/components/LeadModal.jsx",
+    "AmbientBackground": "src/components/AmbientBackground.jsx",
+    "AdminDashboard": "admin-portal/src/AdminDashboard.jsx"
+  },
+  "heroAnimationBehavior": {
+    "onLoad": "Grand entrance gate image is zoomed in (scale 1.28) with zero text and zero gradient visible; a glowing 'Scroll to Enter' pill pulses at bottom.",
+    "onScroll": "Image smoothly zooms out (1.28 -> 1.0), gradient veil fades in, and approval badge, gold typography, 4 metric cards, and CTAs float upwards and fade into view.",
+    "performance": "120 FPS hardware compositor transforms only (scale, translate3d, opacity) with zero CPU/GPU filter re-rasters."
+  },
+  "mobileUxRules": [
+    "Plot Matrix grid has max-h-[65vh] with internal scrolling to prevent page bloat.",
+    "Pillars carousel uses compact cards (w-[72vw] max-w-[280px]).",
+    "Location Matrix uses a compact scrollable list instead of wide horizontal swipe.",
+    "Why Invest uses a 2x2 grid on mobile.",
+    "Bottom navigation is elevated as a floating glass bubble island (bottom-4)."
+  ]
+}
