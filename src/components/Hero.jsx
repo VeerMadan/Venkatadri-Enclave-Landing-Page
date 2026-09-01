@@ -6,31 +6,32 @@ import { PROJECT_INFO } from '../data/projectData';
 export default function Hero({ onOpenModal }) {
   const containerRef = useRef(null);
 
-  // Direct GPU-accelerated scroll progress
+  // Direct GPU-accelerated scroll progress tracking through the 200vh container
   const { scrollYProgress } = useScroll({
     target: containerRef,
-    offset: ["start start", "end start"]
+    offset: ["start start", "end end"]
   });
 
-  // Background Image Zoom-Out (Starts zoomed in on the gate, zooms out to reveal full panorama on scroll)
-  const imageScale = useTransform(scrollYProgress, [0, 0.65], [1.28, 1.0]);
-  const imageY = useTransform(scrollYProgress, [0, 0.65], ["-2%", "0%"]);
+  // Background Image Zoom-Out (Starts zoomed into gate at 1.35, smoothly zooms out to 1.0)
+  const imageScale = useTransform(scrollYProgress, [0, 0.6], [1.35, 1.0]);
+  const imageY = useTransform(scrollYProgress, [0, 0.6], ["-3%", "0%"]);
 
-  // Theme-Adaptive Gradient Veil (Fades in from 0 on scroll to provide luxury readability backdrop)
+  // Theme-Adaptive Gradient Veil (Fades in from bottom to provide frosted contrast)
   const overlayOpacity = useTransform(scrollYProgress, [0.08, 0.55], [0, 1]);
+  const overlayY = useTransform(scrollYProgress, [0.08, 0.55], ["20%", "0%"]);
 
-  // Foreground Hero Content (Text, Cards, CTAs fade and slide in from below as you scroll)
-  const contentOpacity = useTransform(scrollYProgress, [0.12, 0.55], [0, 1]);
-  const contentY = useTransform(scrollYProgress, [0.12, 0.55], [50, 0]);
-  const contentScale = useTransform(scrollYProgress, [0.12, 0.55], [0.94, 1.0]);
-  const pointerEvents = useTransform(scrollYProgress, (v) => (v > 0.25 ? "auto" : "none"));
+  // Foreground Hero Content (Text, Cards, CTAs rise up and fade in)
+  const contentOpacity = useTransform(scrollYProgress, [0.18, 0.6], [0, 1]);
+  const contentY = useTransform(scrollYProgress, [0.18, 0.6], [70, 0]);
+  const contentScale = useTransform(scrollYProgress, [0.18, 0.6], [0.92, 1.0]);
+  const pointerEvents = useTransform(scrollYProgress, (v) => (v > 0.3 ? "auto" : "none"));
 
-  // Initial Scroll Cue Indicator (Visible on load, dissolves immediately upon scrolling)
-  const hintOpacity = useTransform(scrollYProgress, [0, 0.15], [1, 0]);
-  const hintY = useTransform(scrollYProgress, [0, 0.15], [0, -15]);
+  // Initial Scroll Cue Indicator (Fades out immediately as user scrolls)
+  const hintOpacity = useTransform(scrollYProgress, [0, 0.12], [1, 0]);
+  const hintY = useTransform(scrollYProgress, [0, 0.12], [0, -15]);
 
   return (
-    <div ref={containerRef} className="relative h-[165vh] sm:h-[180vh] w-full">
+    <div ref={containerRef} className="relative h-[200vh] sm:h-[220vh] w-full">
       {/* Sticky Viewport Stage */}
       <section 
         id="overview" 
@@ -48,10 +49,13 @@ export default function Hero({ onOpenModal }) {
             className="w-full h-full object-cover object-center origin-center transform-gpu will-change-transform"
           />
 
-          {/* Theme-Adaptive Gradient Veil (Fades in on scroll to frame text & cards) */}
+          {/* Theme-Adaptive Gradient Veil (Fades and rises up from bottom on scroll to frame text & cards) */}
           <motion.div
-            style={{ opacity: overlayOpacity }}
-            className="absolute inset-0 bg-gradient-to-t from-[var(--bg-page)] via-[var(--bg-page)]/85 to-[var(--bg-page)]/25 transition-colors duration-300 pointer-events-none will-change-opacity"
+            style={{ 
+              opacity: overlayOpacity,
+              y: overlayY 
+            }}
+            className="absolute inset-0 bg-gradient-to-t from-[var(--bg-page)] via-[var(--bg-page)]/85 to-[var(--bg-page)]/25 transition-colors duration-300 pointer-events-none will-change-transform will-change-opacity transform-gpu"
           />
 
           {/* Subtle Radial Vignette for Clean Contrast */}
