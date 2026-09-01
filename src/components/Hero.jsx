@@ -6,33 +6,31 @@ import { PROJECT_INFO } from '../data/projectData';
 export default function Hero({ onOpenModal }) {
   const containerRef = useRef(null);
 
-  // Direct GPU-accelerated scroll progress (Zero extra RAF overhead)
+  // Direct GPU-accelerated scroll progress
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start start", "end start"]
   });
 
-  // Foreground Content Transformations (Pure GPU compositor properties: translate3d, opacity, scale)
-  const contentY = useTransform(scrollYProgress, [0, 0.5], [0, -110]);
-  const contentOpacity = useTransform(scrollYProgress, [0, 0.38], [1, 0]);
-  const contentScale = useTransform(scrollYProgress, [0, 0.4], [1, 0.94]);
-  const pointerEvents = useTransform(scrollYProgress, (v) => (v > 0.35 ? "none" : "auto"));
+  // Background Image Zoom-Out (Starts zoomed in on the gate, zooms out to reveal full panorama on scroll)
+  const imageScale = useTransform(scrollYProgress, [0, 0.65], [1.28, 1.0]);
+  const imageY = useTransform(scrollYProgress, [0, 0.65], ["-2%", "0%"]);
 
-  // Background Veil Dissolve
-  const overlayOpacity = useTransform(scrollYProgress, [0, 0.5], [1, 0.15]);
+  // Theme-Adaptive Gradient Veil (Fades in from 0 on scroll to provide luxury readability backdrop)
+  const overlayOpacity = useTransform(scrollYProgress, [0.08, 0.55], [0, 1]);
 
-  // Background Image Zoom & Illumination (Direct GPU scale & translation)
-  const imageScale = useTransform(scrollYProgress, [0, 0.8], [1.0, 1.14]);
-  const imageY = useTransform(scrollYProgress, [0, 0.8], ["0%", "-2.5%"]);
+  // Foreground Hero Content (Text, Cards, CTAs fade and slide in from below as you scroll)
+  const contentOpacity = useTransform(scrollYProgress, [0.12, 0.55], [0, 1]);
+  const contentY = useTransform(scrollYProgress, [0.12, 0.55], [50, 0]);
+  const contentScale = useTransform(scrollYProgress, [0.12, 0.55], [0.94, 1.0]);
+  const pointerEvents = useTransform(scrollYProgress, (v) => (v > 0.25 ? "auto" : "none"));
 
-  // Sunrise Glow Bloom (Hardware accelerated opacity)
-  const glowOpacity = useTransform(scrollYProgress, [0.05, 0.45, 0.8], [0, 0.65, 0.25]);
-
-  // Scroll Hint Indicator
-  const hintOpacity = useTransform(scrollYProgress, [0, 0.1], [1, 0]);
+  // Initial Scroll Cue Indicator (Visible on load, dissolves immediately upon scrolling)
+  const hintOpacity = useTransform(scrollYProgress, [0, 0.15], [1, 0]);
+  const hintY = useTransform(scrollYProgress, [0, 0.15], [0, -15]);
 
   return (
-    <div ref={containerRef} className="relative h-[135vh] sm:h-[145vh] w-full">
+    <div ref={containerRef} className="relative h-[165vh] sm:h-[180vh] w-full">
       {/* Sticky Viewport Stage */}
       <section 
         id="overview" 
@@ -50,25 +48,17 @@ export default function Hero({ onOpenModal }) {
             className="w-full h-full object-cover object-center origin-center transform-gpu will-change-transform"
           />
 
-          {/* Golden Sunrise Glow */}
-          <motion.div
-            style={{ opacity: glowOpacity }}
-            className="absolute inset-0 flex items-center justify-center pointer-events-none transform-gpu translate-z-0 will-change-transform"
-          >
-            <div className="w-[80vw] max-w-[600px] h-[80vw] max-h-[600px] rounded-full bg-gradient-to-tr from-amber-500/35 via-amber-300/25 to-orange-400/20 blur-[70px] pointer-events-none" />
-          </motion.div>
-
-          {/* Theme-Adaptive Gradient Veil (Dissolves upward on scroll) */}
+          {/* Theme-Adaptive Gradient Veil (Fades in on scroll to frame text & cards) */}
           <motion.div
             style={{ opacity: overlayOpacity }}
             className="absolute inset-0 bg-gradient-to-t from-[var(--bg-page)] via-[var(--bg-page)]/85 to-[var(--bg-page)]/25 transition-colors duration-300 pointer-events-none will-change-opacity"
           />
 
-          {/* Subtle Radial Vignette for Contrast */}
+          {/* Subtle Radial Vignette for Clean Contrast */}
           <div className="absolute inset-0 bg-radial from-transparent via-transparent to-black/25 pointer-events-none" />
         </div>
 
-        {/* Floating Foreground Content Stage */}
+        {/* Floating Foreground Content Stage (Fades & slides in on scroll) */}
         <motion.div
           style={{
             y: contentY,
@@ -190,19 +180,25 @@ export default function Hero({ onOpenModal }) {
 
         </motion.div>
 
-        {/* Elegant Scroll Cue Pill (Fades away as you scroll) */}
+        {/* Initial Gate View Cue Pill (Visible on load, fades on scroll) */}
         <motion.div
-          style={{ opacity: hintOpacity }}
-          className="absolute bottom-5 sm:bottom-6 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-1 pointer-events-none"
+          style={{
+            opacity: hintOpacity,
+            y: hintY
+          }}
+          className="absolute bottom-8 sm:bottom-10 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-2 pointer-events-none"
         >
-          <span className="text-[10px] font-medium tracking-widest uppercase text-sub-color/80 flex items-center gap-1">
-            <Sparkles className="w-3 h-3 text-amber-500" /> Scroll to Explore
-          </span>
+          <div className="px-4 py-2 rounded-full glass-panel border border-amber-400/30 backdrop-blur-md flex items-center gap-2 shadow-xl">
+            <span className="w-2 h-2 rounded-full bg-amber-400 animate-ping"></span>
+            <span className="text-[11px] font-bold tracking-wider uppercase text-main-color flex items-center gap-1.5">
+              <Sparkles className="w-3.5 h-3.5 text-amber-500" /> Scroll to Enter
+            </span>
+          </div>
           <motion.div
-            animate={{ y: [0, 5, 0] }}
-            transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}
+            animate={{ y: [0, 6, 0] }}
+            transition={{ repeat: Infinity, duration: 1.4, ease: "easeInOut" }}
           >
-            <ChevronDown className="w-4 h-4 text-amber-500" />
+            <ChevronDown className="w-4 h-4 text-amber-400" />
           </motion.div>
         </motion.div>
 
