@@ -1,4 +1,4 @@
-﻿{
+{
   "project": {
     "name": "MVK VENKATADRI ENCLAVE",
     "developer": "MVK Builders & Developers LLP",
@@ -82,9 +82,9 @@
     "AdminDashboard": "admin-portal/src/AdminDashboard.jsx"
   },
   "heroAnimationBehavior": {
-    "onLoad": "Grand entrance gate image is zoomed in (scale 1.28) with zero text and zero gradient visible; a glowing 'Scroll to Enter' pill pulses at bottom.",
-    "onScroll": "Image smoothly zooms out (1.28 -> 1.0), gradient veil fades in, and approval badge, gold typography, 4 metric cards, and CTAs float upwards and fade into view.",
-    "performance": "120 FPS hardware compositor transforms only (scale, translate3d, opacity) with zero CPU/GPU filter re-rasters."
+    "onLoad": "Grand entrance gate image is zoomed in (scale 1.26) with zero text and zero gradient visible; a glowing 'Scroll to Enter' pill pulses at bottom.",
+    "onScroll": "Image smoothly zooms out (1.26 -> 1.0 by progress 0.38), gradient veil fades in, and approval badge, gold typography, 4 metric cards, and CTAs float upwards and fade into view. From 0.38 to 0.82, a rock-solid reading dwell zone keeps all metrics locked and interactive (~900px scroll travel). From 0.82 to 1.0, a graceful upward exit softens into the next section.",
+    "performance": "120 FPS hardware compositor transforms only (scale, translate3d, opacity) with Framer Motion useSpring smoothing for buttery trackpad/wheel physics."
   },
   "mobileUxRules": [
     "Plot Matrix grid has max-h-[65vh] with internal scrolling to prevent page bloat.",

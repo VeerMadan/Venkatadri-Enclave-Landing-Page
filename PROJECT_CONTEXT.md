@@ -1,4 +1,4 @@
-﻿# MVK VENKATADRI ENCLAVE — Comprehensive Project Blueprint & AI Context
+# MVK VENKATADRI ENCLAVE — Comprehensive Project Blueprint & AI Context
 
 > **Project Name**: MVK Venkatadri Enclave Landing Page & Admin Control System  
 > **Client / Developer**: MVK Builders & Developers LLP (*"Build Better With MVK"*)  
@@ -139,4 +139,4 @@ npm run preview
 3. **Contact Details**: Official number set to `+91 99000 90049`, WhatsApp set to `https://wa.me/919900090049`, address set to `Bagaluru Main Road, Yelahanka, Bengaluru - 560064`.
 4. **Mobile UX Overhaul**: Fixed layout overlap bugs by removing sticky overlays on mobile; constrained long lists; elevated bottom mobile nav into floating glass bubble island.
 5. **GPU Performance Optimization**: Removed heavy full-screen SVG noise turbulence shaders and dynamic image filter calculations; switched to 120 FPS hardware compositor transforms (`translate3d`, `scale`, `opacity`).
-6. **Cinematic Gate Intro**: Configured Hero to start zoomed into the grand entrance arch with zero text on initial load, zooming out and dissolving the content into view on scroll.
+6. **Cinematic Gate Intro & Refined Curve**: Configured Hero to start zoomed into the grand entrance arch with zero text on initial load (`scale: 1.26`), zooming out to 1.0 by progress `0.38` while text, gradient, and 4 metric cards float into view. Extended container runway to `270vh/310vh` with a rock-solid reading dwell window (`0.38 -> 0.82`, ~900px of scroll) and a smooth upward exit handoff (`0.82 -> 1.0`), smoothed with Framer Motion `useSpring`.
