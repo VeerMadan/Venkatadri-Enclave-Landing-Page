@@ -53,15 +53,16 @@ export default function StickyMobileBar({ onOpenModal }) {
             <span>WhatsApp</span>
           </motion.a>
 
-          <motion.button
+          <motion.a
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.92 }}
-            onClick={() => onOpenModal('brochure')}
+            href="/v-e_brochure.pdf"
+            download="MVK_Venkatadri_Enclave_Brochure.pdf"
             className="flex-1 py-2 px-1 rounded-full glass-panel text-sub-color flex flex-col items-center justify-center text-[9.5px] font-semibold border border-white/10"
           >
             <Download className="w-3.5 h-3.5 text-amber-500 mb-0.5" />
             <span>Brochure</span>
-          </motion.button>
+          </motion.a>
 
           <motion.button
             whileHover={{ scale: 1.05 }}

@@ -186,15 +186,16 @@ export default function Hero({ onOpenModal }) {
               <ArrowRight className="w-3.5 h-3.5" />
             </motion.button>
 
-            <motion.button
+            <motion.a
+              href="/v-e_brochure.pdf"
+              download="MVK_Venkatadri_Enclave_Brochure.pdf"
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.95 }}
-              onClick={() => onOpenModal('brochure')}
               className="px-4 sm:px-5 py-2.5 rounded-full glass-panel text-main-color font-semibold text-xs sm:text-sm flex items-center gap-1.5 cursor-pointer hover:border-amber-400/40 shadow-sm"
             >
               <Download className="w-3.5 h-3.5 text-amber-500" />
               <span>Download Brochure</span>
-            </motion.button>
+            </motion.a>
           </div>
 
           {/* Minimalist Trust Badges */}
