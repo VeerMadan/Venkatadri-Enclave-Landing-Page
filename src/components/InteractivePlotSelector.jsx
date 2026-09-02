@@ -13,14 +13,22 @@ import {
   calculateEMI
 } from '../data/plotInventoryData';
 
-export default function InteractivePlotSelector({ onOpenModal }) {
+export default function InteractivePlotSelector({ onOpenModal, initialTypeFilter = 'all' }) {
   const [inventory, setInventory] = useState([]);
   const [selectedPlotId, setSelectedPlotId] = useState(1);
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('all'); // all, available, booked, sold
-  const [typeFilter, setTypeFilter] = useState('all'); // all, 30x40, 30x45, 30x50, corner, odd
+  const [typeFilter, setTypeFilter] = useState(initialTypeFilter || 'all'); // all, 30x40, 30x45, 30x50, odd
   const [facingFilter, setFacingFilter] = useState('all'); // all, East, West, North
+  const [sortBy, setSortBy] = useState('number'); // number, price_asc, price_desc, size_asc, size_desc
   const [viewMode, setViewMode] = useState('matrix'); // matrix, blueprint, list
+
+  // Sync with initialTypeFilter from parent
+  useEffect(() => {
+    if (initialTypeFilter && initialTypeFilter !== 'all') {
+      setTypeFilter(initialTypeFilter);
+    }
+  }, [initialTypeFilter]);
 
   // Sync inventory with central database and listen for real-time admin updates
   useEffect(() => {
@@ -59,23 +67,43 @@ export default function InteractivePlotSelector({ onOpenModal }) {
     return { total, available, booked, sold, availablePercent };
   }, [inventory]);
 
-  // Filtered plots
+  // Filtered & Sorted plots
   const filteredPlots = useMemo(() => {
-    return inventory.filter(plot => {
+    let result = inventory.filter(plot => {
       if (searchQuery.trim()) {
         const q = searchQuery.trim().toLowerCase();
         const matchesNum = plot.number.toString().includes(q) || plot.plotNo.toLowerCase().includes(q);
-        const matchesBlock = plot.block.toLowerCase().includes(q);
-        const matchesDim = plot.dimensions.toLowerCase().includes(q);
+        const matchesBlock = (plot.block || '').toLowerCase().includes(q);
+        const matchesDim = (plot.dimensions || '').toLowerCase().includes(q);
         if (!matchesNum && !matchesBlock && !matchesDim) return false;
       }
       if (statusFilter !== 'all' && plot.status !== statusFilter) return false;
-      if (typeFilter !== 'all' && plot.type !== typeFilter) return false;
+      if (typeFilter !== 'all') {
+        if (typeFilter === 'odd' && (plot.type === 'odd' || plot.type === 'corner')) {
+          // match odd/corner
+        } else if (plot.type !== typeFilter) {
+          return false;
+        }
+      }
       if (facingFilter !== 'all' && !plot.facing.toLowerCase().includes(facingFilter.toLowerCase())) return false;
 
       return true;
     });
-  }, [inventory, searchQuery, statusFilter, typeFilter, facingFilter]);
+
+    if (sortBy === 'price_asc') {
+      result.sort((a, b) => a.totalPrice - b.totalPrice);
+    } else if (sortBy === 'price_desc') {
+      result.sort((a, b) => b.totalPrice - a.totalPrice);
+    } else if (sortBy === 'size_asc') {
+      result.sort((a, b) => a.areaSqFt - b.areaSqFt);
+    } else if (sortBy === 'size_desc') {
+      result.sort((a, b) => b.areaSqFt - a.areaSqFt);
+    } else {
+      result.sort((a, b) => a.number - b.number);
+    }
+
+    return result;
+  }, [inventory, searchQuery, statusFilter, typeFilter, facingFilter, sortBy]);
 
   // Currently selected plot
   const selectedPlot = useMemo(() => {
@@ -120,28 +148,28 @@ export default function InteractivePlotSelector({ onOpenModal }) {
     }
   };
 
-  // Group plots by Avenue Blocks for Matrix View
+  // Group plots by Blueprint Avenues for Matrix View
   const avenueBlocks = useMemo(() => {
     return [
       {
-        name: 'Block A: North Boulevard',
-        subtitle: '30 Ft North Avenue • High Appreciation',
-        plots: filteredPlots.filter(p => p.block === 'North Boulevard')
+        name: 'Avenue 1: West Crescent (Entry 1)',
+        subtitle: 'Plots 76–111 • Dedicated Entry 1 Gateway & Avenue',
+        plots: filteredPlots.filter(p => (p.number >= 76 && p.number <= 111))
       },
       {
-        name: 'Block B: Central Park Avenue',
-        subtitle: 'Park-Facing & Children Play Zone',
-        plots: filteredPlots.filter(p => p.block === 'Central Park Avenue')
+        name: 'Avenue 2: Central Boulevard (Entry 2)',
+        subtitle: 'Plots 44–75 • Central 30 Ft Avenue & Grand Promenade',
+        plots: filteredPlots.filter(p => (p.number >= 44 && p.number <= 75))
       },
       {
-        name: 'Block C: South Greens Enclave',
-        subtitle: 'Tree-Lined Avenues & Maximum Privacy',
-        plots: filteredPlots.filter(p => p.block === 'South Greens Enclave')
+        name: 'Avenue 3: Park Promenade (Entry 3)',
+        subtitle: 'Plots 30–43 & 7–20 • Immediate North Park Zone (A) Access',
+        plots: filteredPlots.filter(p => (p.number >= 30 && p.number <= 43) || (p.number >= 7 && p.number <= 20))
       },
       {
-        name: 'Block D: East Gate Crescent',
-        subtitle: 'Grand Gateway Access & Corner Plots',
-        plots: filteredPlots.filter(p => p.block === 'East Gate Crescent')
+        name: 'Avenue 4: CA & Eastern Enclave',
+        subtitle: 'Plots 1–6 & 21–29 • Adjacent to Civic Amenities & Entry 3',
+        plots: filteredPlots.filter(p => (p.number >= 1 && p.number <= 6) || (p.number >= 21 && p.number <= 29))
       }
     ];
   }, [filteredPlots]);
@@ -286,86 +314,123 @@ export default function InteractivePlotSelector({ onOpenModal }) {
 
         </div>
 
-        {/* Filter Chips Bar */}
-        <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 mb-6 pb-2 border-b border-theme-subtle">
-          <span className="text-[10px] uppercase font-bold text-sub-color tracking-wider flex items-center gap-1 mr-1">
-            <Filter className="w-3 h-3 text-amber-500" /> Filter:
-          </span>
+        {/* Filter & Sort Bar */}
+        <div className="flex flex-wrap items-center justify-between gap-3 mb-6 pb-3 border-b border-theme-subtle">
+          <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
+            <span className="text-[10px] uppercase font-bold text-sub-color tracking-wider flex items-center gap-1 mr-1">
+              <Filter className="w-3 h-3 text-amber-500" /> Filter:
+            </span>
 
-          {/* Status Chips */}
-          <div className="flex items-center gap-1">
-            {[
-              { id: 'all', label: 'All' },
-              { id: 'available', label: 'Available', dot: 'bg-emerald-500' },
-              { id: 'booked', label: 'Booked', dot: 'bg-amber-500' },
-              { id: 'sold', label: 'Sold', dot: 'bg-rose-500' }
-            ].map(item => (
+            {/* Status Chips */}
+            <div className="flex items-center gap-1">
+              {[
+                { id: 'all', label: 'All' },
+                { id: 'available', label: 'Available', dot: 'bg-emerald-500' },
+                { id: 'booked', label: 'Booked', dot: 'bg-amber-500' },
+                { id: 'sold', label: 'Sold', dot: 'bg-rose-500' }
+              ].map(item => (
+                <button
+                  key={item.id}
+                  onClick={() => setStatusFilter(item.id)}
+                  className={`px-2.5 py-1 rounded-full text-[11px] font-medium transition-all cursor-pointer flex items-center gap-1.5 ${
+                    statusFilter === item.id
+                      ? 'bg-amber-400 text-slate-950 font-bold shadow-sm'
+                      : 'glass-panel text-sub-color hover:text-main-color hover:border-amber-400/30'
+                  }`}
+                >
+                  {item.dot && <span className={`w-1.5 h-1.5 rounded-full ${item.dot}`}></span>}
+                  <span>{item.label}</span>
+                </button>
+              ))}
+            </div>
+
+            <span className="text-slate-300 dark:text-slate-700 hidden sm:inline">|</span>
+
+            {/* Blueprint Dimensions Chips */}
+            <div className="flex flex-wrap items-center gap-1">
+              {[
+                { id: 'all', label: 'All Sizes' },
+                { id: '30x40', label: '30 × 40' },
+                { id: '30x45', label: '30 × 45' },
+                { id: '30x50', label: '30 × 50' },
+                { id: 'odd', label: 'Odd Plots' }
+              ].map(item => (
+                <button
+                  key={item.id}
+                  onClick={() => setTypeFilter(item.id)}
+                  className={`px-2.5 py-1 rounded-full text-[11px] font-medium transition-all cursor-pointer ${
+                    typeFilter === item.id
+                      ? 'bg-amber-400 text-slate-950 font-bold shadow-sm'
+                      : 'glass-panel text-sub-color hover:text-main-color hover:border-amber-400/30'
+                  }`}
+                >
+                  {item.label}
+                </button>
+              ))}
+            </div>
+
+            <span className="text-slate-300 dark:text-slate-700 hidden sm:inline">|</span>
+
+            {/* Facing Chips */}
+            <div className="flex items-center gap-1">
+              {[
+                { id: 'all', label: 'All Facing' },
+                { id: 'East', label: 'East' },
+                { id: 'West', label: 'West' }
+              ].map(item => (
+                <button
+                  key={item.id}
+                  onClick={() => setFacingFilter(item.id)}
+                  className={`px-2.5 py-1 rounded-full text-[11px] font-medium transition-all cursor-pointer ${
+                    facingFilter === item.id
+                      ? 'bg-amber-400 text-slate-950 font-bold shadow-sm'
+                      : 'glass-panel text-sub-color hover:text-main-color hover:border-amber-400/30'
+                  }`}
+                >
+                  {item.label}
+                </button>
+              ))}
+            </div>
+
+            {/* Reset Filters button if any filter is active */}
+            {(statusFilter !== 'all' || typeFilter !== 'all' || facingFilter !== 'all' || searchQuery || sortBy !== 'number') && (
               <button
-                key={item.id}
-                onClick={() => setStatusFilter(item.id)}
-                className={`px-2.5 py-1 rounded-full text-[11px] font-medium transition-all cursor-pointer flex items-center gap-1.5 ${
-                  statusFilter === item.id
-                    ? 'bg-amber-400 text-slate-950 font-bold shadow-sm'
-                    : 'glass-panel text-sub-color hover:text-main-color'
-                }`}
+                onClick={() => {
+                  setStatusFilter('all');
+                  setTypeFilter('all');
+                  setFacingFilter('all');
+                  setSearchQuery('');
+                  setSortBy('number');
+                }}
+                className="px-2.5 py-1 rounded-full text-[10.5px] font-semibold text-rose-400 bg-rose-500/10 hover:bg-rose-500/20 transition-all flex items-center gap-1 cursor-pointer ml-1"
+                title="Reset All Filters"
               >
-                {item.dot && <span className={`w-1.5 h-1.5 rounded-full ${item.dot}`}></span>}
-                <span>{item.label}</span>
+                <X className="w-3 h-3" />
+                <span>Reset</span>
               </button>
-            ))}
+            )}
           </div>
 
-          <span className="text-slate-300 dark:text-slate-700 hidden sm:inline">|</span>
-
-          {/* Size Chips */}
-          <div className="flex flex-wrap items-center gap-1">
-            {[
-              { id: 'all', label: 'All Sizes' },
-              { id: '30x40', label: '30 × 40' },
-              { id: '30x45', label: '30 × 45' },
-              { id: '30x50', label: '30 × 50' },
-              { id: 'corner', label: 'Corner' }
-            ].map(item => (
-              <button
-                key={item.id}
-                onClick={() => setTypeFilter(item.id)}
-                className={`px-2.5 py-1 rounded-full text-[11px] font-medium transition-all cursor-pointer ${
-                  typeFilter === item.id
-                    ? 'bg-amber-400 text-slate-950 font-bold shadow-sm'
-                    : 'glass-panel text-sub-color hover:text-main-color'
-                }`}
+          {/* Right: Sort By Dropdown & Count */}
+          <div className="flex items-center gap-3 text-xs">
+            <div className="flex items-center gap-1.5">
+              <span className="text-[10px] uppercase font-bold text-sub-color tracking-wider">Sort:</span>
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+                className="px-2.5 py-1 rounded-lg neo-inset text-main-color text-xs focus:outline-none focus:border-amber-500/50 bg-page-main cursor-pointer"
               >
-                {item.label}
-              </button>
-            ))}
-          </div>
+                <option value="number">Plot # (1 to 111)</option>
+                <option value="price_asc">Price: Low to High</option>
+                <option value="price_desc">Price: High to Low</option>
+                <option value="size_asc">Size: Small to Large</option>
+                <option value="size_desc">Size: Large to Small</option>
+              </select>
+            </div>
 
-          <span className="text-slate-300 dark:text-slate-700 hidden sm:inline">|</span>
-
-          {/* Facing Chips */}
-          <div className="flex items-center gap-1">
-            {[
-              { id: 'all', label: 'All Facing' },
-              { id: 'East', label: 'East' },
-              { id: 'West', label: 'West' }
-            ].map(item => (
-              <button
-                key={item.id}
-                onClick={() => setFacingFilter(item.id)}
-                className={`px-2.5 py-1 rounded-full text-[11px] font-medium transition-all cursor-pointer ${
-                  facingFilter === item.id
-                    ? 'bg-amber-400 text-slate-950 font-bold shadow-sm'
-                    : 'glass-panel text-sub-color hover:text-main-color'
-                }`}
-              >
-                {item.label}
-              </button>
-            ))}
-          </div>
-
-          {/* Result Count */}
-          <div className="ml-auto text-[11px] text-sub-color">
-            <strong className="text-main-color">{filteredPlots.length}</strong> / 111
+            <div className="text-[11px] text-sub-color pl-2 border-l border-theme-subtle">
+              <strong className="text-main-color font-mono">{filteredPlots.length}</strong> / 111
+            </div>
           </div>
         </div>
 

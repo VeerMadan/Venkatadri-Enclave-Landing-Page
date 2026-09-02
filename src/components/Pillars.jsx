@@ -2,7 +2,7 @@ import React from 'react';
 import { Users, Compass, HeartHandshake, ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 
-export default function Pillars({ onOpenModal }) {
+export default function Pillars({ onOpenModal, onOpenLayoutModal }) {
   const pillars = [
     {
       title: "Community",
@@ -83,7 +83,7 @@ export default function Pillars({ onOpenModal }) {
                   </p>
 
                   <button
-                    onClick={() => onOpenModal('visit')}
+                    onClick={() => onOpenLayoutModal ? onOpenLayoutModal() : onOpenModal('brochure')}
                     className="text-xs font-semibold text-amber-500 hover:text-amber-600 flex items-center gap-1 group-hover:translate-x-1 transition-transform cursor-pointer"
                   >
                     <span>View Layout</span>

@@ -16,6 +16,8 @@ export default function Navbar({ onOpenModal }) {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  const [hoveredLink, setHoveredLink] = useState(null);
+
   const links = [
     { label: "Overview", href: "#overview" },
     { label: "Plot Matrix", href: "#plot-finder" },
@@ -51,15 +53,29 @@ export default function Navbar({ onOpenModal }) {
           </span>
         </a>
 
-        {/* Minimalist Desktop Nav */}
-        <nav className="hidden md:flex items-center gap-5 text-xs tracking-wide font-medium text-sub-color">
+        {/* Minimalist Desktop Nav with Sliding Underline Animation */}
+        <nav 
+          onMouseLeave={() => setHoveredLink(null)}
+          className="hidden md:flex items-center gap-5 text-xs tracking-wide font-medium text-sub-color"
+        >
           {links.map((link) => (
             <a
               key={link.label}
               href={link.href}
-              className="hover:text-amber-500 transition-colors duration-150"
+              onMouseEnter={() => setHoveredLink(link.label)}
+              className="relative py-1 text-sub-color hover:text-main-color transition-colors duration-150"
             >
-              {link.label}
+              <span>{link.label}</span>
+              {hoveredLink === link.label && (
+                <motion.span
+                  layoutId="navbar-underline"
+                  className="absolute -bottom-0.5 left-0 right-0 h-[2px] bg-gradient-to-r from-amber-400 via-amber-300 to-amber-500 rounded-full shadow-[0_0_8px_rgba(245,158,11,0.6)]"
+                  initial={{ scaleX: 0, opacity: 0 }}
+                  animate={{ scaleX: 1, opacity: 1 }}
+                  exit={{ scaleX: 0, opacity: 0 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                />
+              )}
             </a>
           ))}
         </nav>

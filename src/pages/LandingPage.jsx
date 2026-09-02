@@ -17,6 +17,8 @@ import ContactSection from '../components/ContactSection';
 import Footer from '../components/Footer';
 import StickyMobileBar from '../components/StickyMobileBar';
 import LeadModal from '../components/LeadModal';
+import LayoutDetailsModal from '../components/LayoutDetailsModal';
+import GoogleMapsModal from '../components/GoogleMapsModal';
 
 export default function LandingPage() {
   const [modalState, setModalState] = useState({
@@ -24,6 +26,10 @@ export default function LandingPage() {
     type: 'brochure',
     context: ''
   });
+
+  const [isLayoutModalOpen, setIsLayoutModalOpen] = useState(false);
+  const [selectedLocationForMap, setSelectedLocationForMap] = useState(null);
+  const [matrixPlotTypeFilter, setMatrixPlotTypeFilter] = useState('all');
 
   const handleOpenModal = (type = 'brochure', context = '') => {
     setModalState({
@@ -57,13 +63,29 @@ export default function LandingPage() {
       <main>
         <Hero onOpenModal={handleOpenModal} />
         <ProjectStats onOpenModal={handleOpenModal} />
-        <Pillars onOpenModal={handleOpenModal} />
-        <PlotConfigurations onOpenModal={handleOpenModal} />
-        <InteractivePlotSelector onOpenModal={handleOpenModal} />
+        <Pillars 
+          onOpenModal={handleOpenModal} 
+          onOpenLayoutModal={() => setIsLayoutModalOpen(true)} 
+        />
+        <PlotConfigurations 
+          onOpenModal={handleOpenModal} 
+          onOpenLayoutModal={() => setIsLayoutModalOpen(true)} 
+        />
+        <InteractivePlotSelector 
+          onOpenModal={handleOpenModal}
+          initialTypeFilter={matrixPlotTypeFilter}
+        />
         <PriceCalculator onOpenModal={handleOpenModal} />
-        <MasterPlanViewer onOpenModal={handleOpenModal} />
-        <Amenities onOpenModal={handleOpenModal} />
-        <LocationMatrix onOpenModal={handleOpenModal} />
+        <MasterPlanViewer 
+          onOpenModal={handleOpenModal} 
+          onSelectPlotType={(type) => setMatrixPlotTypeFilter(type)}
+        />
+        <Amenities 
+          onSelectLocation={(loc) => setSelectedLocationForMap(loc)} 
+        />
+        <LocationMatrix 
+          onSelectLocation={(loc) => setSelectedLocationForMap(loc)} 
+        />
         <WhyInvest onOpenModal={handleOpenModal} />
         <Gallery onOpenModal={handleOpenModal} />
         <ContactSection onOpenModal={handleOpenModal} />
@@ -81,6 +103,19 @@ export default function LandingPage() {
         onClose={handleCloseModal}
         initialType={modalState.type}
         contextData={modalState.context}
+      />
+
+      {/* Layout Details Dossier Modal */}
+      <LayoutDetailsModal
+        isOpen={isLayoutModalOpen}
+        onClose={() => setIsLayoutModalOpen(false)}
+      />
+
+      {/* Interactive Google Maps Proximity Modal */}
+      <GoogleMapsModal
+        isOpen={!!selectedLocationForMap}
+        onClose={() => setSelectedLocationForMap(null)}
+        locationItem={selectedLocationForMap}
       />
     </div>
   );

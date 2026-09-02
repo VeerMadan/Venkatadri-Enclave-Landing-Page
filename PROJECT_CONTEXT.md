@@ -140,3 +140,15 @@ npm run preview
 4. **Mobile UX Overhaul**: Fixed layout overlap bugs by removing sticky overlays on mobile; constrained long lists; elevated bottom mobile nav into floating glass bubble island.
 5. **GPU Performance Optimization**: Removed heavy full-screen SVG noise turbulence shaders and dynamic image filter calculations; switched to 120 FPS hardware compositor transforms (`translate3d`, `scale`, `opacity`).
 6. **Cinematic Gate Intro & Refined Curve**: Configured Hero to start zoomed into the grand entrance arch with zero text on initial load (`scale: 1.26`), zooming out to 1.0 by progress `0.38` while text, gradient, and 4 metric cards float into view. Extended container runway to `270vh/310vh` with a rock-solid reading dwell window (`0.38 -> 0.82`, ~900px of scroll) and a smooth upward exit handoff (`0.82 -> 1.0`), smoothed with Framer Motion `useSpring`.
+7. **Comprehensive System Enhancements (September 2026)**:
+   - **Hero Image Upgrade**: Replaced intro image with `Generated Image August 24, 2026 - 2_25PM.jpg`.
+   - **CAD Blueprint Dataset Alignment**: 100% mapped to certified CAD drawing (`media_1788344501577.jpg`): 30x50 (Plots 24–28), 30x45 (Plots 22–23), Odd Plots (1–6, 13, 14, 21, 29, 30, 57, 58, 75, 76, 93, 94, 111), and 30x40 (all remaining). Upgraded storage key to `mvk_venkatadri_inventory_v2`.
+   - **Leads CRM Engine**: Created `src/data/leadsData.js` storing incoming inquiries in `mvk_leads_db_v1`, with live event broadcasting (`mvk_lead_created`), status workflow (*New / Contacted / Visit Scheduled / Closed*), direct call/WhatsApp triggers, and 1-click CSV/Excel export.
+   - **Rate Limiting & Phone Validation**: Strict Indian mobile validation (`/^[6-9]\d{9}$/`), numeric input masking, and client-side rate limiting (max 3 bookings/24 hours).
+   - **Dedicated Layout Dossier Modal**: Replaced misleading visit prompt on "View Layout" buttons with `LayoutDetailsModal.jsx`, showcasing the certified blueprint drawing with zoom/pan, zoning breakdown, and avenue specs.
+   - **Navbar Underline Animation**: Integrated Framer Motion sliding gold underline on desktop navbar with spring physics.
+   - **Simplified Plot Selector**: Added Sort By dropdown, blueprint dimension chips, and an instant reset button.
+   - **Master Plan Legend Interactivity**: Made legend pills clickable with live counts, descriptions, and 1-click filtering in the plot matrix.
+   - **Interactive Google Maps Modal**: Created `GoogleMapsModal.jsx` and connected all location proximity items and amenities cards to live Google Maps embeds and direction links.
+   - **Expanded Admin Control Center**: Upgraded `AdminDashboard.jsx` to a 4-tab console (Plot Inventory CRUD, Leads CRM, Website Content Settings, System & Backup).
+

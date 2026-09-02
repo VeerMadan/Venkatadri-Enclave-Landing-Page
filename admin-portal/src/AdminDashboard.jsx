@@ -4,7 +4,9 @@ import {
   Save, RefreshCw, Search, Filter, Check, X, Edit3, 
   Building2, Sparkles, CheckCircle2, AlertCircle, Database,
   TrendingUp, Layers, Compass, Eye, Sun, Moon, FileSpreadsheet,
-  KeyRound, EyeOff
+  KeyRound, EyeOff, Users, Phone, MessageSquare, Trash2,
+  Settings, Globe, ExternalLink, Calendar, MapPin, DollarSign,
+  Send, Plus, Sliders
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
@@ -15,6 +17,20 @@ import {
   calculateEMI,
   BASE_RATE_PER_SQFT
 } from '../../src/data/plotInventoryData';
+import { 
+  getStoredLeads, 
+  updateLeadStatus, 
+  deleteLead, 
+  exportLeadsToCSV,
+  LEAD_SYNC_EVENT,
+  LEADS_UPDATED_EVENT 
+} from '../../src/data/leadsData';
+import { 
+  getStoredSiteSettings, 
+  saveStoredSiteSettings, 
+  resetStoredSiteSettings,
+  SETTINGS_SYNC_EVENT 
+} from '../../src/data/siteSettings';
 import { useTheme } from '../../src/context/ThemeContext';
 
 // STRICT ADMIN PASSCODE (Only this exact string is permitted)
@@ -28,6 +44,10 @@ export default function AdminDashboard() {
   const [authError, setAuthError] = useState('');
   const [failedAttempts, setFailedAttempts] = useState(0);
 
+  // Active Admin Section Tab
+  const [activeTab, setActiveTab] = useState('inventory'); // 'inventory', 'leads', 'content', 'backup'
+
+  // Inventory State
   const [inventory, setInventory] = useState([]);
   const [selectedPlotId, setSelectedPlotId] = useState(1);
   const [selectedPlotsForBulk, setSelectedPlotsForBulk] = useState([]);
@@ -35,12 +55,23 @@ export default function AdminDashboard() {
   const [statusFilter, setStatusFilter] = useState('all');
   const [blockFilter, setBlockFilter] = useState('all');
   const [typeFilter, setTypeFilter] = useState('all');
-  
+
+  // Leads CRM State
+  const [leads, setLeads] = useState([]);
+  const [leadFilterStatus, setLeadFilterStatus] = useState('all');
+  const [leadSearch, setLeadSearch] = useState('');
+  const [activeLeadNotes, setActiveLeadNotes] = useState({});
+
+  // Site Settings State
+  const [siteSettings, setSiteSettings] = useState(getStoredSiteSettings());
+  const [settingsSaved, setSettingsSaved] = useState(false);
+
+  // Notifications / Modal
   const [toastMessage, setToastMessage] = useState(null);
   const [jsonModalOpen, setJsonModalOpen] = useState(false);
   const [jsonText, setJsonText] = useState('');
 
-  // Check session auth token
+  // Check session auth token on mount
   useEffect(() => {
     const isAuth = sessionStorage.getItem('mvk_admin_auth_token') === 'mvk_secure_session_token_granted';
     if (isAuth) {
@@ -48,10 +79,33 @@ export default function AdminDashboard() {
     }
   }, []);
 
-  // Load inventory
+  // Load inventory, leads, and settings
   useEffect(() => {
-    const data = getStoredInventory();
-    setInventory(data);
+    const loadAll = () => {
+      setInventory(getStoredInventory());
+      setLeads(getStoredLeads());
+      setSiteSettings(getStoredSiteSettings());
+    };
+
+    loadAll();
+
+    const handleInventoryUpdate = () => setInventory(getStoredInventory());
+    const handleLeadsUpdate = () => setLeads(getStoredLeads());
+    const handleSettingsUpdate = () => setSiteSettings(getStoredSiteSettings());
+
+    window.addEventListener('mvk_inventory_updated', handleInventoryUpdate);
+    window.addEventListener(LEADS_UPDATED_EVENT, handleLeadsUpdate);
+    window.addEventListener(LEAD_SYNC_EVENT, handleLeadsUpdate);
+    window.addEventListener(SETTINGS_SYNC_EVENT, handleSettingsUpdate);
+    window.addEventListener('storage', loadAll);
+
+    return () => {
+      window.removeEventListener('mvk_inventory_updated', handleInventoryUpdate);
+      window.removeEventListener(LEADS_UPDATED_EVENT, handleLeadsUpdate);
+      window.removeEventListener(LEAD_SYNC_EVENT, handleLeadsUpdate);
+      window.removeEventListener(SETTINGS_SYNC_EVENT, handleSettingsUpdate);
+      window.removeEventListener('storage', loadAll);
+    };
   }, []);
 
   const showToast = (msg) => {
@@ -66,12 +120,11 @@ export default function AdminDashboard() {
       return;
     }
 
-    // STRICT comparison: ONLY MVK@enclave123 is accepted
     if (passcodeInput === STRICT_ADMIN_PASSCODE) {
       setIsAuthenticated(true);
       sessionStorage.setItem('mvk_admin_auth_token', 'mvk_secure_session_token_granted');
       setAuthError('');
-      showToast('Authenticated: Master Plot Database Loaded');
+      showToast('Authenticated: Master Control Center Loaded');
     } else {
       setFailedAttempts(prev => prev + 1);
       setAuthError(`Access Denied. Incorrect Passcode. (${5 - (failedAttempts + 1)} attempts remaining)`);
@@ -112,50 +165,75 @@ export default function AdminDashboard() {
     };
   }, [inventory]);
 
-  // Update single plot field
-  const handleFieldChange = (field, val) => {
-    setInventory(prev => prev.map(p => {
-      if (p.id === selectedPlotId) {
-        const updated = { ...p, [field]: val };
+  // Filtered inventory
+  const filteredInventory = useMemo(() => {
+    return inventory.filter(p => {
+      if (searchQuery) {
+        const q = searchQuery.toLowerCase();
+        const matchNo = p.number.toString().includes(q) || p.plotNo.toLowerCase().includes(q);
+        const matchBlock = (p.block || '').toLowerCase().includes(q);
+        if (!matchNo && !matchBlock) return false;
+      }
+      if (statusFilter !== 'all' && p.status !== statusFilter) return false;
+      if (blockFilter !== 'all' && p.block !== blockFilter) return false;
+      if (typeFilter !== 'all' && p.type !== typeFilter) return false;
+      return true;
+    });
+  }, [inventory, searchQuery, statusFilter, blockFilter, typeFilter]);
 
-        if (field === 'areaSqFt' || field === 'baseRate') {
-          const area = Number(field === 'areaSqFt' ? val : p.areaSqFt) || 0;
-          const rate = Number(field === 'baseRate' ? val : p.baseRate) || BASE_RATE_PER_SQFT;
-          const price = area * rate;
-          const emi = calculateEMI(price);
-          
-          updated.areaSqFt = area;
-          updated.baseRate = rate;
-          updated.areaSqMt = +(area * 0.092903).toFixed(2);
-          updated.totalPrice = price;
-          updated.formattedPrice = formatINR(price);
-          updated.emiEstimate = emi;
-          updated.formattedEmi = `₹${emi.toLocaleString('en-IN')}/mo`;
+  // Filtered leads
+  const filteredLeads = useMemo(() => {
+    return leads.filter(l => {
+      if (leadFilterStatus !== 'all' && l.status !== leadFilterStatus) return false;
+      if (leadSearch.trim()) {
+        const q = leadSearch.toLowerCase();
+        const matchName = (l.name || '').toLowerCase().includes(q);
+        const matchPhone = (l.phone || '').includes(q);
+        if (!matchName && !matchPhone) return false;
+      }
+      return true;
+    });
+  }, [leads, leadFilterStatus, leadSearch]);
+
+  const newLeadsCount = useMemo(() => {
+    return leads.filter(l => l.status === 'New').length;
+  }, [leads]);
+
+  // Update Individual Plot
+  const handleUpdatePlotStatus = (plotId, newStatus) => {
+    const updated = inventory.map(p => p.id === plotId ? { ...p, status: newStatus } : p);
+    setInventory(updated);
+    saveStoredInventory(updated);
+    showToast(`Plot #${plotId} marked as ${newStatus.toUpperCase()}`);
+  };
+
+  const handleUpdatePlotDetails = (field, value) => {
+    if (!currentPlot) return;
+    let val = value;
+    if (field === 'areaSqFt') val = parseInt(value, 10) || 1200;
+
+    const updated = inventory.map(p => {
+      if (p.id === currentPlot.id) {
+        const newPlot = { ...p, [field]: val };
+        if (field === 'areaSqFt') {
+          newPlot.totalPrice = newPlot.areaSqFt * (newPlot.baseRate || siteSettings.baseRatePerSqFt || 7699);
+          newPlot.formattedPrice = formatINR(newPlot.totalPrice);
+          newPlot.emiEstimate = calculateEMI(newPlot.totalPrice);
+          newPlot.formattedEmi = `₹${newPlot.emiEstimate.toLocaleString('en-IN')}/mo`;
         }
-
-        if (field === 'type') {
-          if (val === '30x40') updated.color = '#EF4444';
-          else if (val === '30x45') updated.color = '#14B8A6';
-          else if (val === '30x50') updated.color = '#3B82F6';
-          else if (val === 'corner') updated.color = '#F59E0B';
-          else if (val === 'odd') updated.color = '#EAB308';
-        }
-
-        return updated;
+        return newPlot;
       }
       return p;
-    }));
+    });
+
+    setInventory(updated);
+    saveStoredInventory(updated);
+    showToast(`Plot #${currentPlot.id} ${field} updated`);
   };
 
-  // Save changes to central database
-  const handleSaveToDatabase = () => {
-    saveStoredInventory(inventory);
-    showToast('Saved & published changes to central database!');
-  };
-
-  // Bulk status change
+  // Bulk Status Update
   const handleBulkStatusChange = (newStatus) => {
-    if (selectedPlotsForBulk.length === 0) return;
+    if (!selectedPlotsForBulk.length) return;
     const updated = inventory.map(p => {
       if (selectedPlotsForBulk.includes(p.id)) {
         return { ...p, status: newStatus };
@@ -165,582 +243,409 @@ export default function AdminDashboard() {
     setInventory(updated);
     saveStoredInventory(updated);
     setSelectedPlotsForBulk([]);
-    showToast(`Updated ${selectedPlotsForBulk.length} plots to ${newStatus.toUpperCase()}`);
+    showToast(`${selectedPlotsForBulk.length} plots updated to ${newStatus.toUpperCase()}`);
   };
 
-  // Bulk rate update
-  const handleBulkRateUpdate = () => {
-    const rateInput = prompt("Enter new Base Rate (₹/Sq.Ft) for selected plots:", "7699");
-    if (!rateInput) return;
-    const newRate = Number(rateInput);
-    if (isNaN(newRate) || newRate <= 0) {
-      alert("Please enter a valid numeric rate.");
-      return;
+  const toggleSelectAll = () => {
+    if (selectedPlotsForBulk.length === filteredInventory.length) {
+      setSelectedPlotsForBulk([]);
+    } else {
+      setSelectedPlotsForBulk(filteredInventory.map(p => p.id));
     }
-
-    const updated = inventory.map(p => {
-      if (selectedPlotsForBulk.length === 0 || selectedPlotsForBulk.includes(p.id)) {
-        const price = p.areaSqFt * newRate;
-        const emi = calculateEMI(price);
-        return {
-          ...p,
-          baseRate: newRate,
-          totalPrice: price,
-          formattedPrice: formatINR(price),
-          emiEstimate: emi,
-          formattedEmi: `₹${emi.toLocaleString('en-IN')}/mo`
-        };
-      }
-      return p;
-    });
-    setInventory(updated);
-    saveStoredInventory(updated);
-    setSelectedPlotsForBulk([]);
-    showToast(`Updated base rate to ₹${newRate}/Sq.Ft`);
   };
 
-  // Export JSON
-  const handleExportJSON = () => {
-    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(inventory, null, 2));
-    const downloadAnchor = document.createElement('a');
-    downloadAnchor.setAttribute("href", dataStr);
-    downloadAnchor.setAttribute("download", `mvk_venkatadri_inventory_master_${new Date().toISOString().slice(0,10)}.json`);
-    document.body.appendChild(downloadAnchor);
-    downloadAnchor.click();
-    downloadAnchor.remove();
-    showToast('Database exported to JSON');
+  // Site Settings Save
+  const handleSaveSettings = (e) => {
+    e.preventDefault();
+    const updated = saveStoredSiteSettings(siteSettings);
+    if (updated) {
+      setSettingsSaved(true);
+      setTimeout(() => setSettingsSaved(false), 3000);
+      showToast('Website Settings Saved & Synchronized Live!');
+    }
   };
 
-  // Export CSV
-  const handleExportCSV = () => {
-    const headers = ["Plot_No", "Block", "Category", "Dimensions", "Area_SqFt", "Area_SqMt", "Facing", "Base_Rate", "Total_Price_INR", "Status", "Road_Width", "Vastu_Note"];
-    const rows = inventory.map(p => [
-      p.number,
-      `"${p.block}"`,
-      p.type,
-      `"${p.dimensions}"`,
-      p.areaSqFt,
-      p.areaSqMt,
-      `"${p.facing}"`,
-      p.baseRate,
-      p.totalPrice,
-      p.status,
-      `"${p.roadWidth}"`,
-      `"${p.vastu || ''}"`
-    ]);
-
-    const csvContent = "data:text/csv;charset=utf-8," + [headers.join(","), ...rows.map(e => e.join(","))].join("\n");
-    const encodedUri = encodeURI(csvContent);
-    const link = document.createElement("a");
-    link.setAttribute("href", encodedUri);
-    link.setAttribute("download", `mvk_venkatadri_plot_inventory_${new Date().toISOString().slice(0,10)}.csv`);
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-    showToast('Database exported to CSV spreadsheet');
+  // Export / Import System Backup
+  const handleExportFullBackup = () => {
+    const fullBackup = {
+      version: '2.0',
+      exportedAt: new Date().toISOString(),
+      siteSettings,
+      inventory,
+      leads
+    };
+    const blob = new Blob([JSON.stringify(fullBackup, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `MVK_Venkatadri_FullBackup_${new Date().toISOString().slice(0, 10)}.json`;
+    a.click();
+    showToast('Full System JSON Backup Downloaded');
   };
 
-  // Reset database
-  const handleReset = () => {
-    if (window.confirm("Are you sure you want to reset all 111 plots to factory baseline data? This cannot be undone.")) {
+  const handleResetToBlueprint = () => {
+    if (window.confirm('Reset all 111 plots to official certified CAD blueprint layout? (Custom manual overrides will be reset)')) {
       const fresh = resetStoredInventory();
       setInventory(fresh);
-      showToast('Database restored to factory baseline');
+      showToast('Inventory Reset to Certified CAD Blueprint');
     }
   };
 
-  // Filter list
-  const filteredPlots = useMemo(() => {
-    return inventory.filter(p => {
-      if (searchQuery.trim()) {
-        const q = searchQuery.toLowerCase();
-        const matchNum = p.number.toString().includes(q) || p.plotNo.toLowerCase().includes(q);
-        const matchBlock = p.block.toLowerCase().includes(q);
-        const matchDim = p.dimensions.toLowerCase().includes(q);
-        if (!matchNum && !matchBlock && !matchDim) return false;
-      }
-      if (statusFilter !== 'all' && p.status !== statusFilter) return false;
-      if (blockFilter !== 'all' && p.block !== blockFilter) return false;
-      if (typeFilter !== 'all' && p.type !== typeFilter) return false;
-      return true;
-    });
-  }, [inventory, searchQuery, statusFilter, blockFilter, typeFilter]);
-
-  // Login Screen (Secure Passcode Gate)
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen bg-page-main text-main-color flex items-center justify-center p-4">
-        <motion.div 
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="max-w-md w-full glass-panel rounded-3xl p-8 border-theme-subtle shadow-2xl space-y-6 text-center"
-        >
-          <div className="w-14 h-14 rounded-2xl bg-amber-500/20 text-amber-500 flex items-center justify-center mx-auto shadow-inner">
-            <KeyRound className="w-7 h-7" />
-          </div>
-
-          <div className="space-y-1">
-            <span className="text-[10px] uppercase font-bold text-amber-500 tracking-widest badge-luxury px-3 py-1 rounded-full">
-              MVK Internal Portal
-            </span>
-            <h2 className="font-serif-luxury text-2xl font-bold text-main-color pt-2">
-              Developer & Admin Portal
-            </h2>
-            <p className="text-xs text-sub-color">
-              Secure Central Inventory & Plot Data Management
+      <div className="min-h-screen bg-[#070a0d] text-slate-100 flex items-center justify-center p-4">
+        <div className="max-w-md w-full glass-panel rounded-3xl p-8 border-theme-subtle shadow-2xl space-y-6">
+          <div className="text-center space-y-2">
+            <div className="w-12 h-12 rounded-2xl bg-amber-500/20 border border-amber-500/30 flex items-center justify-center mx-auto text-amber-400">
+              <ShieldCheck className="w-6 h-6" />
+            </div>
+            <h1 className="font-serif-luxury text-2xl font-bold text-white">
+              MVK <span className="gold-gradient-text">ADMIN PORTAL</span>
+            </h1>
+            <p className="text-xs text-slate-400">
+              Internal Developer & Sales Management Console
             </p>
           </div>
 
-          <form onSubmit={handleLogin} className="space-y-4 text-left">
+          {authError && (
+            <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs flex items-center gap-2">
+              <AlertCircle className="w-4 h-4 shrink-0" />
+              <span>{authError}</span>
+            </div>
+          )}
+
+          <form onSubmit={handleLogin} className="space-y-4">
             <div>
-              <label className="block text-xs font-semibold text-sub-color mb-1.5">
-                Master Security Passcode
+              <label className="block text-[11px] font-medium text-slate-400 mb-1">
+                Admin Passcode
               </label>
               <div className="relative">
                 <input
-                  type={showPassword ? "text" : "password"}
-                  placeholder="Enter master passcode"
+                  type={showPassword ? 'text' : 'password'}
+                  required
+                  autoFocus
+                  placeholder="Enter Secure Passcode"
                   value={passcodeInput}
                   onChange={(e) => setPasscodeInput(e.target.value)}
-                  className="w-full pl-4 pr-10 py-3 rounded-xl neo-inset text-main-color text-xs focus:outline-none focus:border-amber-500/50"
-                  autoFocus
+                  className="w-full px-4 py-2.5 rounded-xl neo-inset bg-black/40 text-white placeholder-slate-500 text-xs focus:outline-none focus:border-amber-500/50 pr-10"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-sub-color hover:text-main-color"
+                  className="absolute right-3 top-2.5 text-slate-400 hover:text-white"
                 >
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
               </div>
-              {authError && (
-                <p className="text-[11px] text-rose-500 mt-2 flex items-center gap-1">
-                  <AlertCircle className="w-3.5 h-3.5 shrink-0" />
-                  <span>{authError}</span>
-                </p>
-              )}
             </div>
 
             <button
               type="submit"
-              className="w-full py-3 bg-gradient-to-r from-amber-400 via-amber-300 to-amber-500 text-slate-950 font-bold text-xs rounded-xl shadow-md hover:brightness-110 flex items-center justify-center gap-1.5 cursor-pointer"
+              className="w-full py-2.5 bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 font-bold text-xs rounded-xl shadow-md hover:brightness-110 cursor-pointer flex items-center justify-center gap-1.5"
             >
               <Unlock className="w-3.5 h-3.5" />
-              <span>Unlock Admin Database</span>
+              <span>Authenticate & Enter Console</span>
             </button>
           </form>
 
-          <div className="pt-2 border-t border-theme-subtle">
-            <a 
-              href="/"
-              className="text-xs text-sub-color hover:text-amber-500 flex items-center justify-center gap-1 transition-colors"
-            >
-              <ArrowLeft className="w-3.5 h-3.5" />
-              <span>Back to Public Landing Page</span>
+          <div className="pt-2 text-center">
+            <a href="/" className="text-xs text-slate-400 hover:text-amber-400 flex items-center justify-center gap-1">
+              <ArrowLeft className="w-3 h-3" />
+              <span>Return to Public Landing Page</span>
             </a>
           </div>
-        </motion.div>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-page-main text-main-color font-sans pb-12">
-      
-      {/* Top Fixed Header */}
-      <header className="sticky top-0 z-40 glass-panel border-b border-theme-subtle px-4 sm:px-8 py-3.5 shadow-md">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-start md:items-center justify-between gap-3">
-          
-          {/* Brand & Title */}
+    <div className="min-h-screen bg-[#070a0d] text-slate-100 font-sans pb-16">
+      {/* Toast */}
+      {toastMessage && (
+        <div className="fixed top-5 right-5 z-50 px-4 py-2.5 rounded-xl bg-emerald-500 text-slate-950 font-bold text-xs shadow-2xl flex items-center gap-2 animate-bounce">
+          <CheckCircle2 className="w-4 h-4" />
+          <span>{toastMessage}</span>
+        </div>
+      )}
+
+      {/* Top Header */}
+      <header className="sticky top-0 z-40 bg-[#070a0d]/90 backdrop-blur-md border-b border-white/10 px-4 sm:px-8 py-3">
+        <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-amber-500/20 text-amber-500 flex items-center justify-center font-bold font-serif-luxury shadow-inner">
+            <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-amber-500 to-amber-300 flex items-center justify-center text-slate-950 font-bold font-serif-luxury text-sm">
               M
             </div>
             <div>
-              <div className="flex items-center gap-2">
-                <h1 className="font-serif-luxury text-base sm:text-lg font-bold text-main-color">
-                  Plot Inventory Master Database
-                </h1>
-                <span className="text-[9.5px] px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-500 font-bold border border-emerald-500/30">
-                  LIVE SYNC ACTIVE
-                </span>
-              </div>
-              <p className="text-[11px] text-sub-color">
-                MVK Venkatadri Enclave • 6 Acres • 111 Plots
+              <h1 className="font-serif-luxury text-sm sm:text-base font-bold text-white tracking-wider flex items-center gap-2">
+                VENKATADRI <span className="text-amber-400">ADMIN CONTROL</span>
+              </h1>
+              <p className="text-[10px] text-slate-400">
+                Live Inventory & Leads Engine • HPA & BMRDA Approved
               </p>
             </div>
           </div>
 
-          {/* Quick Global Actions */}
-          <div className="flex items-center gap-2 w-full md:w-auto justify-between md:justify-end">
+          {/* Tab Navigation Pill Bar */}
+          <div className="flex items-center gap-1 p-1 rounded-full bg-black/40 border border-white/10 text-xs">
+            <button
+              onClick={() => setActiveTab('inventory')}
+              className={`px-3 py-1.5 rounded-full font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${
+                activeTab === 'inventory' ? 'bg-amber-400 text-slate-950 font-bold shadow' : 'text-slate-300 hover:text-white'
+              }`}
+            >
+              <Building2 className="w-3.5 h-3.5" />
+              <span>Inventory</span>
+            </button>
+
+            <button
+              onClick={() => setActiveTab('leads')}
+              className={`px-3 py-1.5 rounded-full font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${
+                activeTab === 'leads' ? 'bg-amber-400 text-slate-950 font-bold shadow' : 'text-slate-300 hover:text-white'
+              }`}
+            >
+              <Users className="w-3.5 h-3.5" />
+              <span>Leads CRM</span>
+              {newLeadsCount > 0 && (
+                <span className="w-4 h-4 rounded-full bg-rose-500 text-white text-[9px] font-bold flex items-center justify-center">
+                  {newLeadsCount}
+                </span>
+              )}
+            </button>
+
+            <button
+              onClick={() => setActiveTab('content')}
+              className={`px-3 py-1.5 rounded-full font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${
+                activeTab === 'content' ? 'bg-amber-400 text-slate-950 font-bold shadow' : 'text-slate-300 hover:text-white'
+              }`}
+            >
+              <Settings className="w-3.5 h-3.5" />
+              <span>Content & Copy</span>
+            </button>
+
+            <button
+              onClick={() => setActiveTab('backup')}
+              className={`px-3 py-1.5 rounded-full font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${
+                activeTab === 'backup' ? 'bg-amber-400 text-slate-950 font-bold shadow' : 'text-slate-300 hover:text-white'
+              }`}
+            >
+              <TrendingUp className="w-3.5 h-3.5" />
+              <span>Analytics & Backup</span>
+            </button>
+          </div>
+
+          <div className="flex items-center gap-2">
             <a
               href="/"
               target="_blank"
-              rel="noreferrer"
-              className="px-3 py-1.5 rounded-xl glass-panel text-xs font-semibold text-sub-color hover:text-main-color flex items-center gap-1.5 transition-all"
+              className="px-3 py-1.5 rounded-full text-xs font-semibold text-amber-400 hover:text-amber-300 border border-amber-400/30 flex items-center gap-1"
             >
-              <Eye className="w-3.5 h-3.5 text-amber-500" />
-              <span>View Landing Page ↗</span>
+              <Globe className="w-3.5 h-3.5" />
+              <span>View Live Site</span>
             </a>
-
-            <button
-              onClick={toggleTheme}
-              className="p-2 rounded-xl glass-panel text-sub-color hover:text-main-color"
-            >
-              {theme === 'dark' ? <Sun className="w-3.5 h-3.5" /> : <Moon className="w-3.5 h-3.5" />}
-            </button>
-
-            <button
-              onClick={handleSaveToDatabase}
-              className="px-4 py-1.5 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 font-bold text-xs shadow hover:brightness-110 flex items-center gap-1.5 cursor-pointer"
-            >
-              <Save className="w-3.5 h-3.5" />
-              <span>Save & Publish</span>
-            </button>
-
             <button
               onClick={handleLogout}
-              className="p-2 rounded-xl glass-panel text-rose-400 hover:text-rose-300 text-xs"
+              className="p-1.5 rounded-full text-slate-400 hover:text-rose-400 cursor-pointer"
               title="Logout"
             >
-              <Lock className="w-3.5 h-3.5" />
+              <Lock className="w-4 h-4" />
             </button>
           </div>
-
         </div>
       </header>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-8 pt-6 space-y-6">
-        
-        {/* Executive KPI Stats Cards */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3.5">
-          <div className="glass-panel rounded-2xl p-4 border-theme-subtle space-y-1">
-            <span className="text-[10.5px] uppercase font-bold text-sub-color tracking-wider">Total Layout Value</span>
-            <p className="text-xl sm:text-2xl font-black text-main-color font-serif-luxury">
-              {formatINR(analytics.totalValuation)}
-            </p>
-            <p className="text-[10px] text-sub-color">111 Total Villa Plots</p>
-          </div>
+      {/* Main Tab Views */}
+      <main className="max-w-7xl mx-auto px-4 sm:px-8 pt-6 space-y-6">
 
-          <div className="glass-panel rounded-2xl p-4 border-emerald-500/30 space-y-1 bg-emerald-500/[0.03]">
-            <span className="text-[10.5px] uppercase font-bold text-emerald-500 tracking-wider">Available Pipeline</span>
-            <p className="text-xl sm:text-2xl font-black text-emerald-500 font-serif-luxury">
-              {formatINR(analytics.availableValuation)}
-            </p>
-            <p className="text-[10px] text-emerald-500/80 font-bold">{analytics.availableCount} Plots Available for Sale</p>
-          </div>
-
-          <div className="glass-panel rounded-2xl p-4 border-amber-500/30 space-y-1 bg-amber-500/[0.03]">
-            <span className="text-[10.5px] uppercase font-bold text-amber-500 tracking-wider">Booked Under Token</span>
-            <p className="text-xl sm:text-2xl font-black text-amber-500 font-serif-luxury">
-              {formatINR(analytics.bookedValuation)}
-            </p>
-            <p className="text-[10px] text-amber-500/80 font-bold">{analytics.bookedCount} Plots in Legal Verification</p>
-          </div>
-
-          <div className="glass-panel rounded-2xl p-4 border-rose-500/30 space-y-1 bg-rose-500/[0.03]">
-            <span className="text-[10.5px] uppercase font-bold text-rose-400 tracking-wider">Sold & Registered</span>
-            <p className="text-xl sm:text-2xl font-black text-rose-400 font-serif-luxury">
-              {formatINR(analytics.soldValuation)}
-            </p>
-            <p className="text-[10px] text-rose-400/80 font-bold">{analytics.soldCount} Plots Registered to Owners</p>
-          </div>
-        </div>
-
-        {/* Database Toolbar & Action Center */}
-        <div className="glass-panel rounded-2xl p-4 border-theme-subtle space-y-3">
-          
-          <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
-            
-            {/* Search */}
-            <div className="relative flex-1 max-w-md">
-              <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-sub-color" />
-              <input
-                type="text"
-                placeholder="Search plot #, block name, dimension..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-8 pr-8 py-2 rounded-xl neo-inset text-main-color text-xs focus:outline-none placeholder-slate-400"
-              />
-              {searchQuery && (
-                <button onClick={() => setSearchQuery('')} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-sub-color">
-                  <X className="w-3 h-3" />
-                </button>
-              )}
-            </div>
-
-            {/* Export & Reset Tools */}
-            <div className="flex items-center gap-2 flex-wrap">
-              <button
-                onClick={handleExportCSV}
-                className="px-3 py-1.5 rounded-xl glass-panel text-xs text-sub-color hover:text-main-color flex items-center gap-1 cursor-pointer"
-                title="Export CSV for Excel"
-              >
-                <FileSpreadsheet className="w-3.5 h-3.5 text-emerald-500" />
-                <span>Export CSV</span>
-              </button>
-
-              <button
-                onClick={handleExportJSON}
-                className="px-3 py-1.5 rounded-xl glass-panel text-xs text-sub-color hover:text-main-color flex items-center gap-1 cursor-pointer"
-                title="Export JSON"
-              >
-                <Download className="w-3.5 h-3.5 text-amber-500" />
-                <span>Export JSON</span>
-              </button>
-
-              <button
-                onClick={() => {
-                  setJsonText(JSON.stringify(inventory, null, 2));
-                  setJsonModalOpen(true);
-                }}
-                className="px-3 py-1.5 rounded-xl glass-panel text-xs text-sub-color hover:text-main-color flex items-center gap-1 cursor-pointer"
-              >
-                <Upload className="w-3.5 h-3.5" />
-                <span>Import JSON</span>
-              </button>
-
-              <button
-                onClick={handleReset}
-                className="px-3 py-1.5 rounded-xl text-xs text-rose-400 hover:bg-rose-500/10 flex items-center gap-1 cursor-pointer"
-              >
-                <RefreshCw className="w-3.5 h-3.5" />
-                <span>Reset Defaults</span>
-              </button>
-            </div>
-
-          </div>
-
-          {/* Filter Dropdowns & Bulk Actions Bar */}
-          <div className="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-theme-subtle text-xs">
-            
-            <div className="flex flex-wrap items-center gap-2">
-              <span className="text-sub-color font-bold uppercase text-[10px]">Filter By:</span>
-
-              {/* Status Select */}
-              <select
-                value={statusFilter}
-                onChange={(e) => setStatusFilter(e.target.value)}
-                className="px-2.5 py-1 rounded-lg neo-inset text-main-color text-xs bg-page-main"
-              >
-                <option value="all">All Status</option>
-                <option value="available">🟢 Available ({analytics.availableCount})</option>
-                <option value="booked">🟡 Booked ({analytics.bookedCount})</option>
-                <option value="sold">🔴 Sold ({analytics.soldCount})</option>
-              </select>
-
-              {/* Block Select */}
-              <select
-                value={blockFilter}
-                onChange={(e) => setBlockFilter(e.target.value)}
-                className="px-2.5 py-1 rounded-lg neo-inset text-main-color text-xs bg-page-main"
-              >
-                <option value="all">All Blocks</option>
-                <option value="North Boulevard">Block A: North Boulevard</option>
-                <option value="Central Park Avenue">Block B: Central Park Avenue</option>
-                <option value="South Greens Enclave">Block C: South Greens Enclave</option>
-                <option value="East Gate Crescent">Block D: East Gate Crescent</option>
-              </select>
-
-              {/* Footprint Select */}
-              <select
-                value={typeFilter}
-                onChange={(e) => setTypeFilter(e.target.value)}
-                className="px-2.5 py-1 rounded-lg neo-inset text-main-color text-xs bg-page-main"
-              >
-                <option value="all">All Footprints</option>
-                <option value="30x40">30 × 40 (1,200 SqFt)</option>
-                <option value="30x45">30 × 45 (1,350 SqFt)</option>
-                <option value="30x50">30 × 50 (1,500 SqFt)</option>
-                <option value="corner">Corner Plots</option>
-                <option value="odd">Odd Plots</option>
-              </select>
-            </div>
-
-            {/* Bulk Batch Actions */}
-            {selectedPlotsForBulk.length > 0 && (
-              <div className="flex items-center gap-2 p-1 px-2 rounded-xl bg-amber-500/10 border border-amber-500/30">
-                <span className="text-[11px] font-bold text-amber-500">
-                  {selectedPlotsForBulk.length} Selected:
-                </span>
-                
-                <button
-                  onClick={() => handleBulkStatusChange('available')}
-                  className="px-2 py-0.5 rounded bg-emerald-500 text-white text-[10px] font-bold"
-                >
-                  Mark Available
-                </button>
-
-                <button
-                  onClick={() => handleBulkStatusChange('booked')}
-                  className="px-2 py-0.5 rounded bg-amber-500 text-slate-950 text-[10px] font-bold"
-                >
-                  Mark Booked
-                </button>
-
-                <button
-                  onClick={() => handleBulkStatusChange('sold')}
-                  className="px-2 py-0.5 rounded bg-rose-500 text-white text-[10px] font-bold"
-                >
-                  Mark Sold
-                </button>
-
-                <button
-                  onClick={handleBulkRateUpdate}
-                  className="px-2 py-0.5 rounded glass-panel text-main-color text-[10px] font-bold"
-                >
-                  Update Rate
-                </button>
+        {/* ========================================================================= */}
+        {/* TAB 1: PLOT INVENTORY CRUD                                                */}
+        {/* ========================================================================= */}
+        {activeTab === 'inventory' && (
+          <div className="space-y-6">
+            {/* Quick Metrics Bar */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              <div className="glass-panel rounded-2xl p-4 border-theme-subtle">
+                <span className="text-[10px] text-slate-400 uppercase font-medium">Total Plots</span>
+                <p className="text-xl font-bold text-white font-mono mt-0.5">{analytics.totalCount}</p>
+                <span className="text-[10px] text-amber-400">6.0 Acre Layout</span>
               </div>
-            )}
+              <div className="glass-panel rounded-2xl p-4 border-theme-subtle">
+                <span className="text-[10px] text-emerald-400 uppercase font-medium">Available</span>
+                <p className="text-xl font-bold text-emerald-400 font-mono mt-0.5">{analytics.availableCount}</p>
+                <span className="text-[10px] text-slate-400">{formatINR(analytics.availableValuation)} Value</span>
+              </div>
+              <div className="glass-panel rounded-2xl p-4 border-theme-subtle">
+                <span className="text-[10px] text-amber-400 uppercase font-medium">Booked</span>
+                <p className="text-xl font-bold text-amber-400 font-mono mt-0.5">{analytics.bookedCount}</p>
+                <span className="text-[10px] text-slate-400">{formatINR(analytics.bookedValuation)} Booked</span>
+              </div>
+              <div className="glass-panel rounded-2xl p-4 border-theme-subtle">
+                <span className="text-[10px] text-rose-400 uppercase font-medium">Sold Out</span>
+                <p className="text-xl font-bold text-rose-400 font-mono mt-0.5">{analytics.soldCount}</p>
+                <span className="text-[10px] text-slate-400">{formatINR(analytics.soldValuation)} Realized</span>
+              </div>
+            </div>
 
-          </div>
+            {/* Inventory Controls & Filters */}
+            <div className="glass-panel rounded-2xl p-4 border-theme-subtle flex flex-wrap items-center justify-between gap-3">
+              <div className="flex flex-wrap items-center gap-2">
+                <div className="relative">
+                  <Search className="w-3.5 h-3.5 absolute left-3 top-2.5 text-slate-400" />
+                  <input
+                    type="text"
+                    placeholder="Search Plot # or Avenue..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="pl-8 pr-3 py-1.5 rounded-xl neo-inset bg-black/40 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-500/50 w-48 sm:w-60"
+                  />
+                </div>
 
-        </div>
+                {/* Status Filter */}
+                <select
+                  value={statusFilter}
+                  onChange={(e) => setStatusFilter(e.target.value)}
+                  className="px-3 py-1.5 rounded-xl neo-inset bg-black/40 text-xs text-white focus:outline-none focus:border-amber-500/50 cursor-pointer"
+                >
+                  <option value="all">All Status</option>
+                  <option value="available">Available ({analytics.availableCount})</option>
+                  <option value="booked">Booked ({analytics.bookedCount})</option>
+                  <option value="sold">Sold ({analytics.soldCount})</option>
+                </select>
 
-        {/* Main Work Area: Inventory Table + Side Inspector Form */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-          
-          {/* Left Column: Data Grid / Table (7 cols) */}
-          <div className="lg:col-span-7 glass-panel rounded-3xl p-4 border-theme-subtle space-y-3">
-            
-            <div className="flex items-center justify-between pb-2 border-b border-theme-subtle text-xs">
+                {/* Dimension Filter */}
+                <select
+                  value={typeFilter}
+                  onChange={(e) => setTypeFilter(e.target.value)}
+                  className="px-3 py-1.5 rounded-xl neo-inset bg-black/40 text-xs text-white focus:outline-none focus:border-amber-500/50 cursor-pointer"
+                >
+                  <option value="all">All Dimensions</option>
+                  <option value="30x40">30 × 40 (85 Plots)</option>
+                  <option value="30x45">30 × 45 (2 Plots)</option>
+                  <option value="30x50">30 × 50 (5 Plots)</option>
+                  <option value="odd">Odd Plots (19 Plots)</option>
+                </select>
+              </div>
+
+              {/* Bulk Actions */}
               <div className="flex items-center gap-2">
                 <button
-                  onClick={() => {
-                    if (selectedPlotsForBulk.length === filteredPlots.length) {
-                      setSelectedPlotsForBulk([]);
-                    } else {
-                      setSelectedPlotsForBulk(filteredPlots.map(p => p.id));
-                    }
-                  }}
-                  className="text-[10px] font-semibold text-sub-color hover:text-amber-500 cursor-pointer"
+                  onClick={toggleSelectAll}
+                  className="px-3 py-1.5 rounded-xl glass-panel text-xs text-slate-300 hover:text-white cursor-pointer"
                 >
-                  {selectedPlotsForBulk.length === filteredPlots.length ? 'Deselect All' : 'Select All Visible'}
+                  {selectedPlotsForBulk.length === filteredInventory.length ? 'Deselect All' : 'Select All Filtered'}
                 </button>
-                <span className="text-sub-color">•</span>
-                <span className="text-sub-color">Showing {filteredPlots.length} plots</span>
-              </div>
 
-              <span className="text-[10px] text-amber-500 font-semibold">Click a row to edit details</span>
-            </div>
-
-            {/* Scrollable Table */}
-            <div className="overflow-x-auto max-h-[600px] scrollbar-thin">
-              <table className="w-full text-left text-xs">
-                <thead className="sticky top-0 bg-page-main border-b border-theme-subtle text-sub-color uppercase text-[9.5px]">
-                  <tr>
-                    <th className="p-2 w-8">#</th>
-                    <th className="p-2">Plot</th>
-                    <th className="p-2">Block</th>
-                    <th className="p-2">Footprint</th>
-                    <th className="p-2">Area</th>
-                    <th className="p-2">Price</th>
-                    <th className="p-2">Status</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-theme-subtle">
-                  {filteredPlots.map(plot => {
-                    const isSelected = selectedPlotId === plot.id;
-                    const isChecked = selectedPlotsForBulk.includes(plot.id);
-
-                    return (
-                      <tr
-                        key={plot.id}
-                        onClick={() => setSelectedPlotId(plot.id)}
-                        className={`cursor-pointer transition-colors ${
-                          isSelected ? 'bg-amber-500/20 font-semibold' : 'hover:bg-black/5 dark:hover:bg-white/5'
-                        }`}
-                      >
-                        <td className="p-2" onClick={(e) => e.stopPropagation()}>
-                          <input
-                            type="checkbox"
-                            checked={isChecked}
-                            onChange={(e) => {
-                              if (e.target.checked) {
-                                setSelectedPlotsForBulk(prev => [...prev, plot.id]);
-                              } else {
-                                setSelectedPlotsForBulk(prev => prev.filter(id => id !== plot.id));
-                              }
-                            }}
-                            className="accent-amber-500 cursor-pointer"
-                          />
-                        </td>
-                        <td className="p-2 font-mono font-bold text-main-color">
-                          #{plot.number}
-                        </td>
-                        <td className="p-2 text-sub-color text-[11px]">{plot.block}</td>
-                        <td className="p-2">
-                          <span 
-                            className="px-1.5 py-0.2 rounded text-[9px] font-bold text-white shadow-sm"
-                            style={{ backgroundColor: plot.color }}
-                          >
-                            {plot.dimensions}
-                          </span>
-                        </td>
-                        <td className="p-2 font-mono text-main-color text-[11px]">{plot.areaSqFt} SqFt</td>
-                        <td className="p-2 font-mono text-amber-500 font-bold text-[11px]">
-                          {plot.formattedPrice}
-                        </td>
-                        <td className="p-2">
-                          <span className={`px-2 py-0.5 rounded-full text-[9px] font-bold uppercase ${
-                            plot.status === 'available' ? 'bg-emerald-500/10 text-emerald-500' :
-                            plot.status === 'booked' ? 'bg-amber-500/10 text-amber-500' : 'bg-rose-500/10 text-rose-400'
-                          }`}>
-                            {plot.status}
-                          </span>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
-
-          </div>
-
-          {/* Right Column: Detailed Plot Inspector Form (5 cols) */}
-          <div className="lg:col-span-5 sticky top-24 space-y-4">
-            {currentPlot ? (
-              <div className="glass-panel rounded-3xl p-5 border-theme-subtle shadow-xl space-y-4">
-                
-                <div className="flex items-center justify-between pb-3 border-b border-theme-subtle">
-                  <div>
-                    <span className="text-[10px] uppercase font-bold text-amber-500 tracking-wider">
-                      Plot Information Dossier
-                    </span>
-                    <h3 className="font-serif-luxury text-xl font-bold text-main-color">
-                      {currentPlot.plotNo} ({currentPlot.dimensions})
-                    </h3>
+                {selectedPlotsForBulk.length > 0 && (
+                  <div className="flex items-center gap-1.5 bg-black/60 px-2 py-1 rounded-xl border border-white/10">
+                    <span className="text-[11px] text-amber-400 font-bold px-1">{selectedPlotsForBulk.length} Selected:</span>
+                    <button
+                      onClick={() => handleBulkStatusChange('available')}
+                      className="px-2 py-1 rounded text-[10px] font-bold bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/30"
+                    >
+                      Available
+                    </button>
+                    <button
+                      onClick={() => handleBulkStatusChange('booked')}
+                      className="px-2 py-1 rounded text-[10px] font-bold bg-amber-500/20 text-amber-400 hover:bg-amber-500/30"
+                    >
+                      Booked
+                    </button>
+                    <button
+                      onClick={() => handleBulkStatusChange('sold')}
+                      className="px-2 py-1 rounded text-[10px] font-bold bg-rose-500/20 text-rose-400 hover:bg-rose-500/30"
+                    >
+                      Sold
+                    </button>
                   </div>
+                )}
+              </div>
+            </div>
 
-                  <div className="text-right">
-                    <span className={`px-2.5 py-0.5 rounded-full text-xs font-bold uppercase ${
-                      currentPlot.status === 'available' ? 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/30' :
-                      currentPlot.status === 'booked' ? 'bg-amber-500/10 text-amber-500 border border-amber-500/30' : 'bg-rose-500/10 text-rose-400 border border-rose-500/30'
-                    }`}>
-                      {currentPlot.status}
-                    </span>
+            {/* Layout Matrix & Detail Inspector Grid */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+              {/* Plot Tiles Grid (8 cols) */}
+              <div className="lg:col-span-8 glass-panel rounded-3xl p-5 border-theme-subtle">
+                <div className="flex items-center justify-between pb-3 border-b border-white/10 mb-4 text-xs text-slate-400">
+                  <span>Showing {filteredInventory.length} of 111 Plots</span>
+                  <div className="flex items-center gap-3 text-[10.5px]">
+                    <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-emerald-500"></span> Available</span>
+                    <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-amber-500"></span> Booked</span>
+                    <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-rose-500"></span> Sold</span>
                   </div>
                 </div>
 
-                {/* Form Fields */}
+                <div className="grid grid-cols-5 sm:grid-cols-8 md:grid-cols-10 gap-2 max-h-[60vh] overflow-y-auto pr-1 scrollbar-thin">
+                  {filteredInventory.map(plot => {
+                    const isSelected = selectedPlotId === plot.id;
+                    const isChecked = selectedPlotsForBulk.includes(plot.id);
+                    const statusBg = plot.status === 'available'
+                      ? 'border-emerald-500/40 bg-emerald-500/10 text-emerald-400'
+                      : plot.status === 'booked'
+                      ? 'border-amber-500/40 bg-amber-500/10 text-amber-400'
+                      : 'border-rose-500/40 bg-rose-500/10 text-rose-400';
+
+                    return (
+                      <div
+                        key={plot.id}
+                        onClick={() => setSelectedPlotId(plot.id)}
+                        className={`relative rounded-xl p-2 text-center border transition-all cursor-pointer select-none group ${statusBg} ${
+                          isSelected ? 'ring-2 ring-amber-400 scale-105 z-10 shadow-lg' : 'hover:scale-102'
+                        }`}
+                      >
+                        <input
+                          type="checkbox"
+                          checked={isChecked}
+                          onChange={(e) => {
+                            e.stopPropagation();
+                            if (isChecked) {
+                              setSelectedPlotsForBulk(prev => prev.filter(id => id !== plot.id));
+                            } else {
+                              setSelectedPlotsForBulk(prev => [...prev, plot.id]);
+                            }
+                          }}
+                          className="absolute top-1 left-1 w-3 h-3 accent-amber-400 cursor-pointer"
+                        />
+                        <div className="text-xs font-mono font-bold mt-1">#{plot.number}</div>
+                        <div className="text-[9px] opacity-75 truncate">{plot.dimensions.split(' ')[0]}</div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Individual Plot Editor (4 cols) */}
+              <div className="lg:col-span-4 glass-panel rounded-3xl p-5 border-theme-subtle space-y-4">
+                <div className="flex items-center justify-between pb-3 border-b border-white/10">
+                  <div className="flex items-center gap-2">
+                    <span className="w-3 h-3 rounded-full" style={{ backgroundColor: currentPlot?.color }}></span>
+                    <h3 className="text-base font-bold text-white font-mono">
+                      Plot #{currentPlot?.number}
+                    </h3>
+                  </div>
+                  <span className={`px-2.5 py-0.5 rounded-full text-[10.5px] font-bold uppercase ${
+                    currentPlot?.status === 'available' ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' :
+                    currentPlot?.status === 'booked' ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30' :
+                    'bg-rose-500/20 text-rose-400 border border-rose-500/30'
+                  }`}>
+                    {currentPlot?.status}
+                  </span>
+                </div>
+
                 <div className="space-y-3 text-xs">
-                  
-                  {/* Status Toggle Radio */}
+                  {/* Status Toggle Buttons */}
                   <div>
-                    <label className="block text-sub-color font-semibold mb-1">Status on Live Site</label>
+                    <label className="block text-[11px] text-slate-400 mb-1">Set Status</label>
                     <div className="grid grid-cols-3 gap-1.5">
                       {['available', 'booked', 'sold'].map(st => (
                         <button
                           key={st}
-                          type="button"
-                          onClick={() => handleFieldChange('status', st)}
-                          className={`py-1.5 rounded-xl text-xs font-bold uppercase transition-all cursor-pointer ${
+                          onClick={() => handleUpdatePlotStatus(currentPlot.id, st)}
+                          className={`py-1.5 rounded-xl font-bold text-xs uppercase transition-all cursor-pointer ${
                             currentPlot.status === st
-                              ? st === 'available' ? 'bg-emerald-500 text-white shadow' :
-                                st === 'booked' ? 'bg-amber-500 text-slate-950 shadow' : 'bg-rose-500 text-white shadow'
-                              : 'glass-panel text-sub-color hover:text-main-color'
+                              ? st === 'available' ? 'bg-emerald-500 text-slate-950 shadow'
+                                : st === 'booked' ? 'bg-amber-500 text-slate-950 shadow'
+                                : 'bg-rose-500 text-white shadow'
+                              : 'glass-panel text-slate-300 hover:text-white'
                           }`}
                         >
                           {st}
@@ -749,204 +654,437 @@ export default function AdminDashboard() {
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-3">
-                    {/* Plot Label */}
-                    <div>
-                      <label className="block text-sub-color font-semibold mb-1">Plot Title</label>
-                      <input
-                        type="text"
-                        value={currentPlot.plotNo}
-                        onChange={(e) => handleFieldChange('plotNo', e.target.value)}
-                        className="w-full p-2 rounded-xl neo-inset text-main-color font-mono"
-                      />
-                    </div>
-
-                    {/* Avenue Block */}
-                    <div>
-                      <label className="block text-sub-color font-semibold mb-1">Avenue Block</label>
-                      <select
-                        value={currentPlot.block}
-                        onChange={(e) => handleFieldChange('block', e.target.value)}
-                        className="w-full p-2 rounded-xl neo-inset text-main-color bg-page-main"
-                      >
-                        <option value="North Boulevard">North Boulevard</option>
-                        <option value="Central Park Avenue">Central Park Avenue</option>
-                        <option value="South Greens Enclave">South Greens Enclave</option>
-                        <option value="East Gate Crescent">East Gate Crescent</option>
-                      </select>
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-3">
-                    {/* Area SqFt */}
-                    <div>
-                      <label className="block text-sub-color font-semibold mb-1">Area (Sq.Ft)</label>
-                      <input
-                        type="number"
-                        value={currentPlot.areaSqFt}
-                        onChange={(e) => handleFieldChange('areaSqFt', Number(e.target.value))}
-                        className="w-full p-2 rounded-xl neo-inset text-main-color font-mono font-bold"
-                      />
-                    </div>
-
-                    {/* Base Rate */}
-                    <div>
-                      <label className="block text-sub-color font-semibold mb-1">Rate (₹/Sq.Ft)</label>
-                      <input
-                        type="number"
-                        value={currentPlot.baseRate || BASE_RATE_PER_SQFT}
-                        onChange={(e) => handleFieldChange('baseRate', Number(e.target.value))}
-                        className="w-full p-2 rounded-xl neo-inset text-main-color font-mono font-bold"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-3">
-                    {/* Facing */}
-                    <div>
-                      <label className="block text-sub-color font-semibold mb-1">Facing</label>
-                      <select
-                        value={currentPlot.facing}
-                        onChange={(e) => handleFieldChange('facing', e.target.value)}
-                        className="w-full p-2 rounded-xl neo-inset text-main-color bg-page-main"
-                      >
-                        <option value="East">East</option>
-                        <option value="West">West</option>
-                        <option value="North">North</option>
-                        <option value="South">South</option>
-                        <option value="North-East">North-East</option>
-                        <option value="South-East">South-East</option>
-                      </select>
-                    </div>
-
-                    {/* Dimensions Text */}
-                    <div>
-                      <label className="block text-sub-color font-semibold mb-1">Dimensions Text</label>
-                      <input
-                        type="text"
-                        value={currentPlot.dimensions}
-                        onChange={(e) => handleFieldChange('dimensions', e.target.value)}
-                        className="w-full p-2 rounded-xl neo-inset text-main-color"
-                      />
-                    </div>
-                  </div>
-
-                  {/* Calculated Price Display */}
-                  <div className="p-3 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-between">
-                    <div>
-                      <p className="text-[10px] text-amber-500 uppercase font-semibold">Total Price</p>
-                      <p className="text-xl font-bold text-main-color font-serif-luxury">{currentPlot.formattedPrice}</p>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-[10px] text-sub-color uppercase">Monthly EMI</p>
-                      <p className="text-xs font-mono font-bold text-emerald-500">{currentPlot.formattedEmi}</p>
-                    </div>
-                  </div>
-
-                  {/* Vastu note */}
+                  {/* Area Sq.Ft */}
                   <div>
-                    <label className="block text-sub-color font-semibold mb-1">Vastu / Notes</label>
+                    <label className="block text-[11px] text-slate-400 mb-1">Plot Area (Sq.Ft)</label>
                     <input
-                      type="text"
-                      value={currentPlot.vastu}
-                      onChange={(e) => handleFieldChange('vastu', e.target.value)}
-                      className="w-full p-2 rounded-xl neo-inset text-main-color"
+                      type="number"
+                      value={currentPlot?.areaSqFt || 1200}
+                      onChange={(e) => handleUpdatePlotDetails('areaSqFt', e.target.value)}
+                      className="w-full px-3 py-2 rounded-xl neo-inset bg-black/40 text-white font-mono focus:outline-none focus:border-amber-500/50"
                     />
                   </div>
 
-                </div>
+                  {/* Dimensions Label */}
+                  <div>
+                    <label className="block text-[11px] text-slate-400 mb-1">Dimensions Text</label>
+                    <input
+                      type="text"
+                      value={currentPlot?.dimensions || ''}
+                      onChange={(e) => handleUpdatePlotDetails('dimensions', e.target.value)}
+                      className="w-full px-3 py-2 rounded-xl neo-inset bg-black/40 text-white focus:outline-none focus:border-amber-500/50"
+                    />
+                  </div>
 
-                <div className="pt-2">
-                  <button
-                    onClick={handleSaveToDatabase}
-                    className="w-full py-2.5 bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 font-bold text-xs rounded-xl shadow hover:brightness-110 flex items-center justify-center gap-1.5 cursor-pointer"
-                  >
-                    <Save className="w-3.5 h-3.5" />
-                    <span>Save & Update Database</span>
-                  </button>
-                </div>
+                  {/* Facing */}
+                  <div>
+                    <label className="block text-[11px] text-slate-400 mb-1">Facing Direction</label>
+                    <select
+                      value={currentPlot?.facing || 'East'}
+                      onChange={(e) => handleUpdatePlotDetails('facing', e.target.value)}
+                      className="w-full px-3 py-2 rounded-xl neo-inset bg-black/40 text-white focus:outline-none focus:border-amber-500/50"
+                    >
+                      <option value="East">East Facing (Surya Vastu)</option>
+                      <option value="West">West Facing (Sunset View)</option>
+                      <option value="North">North Facing (Kubera Vastu)</option>
+                      <option value="North-East">North-East Corner</option>
+                    </select>
+                  </div>
 
+                  {/* Valuation preview */}
+                  <div className="p-3 rounded-2xl bg-amber-500/10 border border-amber-500/20 space-y-1">
+                    <div className="flex justify-between text-slate-300">
+                      <span>Rate:</span>
+                      <span className="font-mono font-bold text-amber-400">₹{currentPlot?.baseRate || 7699} / SqFt</span>
+                    </div>
+                    <div className="flex justify-between text-slate-300">
+                      <span>Total Price:</span>
+                      <span className="font-mono font-bold text-white">{currentPlot?.formattedPrice}</span>
+                    </div>
+                    <div className="flex justify-between text-slate-300">
+                      <span>Est. EMI (80%):</span>
+                      <span className="font-mono text-emerald-400">{currentPlot?.formattedEmi}</span>
+                    </div>
+                  </div>
+                </div>
               </div>
-            ) : null}
-          </div>
-
-        </div>
-
-      </div>
-
-      {/* JSON Import/Export Modal */}
-      {jsonModalOpen && (
-        <div 
-          onClick={() => setJsonModalOpen(false)}
-          className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4"
-        >
-          <div 
-            onClick={e => e.stopPropagation()}
-            className="max-w-2xl w-full glass-panel rounded-3xl p-6 border-theme-subtle space-y-4"
-          >
-            <div className="flex items-center justify-between">
-              <h3 className="font-serif-luxury text-lg font-bold text-main-color">
-                Raw JSON Inventory Database
-              </h3>
-              <button onClick={() => setJsonModalOpen(false)} className="p-1 rounded-full glass-panel">
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-
-            <textarea
-              value={jsonText}
-              onChange={(e) => setJsonText(e.target.value)}
-              rows={14}
-              className="w-full p-3.5 rounded-2xl neo-inset font-mono text-xs text-main-color"
-            />
-
-            <div className="flex justify-end gap-2">
-              <button
-                onClick={() => setJsonModalOpen(false)}
-                className="px-4 py-2 rounded-xl glass-panel text-xs text-sub-color"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={() => {
-                  try {
-                    const parsed = JSON.parse(jsonText);
-                    if (Array.isArray(parsed) && parsed.length > 0) {
-                      setInventory(parsed);
-                      saveStoredInventory(parsed);
-                      setJsonModalOpen(false);
-                      showToast(`Imported ${parsed.length} plots successfully!`);
-                    } else {
-                      alert('JSON must be an array of plot objects.');
-                    }
-                  } catch (err) {
-                    alert('Invalid JSON: ' + err.message);
-                  }
-                }}
-                className="px-4 py-2 rounded-xl bg-amber-400 text-slate-950 font-bold text-xs shadow"
-              >
-                Save & Apply JSON
-              </button>
             </div>
           </div>
-        </div>
-      )}
-
-      {/* Toast Notification */}
-      <AnimatePresence>
-        {toastMessage && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 20 }}
-            className="fixed bottom-6 right-6 z-50 px-4 py-2.5 rounded-2xl bg-slate-900 text-white border border-amber-400/40 shadow-2xl flex items-center gap-2 text-xs font-semibold"
-          >
-            <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-            <span>{toastMessage}</span>
-          </motion.div>
         )}
-      </AnimatePresence>
 
+        {/* ========================================================================= */}
+        {/* TAB 2: LEADS & SITE VISITS CRM                                           */}
+        {/* ========================================================================= */}
+        {activeTab === 'leads' && (
+          <div className="space-y-6">
+            {/* Leads Header & Action Bar */}
+            <div className="glass-panel rounded-2xl p-4 border-theme-subtle flex flex-wrap items-center justify-between gap-3">
+              <div className="flex flex-wrap items-center gap-3">
+                <div className="relative">
+                  <Search className="w-3.5 h-3.5 absolute left-3 top-2.5 text-slate-400" />
+                  <input
+                    type="text"
+                    placeholder="Search by customer name or phone..."
+                    value={leadSearch}
+                    onChange={(e) => setLeadSearch(e.target.value)}
+                    className="pl-8 pr-3 py-1.5 rounded-xl neo-inset bg-black/40 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-500/50 w-56 sm:w-72"
+                  />
+                </div>
+
+                {/* Filter Status */}
+                <select
+                  value={leadFilterStatus}
+                  onChange={(e) => setLeadFilterStatus(e.target.value)}
+                  className="px-3 py-1.5 rounded-xl neo-inset bg-black/40 text-xs text-white focus:outline-none focus:border-amber-500/50 cursor-pointer"
+                >
+                  <option value="all">All Enquiries ({leads.length})</option>
+                  <option value="New">New ({newLeadsCount})</option>
+                  <option value="Contacted">Contacted</option>
+                  <option value="Visit Scheduled">Visit Scheduled</option>
+                  <option value="Closed">Closed</option>
+                </select>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={exportLeadsToCSV}
+                  disabled={!leads.length}
+                  className="px-4 py-2 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 font-bold text-xs shadow-md hover:brightness-110 flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
+                >
+                  <FileSpreadsheet className="w-3.5 h-3.5" />
+                  <span>Export to CSV / Excel</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Leads Table */}
+            <div className="glass-panel rounded-3xl p-5 border-theme-subtle overflow-hidden">
+              {filteredLeads.length === 0 ? (
+                <div className="py-12 text-center space-y-2 text-slate-400">
+                  <Users className="w-8 h-8 mx-auto text-slate-500 opacity-50" />
+                  <p className="text-sm font-semibold">No Enquiries Found</p>
+                  <p className="text-xs">Visitor submissions from "Book Free Site Visit" and "Download Brochure" will show up here in real-time.</p>
+                </div>
+              ) : (
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left text-xs border-collapse">
+                    <thead>
+                      <tr className="border-b border-white/10 text-[10.5px] uppercase font-bold text-slate-400 tracking-wider">
+                        <th className="py-3 px-3">Date & Time</th>
+                        <th className="py-3 px-3">Customer</th>
+                        <th className="py-3 px-3">WhatsApp Number</th>
+                        <th className="py-3 px-3">Inquiry Type</th>
+                        <th className="py-3 px-3">Free Cab</th>
+                        <th className="py-3 px-3">Status</th>
+                        <th className="py-3 px-3">Quick Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-white/5">
+                      {filteredLeads.map((lead) => (
+                        <tr key={lead.id} className="hover:bg-white/[0.02] transition-colors">
+                          <td className="py-3 px-3 font-mono text-[11px] text-slate-400">
+                            {lead.formattedDate || lead.createdAt?.slice(0, 16)}
+                          </td>
+                          <td className="py-3 px-3 font-bold text-white">
+                            {lead.name}
+                          </td>
+                          <td className="py-3 px-3 font-mono text-amber-400">
+                            +91 {lead.phone}
+                          </td>
+                          <td className="py-3 px-3 capitalize text-slate-300">
+                            {lead.type} {lead.plotType ? `(${lead.plotType})` : ''}
+                          </td>
+                          <td className="py-3 px-3">
+                            <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
+                              lead.cab === 'yes' ? 'bg-amber-500/20 text-amber-400' : 'bg-slate-700/50 text-slate-400'
+                            }`}>
+                              {lead.cab === 'yes' ? 'Cab Requested' : 'Self Drive'}
+                            </span>
+                          </td>
+                          <td className="py-3 px-3">
+                            <select
+                              value={lead.status}
+                              onChange={(e) => updateLeadStatus(lead.id, e.target.value)}
+                              className={`px-2.5 py-1 rounded-lg text-[10.5px] font-bold cursor-pointer bg-black/50 border ${
+                                lead.status === 'New' ? 'text-rose-400 border-rose-500/40' :
+                                lead.status === 'Contacted' ? 'text-amber-400 border-amber-500/40' :
+                                lead.status === 'Visit Scheduled' ? 'text-emerald-400 border-emerald-500/40' :
+                                'text-slate-400 border-slate-500/40'
+                              }`}
+                            >
+                              <option value="New">New Lead</option>
+                              <option value="Contacted">Contacted</option>
+                              <option value="Visit Scheduled">Visit Scheduled</option>
+                              <option value="Closed">Closed</option>
+                            </select>
+                          </td>
+                          <td className="py-3 px-3">
+                            <div className="flex items-center gap-2">
+                              {/* Direct Call */}
+                              <a
+                                href={`tel:+91${lead.phone}`}
+                                className="p-1.5 rounded-lg glass-panel hover:border-emerald-400/50 text-emerald-400"
+                                title="Call Customer"
+                              >
+                                <Phone className="w-3.5 h-3.5" />
+                              </a>
+
+                              {/* WhatsApp Direct Trigger */}
+                              <a
+                                href={`https://wa.me/91${lead.phone}?text=Hello%20${encodeURIComponent(lead.name)}%2C%20thank%20you%20for%20your%20inquiry%20regarding%20MVK%20Venkatadri%20Enclave.%20How%20may%20we%20assist%20you%20with%20your%20site%20visit%3F`}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="p-1.5 rounded-lg glass-panel hover:border-emerald-400/50 text-emerald-400"
+                                title="Chat on WhatsApp"
+                              >
+                                <MessageSquare className="w-3.5 h-3.5" />
+                              </a>
+
+                              {/* Delete Lead */}
+                              <button
+                                onClick={() => {
+                                  if (window.confirm(`Delete lead inquiry from ${lead.name}?`)) {
+                                    deleteLead(lead.id);
+                                    showToast('Lead inquiry removed');
+                                  }
+                                }}
+                                className="p-1.5 rounded-lg text-slate-500 hover:text-rose-400 cursor-pointer"
+                                title="Delete Lead"
+                              >
+                                <Trash2 className="w-3.5 h-3.5" />
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* ========================================================================= */}
+        {/* TAB 3: WEBSITE CONTENT & COPY CONTROLS                                    */}
+        {/* ========================================================================= */}
+        {activeTab === 'content' && (
+          <div className="max-w-3xl mx-auto space-y-6">
+            <form onSubmit={handleSaveSettings} className="glass-panel rounded-3xl p-6 sm:p-8 border-theme-subtle space-y-5">
+              <div className="flex items-center justify-between pb-3 border-b border-white/10">
+                <div>
+                  <h3 className="font-serif-luxury text-lg font-bold text-white">
+                    Website Content & <span className="gold-gradient-text">Copy Settings</span>
+                  </h3>
+                  <p className="text-xs text-slate-400">
+                    Changes made here sync live to the public landing page in real-time.
+                  </p>
+                </div>
+
+                <button
+                  type="submit"
+                  className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 font-bold text-xs shadow-md hover:brightness-110 flex items-center gap-1.5 cursor-pointer"
+                >
+                  <Save className="w-3.5 h-3.5" />
+                  <span>Save All Changes</span>
+                </button>
+              </div>
+
+              {settingsSaved && (
+                <div className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4 shrink-0" />
+                  <span>Website content synchronized live across all visitor viewports!</span>
+                </div>
+              )}
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+                <div>
+                  <label className="block text-[11px] font-semibold text-slate-300 mb-1">Project Brand Title</label>
+                  <input
+                    type="text"
+                    value={siteSettings.projectName}
+                    onChange={(e) => setSiteSettings({ ...siteSettings, projectName: e.target.value })}
+                    className="w-full px-3.5 py-2.5 rounded-xl neo-inset bg-black/40 text-white focus:outline-none focus:border-amber-500/50"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[11px] font-semibold text-slate-300 mb-1">Developer Slogan</label>
+                  <input
+                    type="text"
+                    value={siteSettings.slogan}
+                    onChange={(e) => setSiteSettings({ ...siteSettings, slogan: e.target.value })}
+                    className="w-full px-3.5 py-2.5 rounded-xl neo-inset bg-black/40 text-white focus:outline-none focus:border-amber-500/50"
+                  />
+                </div>
+
+                <div className="sm:col-span-2">
+                  <label className="block text-[11px] font-semibold text-slate-300 mb-1">Hero Opening Tagline</label>
+                  <input
+                    type="text"
+                    value={siteSettings.tagline}
+                    onChange={(e) => setSiteSettings({ ...siteSettings, tagline: e.target.value })}
+                    className="w-full px-3.5 py-2.5 rounded-xl neo-inset bg-black/40 text-white focus:outline-none focus:border-amber-500/50"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[11px] font-semibold text-slate-300 mb-1">Base Price Rate (₹ / Sq.Ft)</label>
+                  <input
+                    type="number"
+                    value={siteSettings.baseRatePerSqFt}
+                    onChange={(e) => setSiteSettings({ ...siteSettings, baseRatePerSqFt: parseInt(e.target.value, 10) || 7699 })}
+                    className="w-full px-3.5 py-2.5 rounded-xl neo-inset bg-black/40 text-amber-400 font-mono font-bold focus:outline-none focus:border-amber-500/50"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[11px] font-semibold text-slate-300 mb-1">Sales WhatsApp API URL</label>
+                  <input
+                    type="text"
+                    value={siteSettings.whatsappUrl}
+                    onChange={(e) => setSiteSettings({ ...siteSettings, whatsappUrl: e.target.value })}
+                    className="w-full px-3.5 py-2.5 rounded-xl neo-inset bg-black/40 text-white font-mono focus:outline-none focus:border-amber-500/50"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[11px] font-semibold text-slate-300 mb-1">Official Sales Phone Display</label>
+                  <input
+                    type="text"
+                    value={siteSettings.salesPhone}
+                    onChange={(e) => setSiteSettings({ ...siteSettings, salesPhone: e.target.value })}
+                    className="w-full px-3.5 py-2.5 rounded-xl neo-inset bg-black/40 text-white focus:outline-none focus:border-amber-500/50"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[11px] font-semibold text-slate-300 mb-1">Official Sales Email</label>
+                  <input
+                    type="email"
+                    value={siteSettings.salesEmail}
+                    onChange={(e) => setSiteSettings({ ...siteSettings, salesEmail: e.target.value })}
+                    className="w-full px-3.5 py-2.5 rounded-xl neo-inset bg-black/40 text-white focus:outline-none focus:border-amber-500/50"
+                  />
+                </div>
+
+                <div className="sm:col-span-2">
+                  <label className="block text-[11px] font-semibold text-slate-300 mb-1">Full Layout Official Address</label>
+                  <input
+                    type="text"
+                    value={siteSettings.locationFull}
+                    onChange={(e) => setSiteSettings({ ...siteSettings, locationFull: e.target.value })}
+                    className="w-full px-3.5 py-2.5 rounded-xl neo-inset bg-black/40 text-white focus:outline-none focus:border-amber-500/50"
+                  />
+                </div>
+
+                <div className="sm:col-span-2">
+                  <label className="block text-[11px] font-semibold text-slate-300 mb-1 flex items-center justify-between">
+                    <span>Webhook Integration URL (Optional)</span>
+                    <span className="text-[10px] text-slate-400">Google Sheets / Zapier / Telegram</span>
+                  </label>
+                  <input
+                    type="url"
+                    placeholder="https://script.google.com/macros/s/... or https://hooks.zapier.com/..."
+                    value={siteSettings.webhookUrl || ''}
+                    onChange={(e) => setSiteSettings({ ...siteSettings, webhookUrl: e.target.value })}
+                    className="w-full px-3.5 py-2.5 rounded-xl neo-inset bg-black/40 text-white font-mono placeholder-slate-600 focus:outline-none focus:border-amber-500/50"
+                  />
+                  <p className="text-[10px] text-slate-500 mt-1">
+                    When populated, every "Book Site Visit" lead inquiry is instantly POSTed to this webhook in real-time.
+                  </p>
+                </div>
+              </div>
+
+              <div className="pt-4 border-t border-white/10 flex justify-between items-center">
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (window.confirm('Reset all website content back to developer default copy?')) {
+                      const reset = resetStoredSiteSettings();
+                      setSiteSettings(reset);
+                      showToast('Settings reset to defaults');
+                    }
+                  }}
+                  className="text-xs text-rose-400 hover:underline cursor-pointer"
+                >
+                  Reset to Default Copy
+                </button>
+
+                <button
+                  type="submit"
+                  className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 font-bold text-xs shadow-md hover:brightness-110 flex items-center gap-1.5 cursor-pointer"
+                >
+                  <Save className="w-3.5 h-3.5" />
+                  <span>Save Changes</span>
+                </button>
+              </div>
+            </form>
+          </div>
+        )}
+
+        {/* ========================================================================= */}
+        {/* TAB 4: FINANCIAL ANALYTICS & SYSTEM BACKUP                                */}
+        {/* ========================================================================= */}
+        {activeTab === 'backup' && (
+          <div className="max-w-4xl mx-auto space-y-6">
+            {/* Financial Overview Card */}
+            <div className="glass-panel rounded-3xl p-6 sm:p-8 border-theme-subtle space-y-4">
+              <h3 className="font-serif-luxury text-lg font-bold text-white flex items-center gap-2">
+                <TrendingUp className="w-5 h-5 text-amber-400" />
+                Project Financial Valuation Breakdown
+              </h3>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
+                <div className="p-4 rounded-2xl bg-black/40 border border-white/10 space-y-1">
+                  <span className="text-[10px] text-slate-400 uppercase">Gross Project Valuation</span>
+                  <p className="text-xl font-bold text-white font-mono">{formatINR(analytics.totalValuation)}</p>
+                  <span className="text-[10.5px] text-slate-400">111 Plots @ ₹{siteSettings.baseRatePerSqFt}/SqFt</span>
+                </div>
+                <div className="p-4 rounded-2xl bg-black/40 border border-emerald-500/20 space-y-1">
+                  <span className="text-[10px] text-emerald-400 uppercase">Available Inventory Value</span>
+                  <p className="text-xl font-bold text-emerald-400 font-mono">{formatINR(analytics.availableValuation)}</p>
+                  <span className="text-[10.5px] text-slate-400">{analytics.availableCount} Plots Open for Booking</span>
+                </div>
+                <div className="p-4 rounded-2xl bg-black/40 border border-amber-500/20 space-y-1">
+                  <span className="text-[10px] text-amber-400 uppercase">Committed / Booked Value</span>
+                  <p className="text-xl font-bold text-amber-400 font-mono">{formatINR(analytics.bookedValuation)}</p>
+                  <span className="text-[10.5px] text-slate-400">{analytics.bookedCount} Plots In Pipeline</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Backup & Blueprint Reset Card */}
+            <div className="glass-panel rounded-3xl p-6 sm:p-8 border-theme-subtle space-y-5">
+              <h3 className="font-serif-luxury text-lg font-bold text-white flex items-center gap-2">
+                <Database className="w-5 h-5 text-amber-400" />
+                System Data Operations & Certified CAD Blueprint Reset
+              </h3>
+              <p className="text-xs text-slate-400 leading-relaxed">
+                Download full snapshots of your inventory state, customer leads CRM data, and custom website settings. You can re-import this JSON anytime to restore state.
+              </p>
+
+              <div className="flex flex-wrap items-center gap-3 pt-2">
+                <button
+                  onClick={handleExportFullBackup}
+                  className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 font-bold text-xs shadow-md hover:brightness-110 flex items-center gap-2 cursor-pointer"
+                >
+                  <Download className="w-4 h-4" />
+                  <span>Download Full System Backup (.JSON)</span>
+                </button>
+
+                <button
+                  onClick={handleResetToBlueprint}
+                  className="px-4 py-2.5 rounded-xl glass-panel text-amber-400 font-semibold text-xs hover:border-amber-400/40 flex items-center gap-2 cursor-pointer"
+                >
+                  <RefreshCw className="w-4 h-4 text-amber-400" />
+                  <span>Reset All to Certified CAD Blueprint</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+      </main>
     </div>
   );
 }

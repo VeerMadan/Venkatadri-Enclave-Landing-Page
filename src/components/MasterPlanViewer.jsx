@@ -2,17 +2,36 @@ import React, { useState } from 'react';
 import { Map, Eye, Compass, ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 
-export default function MasterPlanViewer({ onOpenModal }) {
+export default function MasterPlanViewer({ onOpenModal, onSelectPlotType }) {
   const [activeView, setActiveView] = useState('blueprint');
+  const [selectedLegend, setSelectedLegend] = useState(null);
 
   const legend = [
-    { label: "30 × 40", color: "#EF4444" },
-    { label: "30 × 45", color: "#14B8A6" },
-    { label: "30 × 50", color: "#3B82F6" },
-    { label: "Odd Plots", color: "#EAB308" },
-    { label: "Park Zone", color: "#10B981" },
-    { label: "Civic Amenity (CA)", color: "#94A3B8" }
+    { label: "30 × 40", type: "30x40", count: "85 Plots", color: "#EF4444", desc: "1,200 Sq.Ft Standard Villa Plots" },
+    { label: "30 × 45", type: "30x45", count: "2 Plots", color: "#10B981", desc: "1,350 Sq.Ft Plots 22 & 23 (North Facing)" },
+    { label: "30 × 50", type: "30x50", count: "5 Plots", color: "#3B82F6", desc: "1,500 Sq.Ft Plots 24–28 (Avenue Frontage)" },
+    { label: "Odd Plots", type: "odd", count: "19 Plots", color: "#EAB308", desc: "1,450–1,850 Sq.Ft Corner & Boundary Plots" },
+    { label: "Park Zone (A)", type: "zone", count: "North Sector", color: "#10B981", desc: "Landscaped Garden with Jogging Path & Gazebos" },
+    { label: "Civic Amenity (CA)", type: "zone", count: "SE Quadrant", color: "#94A3B8", desc: "Designated Community Utility Area" }
   ];
+
+  const handleLegendClick = (item) => {
+    if (selectedLegend?.label === item.label) {
+      setSelectedLegend(null);
+    } else {
+      setSelectedLegend(item);
+    }
+  };
+
+  const handleJumpToMatrix = (plotType) => {
+    const el = document.getElementById('plot-finder');
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth' });
+    }
+    if (onSelectPlotType) {
+      onSelectPlotType(plotType);
+    }
+  };
 
   return (
     <section id="master-plan" className="py-12 sm:py-20 bg-page-alt relative border-t border-theme-subtle">
@@ -69,16 +88,51 @@ export default function MasterPlanViewer({ onOpenModal }) {
             </button>
           </div>
 
-          {/* Minimal Legend Pills */}
-          <div className="flex flex-wrap items-center gap-2 text-[11px] text-sub-color">
-            {legend.map((item) => (
-              <span key={item.label} className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full glass-panel">
-                <span className="w-2 h-2 rounded-full" style={{ backgroundColor: item.color }}></span>
-                <span>{item.label}</span>
-              </span>
-            ))}
+          {/* Interactive Legend Pills */}
+          <div className="flex flex-wrap items-center gap-1.5 text-[11px]">
+            {legend.map((item) => {
+              const isSelected = selectedLegend?.label === item.label;
+              return (
+                <button
+                  key={item.label}
+                  type="button"
+                  onClick={() => handleLegendClick(item)}
+                  className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium transition-all cursor-pointer ${
+                    isSelected
+                      ? 'bg-amber-400 text-slate-950 font-bold shadow-md scale-105'
+                      : 'glass-panel text-sub-color hover:text-main-color hover:border-amber-400/40'
+                  }`}
+                >
+                  <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: item.color }}></span>
+                  <span>{item.label}</span>
+                  <span className="text-[10px] opacity-75">({item.count})</span>
+                </button>
+              );
+            })}
           </div>
         </div>
+
+        {/* Selected Legend Spotlight Strip */}
+        {selectedLegend && (
+          <div className="mb-4 p-3 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex flex-wrap items-center justify-between gap-2 text-xs animate-fadeIn">
+            <div className="flex items-center gap-2">
+              <span className="w-3 h-3 rounded-full" style={{ backgroundColor: selectedLegend.color }}></span>
+              <div>
+                <span className="font-bold text-main-color">{selectedLegend.label}</span>
+                <span className="text-sub-color ml-2">— {selectedLegend.desc}</span>
+              </div>
+            </div>
+            {selectedLegend.type !== 'zone' && (
+              <button
+                onClick={() => handleJumpToMatrix(selectedLegend.type)}
+                className="px-3 py-1 rounded-full bg-amber-400 text-slate-950 font-bold text-[11px] hover:brightness-110 flex items-center gap-1 cursor-pointer"
+              >
+                <span>Filter in Plot Matrix</span>
+                <ArrowRight className="w-3 h-3" />
+              </button>
+            )}
+          </div>
+        )}
 
         {/* Layout Visualizer Window */}
         <div className="glass-panel rounded-3xl p-3 sm:p-5 border-theme-subtle relative overflow-hidden group shadow-lg">

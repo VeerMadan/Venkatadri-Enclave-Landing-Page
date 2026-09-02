@@ -3,7 +3,7 @@ import { GraduationCap, Hospital, Compass, MapPin, ExternalLink } from 'lucide-r
 import { motion } from 'framer-motion';
 import { LOCATION_DATA } from '../data/projectData';
 
-export default function LocationMatrix() {
+export default function LocationMatrix({ onSelectLocation }) {
   const [activeTab, setActiveTab] = useState('education');
 
   const tabs = [
@@ -33,7 +33,7 @@ export default function LocationMatrix() {
             Strategic <span className="gold-gradient-text">Location</span>
           </h2>
           <p className="text-xs text-sub-color mt-1">
-            Bagaluru Main Road, Yelahanka, Bengaluru - 560064
+            Bagaluru Main Road, Yelahanka, Bengaluru - 560064 • Click any destination for interactive Google Map
           </p>
         </motion.div>
 
@@ -66,12 +66,13 @@ export default function LocationMatrix() {
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ type: "spring", stiffness: 400, damping: 25 }}
-          className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 max-h-[340px] sm:max-h-none overflow-y-auto pr-1 scrollbar-thin"
+          className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 max-h-[360px] sm:max-h-none overflow-y-auto pr-1 scrollbar-thin"
         >
           {list.map((item, idx) => (
             <div
               key={idx}
-              className={`glass-panel rounded-xl p-3 flex items-center justify-between transition-all ${
+              onClick={() => onSelectLocation && onSelectLocation(item)}
+              className={`glass-panel rounded-xl p-3 flex items-center justify-between transition-all cursor-pointer group hover:scale-[1.02] hover:border-amber-400/60 shadow-sm ${
                 idx === 0 && activeTab === 'education'
                   ? 'border-amber-400/50 bg-amber-500/[0.05]'
                   : 'hover:border-amber-400/30'
@@ -83,8 +84,9 @@ export default function LocationMatrix() {
                     Near Layout (350M)
                   </span>
                 )}
-                <h4 className="text-xs font-bold text-main-color truncate">
-                  {item.name}
+                <h4 className="text-xs font-bold text-main-color group-hover:text-amber-500 transition-colors truncate flex items-center gap-1">
+                  <span>{item.name}</span>
+                  <MapPin className="w-2.5 h-2.5 text-amber-500 opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
                 </h4>
                 <p className="text-[10px] text-sub-color truncate">
                   {item.highlight}
@@ -92,7 +94,7 @@ export default function LocationMatrix() {
               </div>
 
               <div className="text-right shrink-0">
-                <span className="text-xs font-bold text-amber-500 font-mono">
+                <span className="text-xs font-bold text-amber-500 font-mono group-hover:underline">
                   {item.distance}
                 </span>
                 <p className="text-[9px] text-sub-color">
