@@ -763,13 +763,13 @@ export default function InteractivePlotSelector({ onOpenModal, initialTypeFilter
 
                   <div className="flex justify-between py-1 border-b border-theme-subtle">
                     <span className="text-sub-color">Base Rate</span>
-                    <span className="font-medium text-main-color">₹{(selectedPlot.baseRate || PROJECT_INFO.baseRatePerSqFt).toLocaleString('en-IN')}/Sq.Ft</span>
+                    <span className="font-medium text-main-color">₹{(selectedPlot?.baseRate || 7699).toLocaleString('en-IN')}/Sq.Ft</span>
                   </div>
 
                   <div className="flex justify-between py-1 border-b border-theme-subtle">
                     <span className="text-sub-color">Est. Base Price</span>
                     <span className="font-bold text-amber-500 font-mono">
-                      {selectedPlot.formattedPrice || formatINR(selectedPlot.totalPrice)}
+                      {selectedPlot?.formattedPrice || (selectedPlot?.totalPrice ? formatINR(selectedPlot.totalPrice) : '₹92.38 L')}
                     </span>
                   </div>
                 </div>

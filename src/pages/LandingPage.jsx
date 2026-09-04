@@ -18,6 +18,7 @@ import Footer from '../components/Footer';
 import LeadModal from '../components/LeadModal';
 import LayoutDetailsModal from '../components/LayoutDetailsModal';
 import GoogleMapsModal from '../components/GoogleMapsModal';
+import ErrorBoundary from '../components/ErrorBoundary';
 
 export default function LandingPage() {
   const [modalState, setModalState] = useState({
@@ -79,10 +80,12 @@ export default function LandingPage() {
           onOpenModal={handleOpenModal} 
           onOpenLayoutModal={() => setIsLayoutModalOpen(true)} 
         />
-        <InteractivePlotSelector 
-          onOpenModal={handleOpenModal}
-          initialTypeFilter={matrixPlotTypeFilter}
-        />
+        <ErrorBoundary>
+          <InteractivePlotSelector 
+            onOpenModal={handleOpenModal}
+            initialTypeFilter={matrixPlotTypeFilter}
+          />
+        </ErrorBoundary>
         <PriceCalculator onOpenModal={handleOpenModal} />
         <MasterPlanViewer 
           onOpenModal={handleOpenModal} 
