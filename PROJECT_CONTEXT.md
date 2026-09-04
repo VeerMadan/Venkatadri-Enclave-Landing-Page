@@ -151,4 +151,5 @@ npm run preview
    - **Master Plan Legend Interactivity**: Made legend pills clickable with live counts, descriptions, and 1-click filtering in the plot matrix.
    - **Interactive Google Maps Modal**: Created `GoogleMapsModal.jsx` and connected all location proximity items and amenities cards to live Google Maps embeds and direction links.
    - **Expanded Admin Control Center**: Upgraded `AdminDashboard.jsx` to a 4-tab console (Plot Inventory CRUD, Leads CRM, Website Content Settings, System & Backup).
+   - **Responsive Mobile/Desktop Hero Image**: Configured responsive `<picture>` in `Hero.jsx` to serve the vertical 9:16 sunset gate image (`grand-entrance-mobile.jpg`) for mobile viewports (< 768px) and horizontal landscape (`grand-entrance.jpg`) for desktop screens.
 

@@ -92,15 +92,19 @@ export default function Hero({ onOpenModal }) {
       >
         {/* Background Architectural Canvas */}
         <div className="absolute inset-0 z-0 overflow-hidden transform-gpu translate-z-0">
-          <motion.img
-            src="/images/grand-entrance.jpg"
-            alt="MVK Venkatadri Enclave Grand Entrance"
-            style={{
-              scale: imageScale,
-              y: imageY
-            }}
-            className="w-full h-full object-cover object-center origin-center transform-gpu will-change-transform"
-          />
+          <picture className="w-full h-full block">
+            <source media="(max-width: 767px)" srcSet="/images/grand-entrance-mobile.jpg" />
+            <source media="(min-width: 768px)" srcSet="/images/grand-entrance.jpg" />
+            <motion.img
+              src="/images/grand-entrance.jpg"
+              alt="MVK Venkatadri Enclave Grand Entrance"
+              style={{
+                scale: imageScale,
+                y: imageY
+              }}
+              className="w-full h-full object-cover object-center origin-center transform-gpu will-change-transform"
+            />
+          </picture>
 
           {/* Theme-Adaptive Gradient Veil (Fades and rises up from bottom on scroll to frame text & cards) */}
           <motion.div
