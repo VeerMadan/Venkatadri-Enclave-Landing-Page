@@ -117,6 +117,9 @@ export default function Hero({ onOpenModal }) {
 
           {/* Subtle Radial Vignette for Clean Contrast */}
           <div className="absolute inset-0 bg-radial from-transparent via-transparent to-black/25 pointer-events-none" />
+
+          {/* Top Atmospheric Blend (Seamlessly fades into page background with no hard line) */}
+          <div className="absolute top-0 left-0 right-0 h-44 bg-gradient-to-b from-[var(--bg-page)] via-[var(--bg-page)]/80 to-transparent pointer-events-none z-10" />
         </div>
 
         {/* Floating Foreground Content Stage (Synchronously controlled by scroll curve) */}

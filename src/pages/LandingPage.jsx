@@ -2,8 +2,7 @@ import React, { useState } from 'react';
 import { motion, useScroll, useSpring } from 'framer-motion';
 import Navbar from '../components/Navbar';
 import ParallaxClouds from '../components/ParallaxClouds';
-import BrochureHeroBanner from '../components/BrochureHeroBanner';
-import BrochureQualificationForm from '../components/BrochureQualificationForm';
+import BrochureEntranceSection from '../components/BrochureEntranceSection';
 import Hero from '../components/Hero';
 import ProjectStats from '../components/ProjectStats';
 import Pillars from '../components/Pillars';
@@ -69,11 +68,8 @@ export default function LandingPage() {
 
       {/* Main Content Sections */}
       <main>
-        {/* Entrance Qualification Form (Left Phone Reference) */}
-        <section id="brochure-section" className="relative pb-10 sm:pb-16 border-b border-theme-subtle">
-          <BrochureHeroBanner />
-          <BrochureQualificationForm />
-        </section>
+        {/* Entrance Showcase & 4-Question Qualification Form */}
+        <BrochureEntranceSection />
 
         {/* Cinematic Grand Entrance Showcase Runway */}
         <Hero onOpenModal={handleOpenModal} />
