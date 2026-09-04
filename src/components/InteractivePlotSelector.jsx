@@ -12,6 +12,7 @@ import {
   formatINR,
   calculateEMI
 } from '../data/plotInventoryData';
+import { PROJECT_INFO } from '../data/projectData';
 
 export default function InteractivePlotSelector({ onOpenModal, initialTypeFilter = 'all' }) {
   const [inventory, setInventory] = useState([]);
@@ -762,13 +763,13 @@ export default function InteractivePlotSelector({ onOpenModal, initialTypeFilter
 
                   <div className="flex justify-between py-1 border-b border-theme-subtle">
                     <span className="text-sub-color">Base Rate</span>
-                    <span className="font-medium text-main-color">₹{PROJECT_INFO.baseRatePerSqFt}/Sq.Ft</span>
+                    <span className="font-medium text-main-color">₹{(selectedPlot.baseRate || PROJECT_INFO.baseRatePerSqFt).toLocaleString('en-IN')}/Sq.Ft</span>
                   </div>
 
                   <div className="flex justify-between py-1 border-b border-theme-subtle">
                     <span className="text-sub-color">Est. Base Price</span>
                     <span className="font-bold text-amber-500 font-mono">
-                      {formatLakhs(selectedPlot.areaSqFt * PROJECT_INFO.baseRatePerSqFt)}
+                      {selectedPlot.formattedPrice || formatINR(selectedPlot.totalPrice)}
                     </span>
                   </div>
                 </div>
