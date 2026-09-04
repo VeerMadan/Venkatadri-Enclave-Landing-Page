@@ -89,7 +89,7 @@ export default function PriceCalculator({ onOpenModal }) {
               ))}
             </div>
 
-            {/* Area Slider with Glowing Trail */}
+            {/* Area Slider */}
             <div className="space-y-2">
               <div className="flex justify-between text-xs font-medium">
                 <span className="text-sub-color">Plot Size:</span>
@@ -103,13 +103,13 @@ export default function PriceCalculator({ onOpenModal }) {
                 value={areaSqFt}
                 onChange={(e) => setAreaSqFt(Number(e.target.value))}
                 style={{
-                  background: `linear-gradient(to right, #f59e0b 0%, #fbbf24 ${areaPercent}%, rgba(148, 163, 184, 0.22) ${areaPercent}%, rgba(148, 163, 184, 0.22) 100%)`
+                  background: `linear-gradient(to right, #f59e0b 0%, #f59e0b ${areaPercent}%, rgba(148, 163, 184, 0.25) ${areaPercent}%, rgba(148, 163, 184, 0.25) 100%)`
                 }}
                 className="luxury-slider"
               />
             </div>
 
-            {/* Down Payment Slider with Glowing Trail */}
+            {/* Down Payment Slider */}
             <div className="space-y-2">
               <div className="flex justify-between text-xs font-medium">
                 <span className="text-sub-color">Down Payment ({downPaymentPercent}%):</span>
@@ -123,13 +123,13 @@ export default function PriceCalculator({ onOpenModal }) {
                 value={downPaymentPercent}
                 onChange={(e) => setDownPaymentPercent(Number(e.target.value))}
                 style={{
-                  background: `linear-gradient(to right, #10b981 0%, #34d399 ${downPaymentPercentVal}%, rgba(148, 163, 184, 0.22) ${downPaymentPercentVal}%, rgba(148, 163, 184, 0.22) 100%)`
+                  background: `linear-gradient(to right, #10b981 0%, #10b981 ${downPaymentPercentVal}%, rgba(148, 163, 184, 0.25) ${downPaymentPercentVal}%, rgba(148, 163, 184, 0.25) 100%)`
                 }}
                 className="luxury-slider"
               />
             </div>
 
-            {/* Tenure Slider with Glowing Trail */}
+            {/* Tenure Slider */}
             <div className="space-y-2">
               <div className="flex justify-between text-xs font-medium">
                 <span className="text-sub-color">Tenure:</span>
@@ -143,7 +143,7 @@ export default function PriceCalculator({ onOpenModal }) {
                 value={tenureYears}
                 onChange={(e) => setTenureYears(Number(e.target.value))}
                 style={{
-                  background: `linear-gradient(to right, #f59e0b 0%, #fbbf24 ${tenurePercent}%, rgba(148, 163, 184, 0.22) ${tenurePercent}%, rgba(148, 163, 184, 0.22) 100%)`
+                  background: `linear-gradient(to right, #f59e0b 0%, #f59e0b ${tenurePercent}%, rgba(148, 163, 184, 0.25) ${tenurePercent}%, rgba(148, 163, 184, 0.25) 100%)`
                 }}
                 className="luxury-slider"
               />
