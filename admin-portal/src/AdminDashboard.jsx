@@ -217,7 +217,11 @@ export default function AdminDashboard() {
         const q = leadSearchQuery.toLowerCase().trim();
         const matchName = (lead.name || '').toLowerCase().includes(q);
         const matchPhone = (lead.phone || '').includes(q);
-        if (!matchName && !matchPhone) return false;
+        const matchPurpose = (lead.purpose || '').toLowerCase().includes(q);
+        const matchBudget = (lead.budget || '').toLowerCase().includes(q);
+        const matchSize = (lead.plotSizeInterest || '').toLowerCase().includes(q);
+        const matchTimeline = (lead.timeline || '').toLowerCase().includes(q);
+        if (!matchName && !matchPhone && !matchPurpose && !matchBudget && !matchSize && !matchTimeline) return false;
       }
       return true;
     });
@@ -1199,10 +1203,20 @@ export default function AdminDashboard() {
                         <span className="font-mono font-bold text-amber-500">+91 {lead.phone}</span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-slate-500 dark:text-slate-400">Inquiry:</span>
-                        <span className="capitalize font-semibold text-slate-800 dark:text-slate-200">
-                          {lead.type} {lead.plotType ? `(${lead.plotType})` : ''}
-                        </span>
+                        <span className="text-slate-500 dark:text-slate-400">Purpose:</span>
+                        <span className="font-semibold text-slate-800 dark:text-slate-200">{lead.purpose || 'To build a home'}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-slate-500 dark:text-slate-400">Budget Range:</span>
+                        <span className="font-mono font-semibold text-amber-600 dark:text-amber-400">{lead.budget || '₹92+ Lakhs'}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-slate-500 dark:text-slate-400">Plot Size:</span>
+                        <span className="font-semibold text-slate-800 dark:text-slate-200">{lead.plotSizeInterest || lead.plotType || '1,200 Sq.Ft.'}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span className="text-slate-500 dark:text-slate-400">Timeline:</span>
+                        <span className="font-semibold text-emerald-600 dark:text-emerald-400">{lead.timeline || 'This Weekend'}</span>
                       </div>
                       <div className="flex justify-between">
                         <span className="text-slate-500 dark:text-slate-400">Chauffeur Cab:</span>

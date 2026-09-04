@@ -191,8 +191,7 @@ export default function Hero({ onOpenModal }) {
             </motion.button>
 
             <motion.a
-              href="/v-e_brochure.pdf"
-              download="MVK_Venkatadri_Enclave_Brochure.pdf"
+              href="#brochure-form"
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.95 }}
               className="px-4 sm:px-5 py-2.5 rounded-full glass-panel text-main-color font-semibold text-xs sm:text-sm flex items-center gap-1.5 cursor-pointer hover:border-amber-400/40 shadow-sm"

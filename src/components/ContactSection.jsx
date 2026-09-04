@@ -56,7 +56,7 @@ export default function ContactSection({ onOpenModal }) {
     const result = await saveLead({
       name: formData.name,
       phone: phoneVal.formatted,
-      type: 'visit',
+      type: 'visit_brochure',
       cab: formData.cab,
       plotType: '30x40'
     });
@@ -66,6 +66,14 @@ export default function ContactSection({ onOpenModal }) {
     if (result.success) {
       setSubmitted(true);
       confetti({ particleCount: 70, spread: 60, origin: { y: 0.7 } });
+
+      // Redirect to WhatsApp with pre-typed bot trigger message
+      if (result.whatsappUrl) {
+        const opened = window.open(result.whatsappUrl, '_blank');
+        if (!opened) {
+          window.location.href = result.whatsappUrl;
+        }
+      }
     } else {
       setError(result.error || 'Failed to submit request. Please try again.');
     }
@@ -188,14 +196,14 @@ export default function ContactSection({ onOpenModal }) {
               <button
                 type="submit"
                 disabled={isSubmitting || !rateLimitInfo.allowed}
-                className="w-full py-3 bg-gradient-to-r from-amber-400 via-amber-300 to-amber-500 text-slate-950 font-bold text-xs rounded-xl shadow-md hover:brightness-110 transition-all flex items-center justify-center gap-1.5 cursor-pointer mt-1 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full py-3.5 bg-gradient-to-r from-amber-400 via-amber-300 to-amber-500 text-slate-950 font-extrabold text-xs sm:text-sm rounded-2xl shadow-lg hover:brightness-105 transition-all flex items-center justify-center gap-2 cursor-pointer mt-1 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isSubmitting ? (
-                  <span>Reserving Slot...</span>
+                  <span>Connecting to WhatsApp...</span>
                 ) : (
                   <>
-                    <span>Confirm Free Site Visit</span>
-                    <ArrowRight className="w-3.5 h-3.5" />
+                    <span>Submit & Download Brochure</span>
+                    <ArrowRight className="w-4 h-4" />
                   </>
                 )}
               </button>

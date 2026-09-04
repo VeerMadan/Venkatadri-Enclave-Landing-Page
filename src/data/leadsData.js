@@ -75,6 +75,25 @@ const recordSubmissionTimestamp = () => {
   }
 };
 
+// Helper: Generate Pre-Typed WhatsApp Message Link for Automation Bot
+export const generateBrochureWhatsAppUrl = (leadData) => {
+  const settings = getStoredSiteSettings();
+  const phone = settings.salesPhoneRaw || "9900090049";
+
+  const message = `Hello MVK Team! I am interested in Venkatadri Enclave and would like to receive the official project brochure.
+
+• Name: ${leadData.name || 'Visitor'}
+• Mobile: +91 ${leadData.phone || ''}
+• Purpose: ${leadData.purpose || 'Not Specified'}
+• Budget Range: ${leadData.budget || 'Not Specified'}
+• Plot Size Interest: ${leadData.plotSizeInterest || leadData.plotType || 'Not Specified'}
+• Purchase Timeline: ${leadData.timeline || 'Not Specified'}
+
+Please send me the brochure PDF.`;
+
+  return `https://wa.me/91${phone}?text=${encodeURIComponent(message)}`;
+};
+
 // 3. Leads Database CRUD
 export const getStoredLeads = () => {
   try {
@@ -110,12 +129,16 @@ export const saveLead = async (leadData) => {
       }),
       name: (leadData.name || '').trim(),
       phone: phoneValidation.formatted,
-      type: leadData.type || 'visit', // visit, quote, brochure, calculator
-      cab: leadData.cab || 'yes', // yes, no
-      plotType: leadData.plotType || '30x40',
+      type: leadData.type || 'brochure', // brochure, visit, quote, calculator
+      cab: leadData.cab || 'no', // yes, no
+      plotType: leadData.plotType || leadData.plotSizeInterest || '1,200 Sq.Ft.',
       plotNumber: leadData.plotNumber || '',
+      purpose: leadData.purpose || 'To build a home',
+      budget: leadData.budget || '₹92+ Lakhs',
+      plotSizeInterest: leadData.plotSizeInterest || '1,200 Sq.Ft.',
+      timeline: leadData.timeline || 'This Weekend',
       status: 'New', // New, Contacted, Visit Scheduled, Closed
-      notes: '',
+      notes: leadData.notes || '',
       source: window.location.pathname || '/'
     };
 
@@ -140,7 +163,9 @@ export const saveLead = async (leadData) => {
       } catch {}
     }
 
-    return { success: true, lead: newLead };
+    const whatsappUrl = generateBrochureWhatsAppUrl(newLead);
+
+    return { success: true, lead: newLead, whatsappUrl };
   } catch (err) {
     console.error("Failed to save lead:", err);
     return { success: false, error: "Failed to store lead inquiry. Please try again." };
@@ -185,16 +210,33 @@ export const exportLeadsToCSV = () => {
   const leads = getStoredLeads();
   if (!leads.length) return false;
 
-  const headers = ["Lead ID", "Date & Time", "Customer Name", "Phone", "Inquiry Type", "Free Cab Requested", "Plot Preference", "Status", "Notes"];
+  const headers = [
+    "Lead ID", 
+    "Date & Time", 
+    "Customer Name", 
+    "Phone", 
+    "Inquiry Type", 
+    "Purpose", 
+    "Budget Range", 
+    "Plot Size Interest", 
+    "Purchase Timeline", 
+    "Free Cab", 
+    "Status", 
+    "Notes"
+  ];
+  
   const rows = leads.map(l => [
     `"${l.id}"`,
     `"${l.formattedDate || l.createdAt}"`,
-    `"${l.name.replace(/"/g, '""')}"`,
+    `"${(l.name || '').replace(/"/g, '""')}"`,
     `"+91 ${l.phone}"`,
-    `"${l.type}"`,
-    `"${l.cab}"`,
-    `"${l.plotType}"`,
-    `"${l.status}"`,
+    `"${l.type || 'brochure'}"`,
+    `"${(l.purpose || 'Not Specified').replace(/"/g, '""')}"`,
+    `"${(l.budget || 'Not Specified').replace(/"/g, '""')}"`,
+    `"${(l.plotSizeInterest || l.plotType || 'Not Specified').replace(/"/g, '""')}"`,
+    `"${(l.timeline || 'Not Specified').replace(/"/g, '""')}"`,
+    `"${l.cab || 'no'}"`,
+    `"${l.status || 'New'}"`,
     `"${(l.notes || '').replace(/"/g, '""')}"`
   ]);
 

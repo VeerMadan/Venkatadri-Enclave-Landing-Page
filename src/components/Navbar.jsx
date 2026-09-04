@@ -99,8 +99,7 @@ export default function Navbar({ onOpenModal }) {
           </button>
 
           <motion.a
-            href="/v-e_brochure.pdf"
-            download="MVK_Venkatadri_Enclave_Brochure.pdf"
+            href="#brochure-form"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             className="px-3 py-1.5 rounded-full text-xs font-semibold text-sub-color hover:text-main-color glass-panel hover:border-amber-400/40 transition-all cursor-pointer flex items-center gap-1"
@@ -171,8 +170,7 @@ export default function Navbar({ onOpenModal }) {
             </div>
             <div className="pt-2 border-t border-theme-subtle flex gap-2">
               <a
-                href="/v-e_brochure.pdf"
-                download="MVK_Venkatadri_Enclave_Brochure.pdf"
+                href="#brochure-form"
                 onClick={() => setMobileOpen(false)}
                 className="flex-1 py-2 rounded-xl text-xs font-semibold text-sub-color glass-panel flex items-center justify-center gap-1"
               >

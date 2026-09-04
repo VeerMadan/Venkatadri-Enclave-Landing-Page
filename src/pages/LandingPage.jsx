@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { motion, useScroll, useSpring } from 'framer-motion';
 import Navbar from '../components/Navbar';
+import ParallaxClouds from '../components/ParallaxClouds';
+import BrochureHeroBanner from '../components/BrochureHeroBanner';
+import BrochureQualificationForm from '../components/BrochureQualificationForm';
 import Hero from '../components/Hero';
 import ProjectStats from '../components/ProjectStats';
 import Pillars from '../components/Pillars';
@@ -50,18 +53,32 @@ export default function LandingPage() {
   const { scrollYProgress } = useScroll();
 
   return (
-    <div className="min-h-screen bg-page-main text-main-color font-sans selection:bg-amber-400 selection:text-black">
+    <div className="min-h-screen bg-page-main text-main-color font-sans selection:bg-amber-400 selection:text-black relative">
+      {/* Dynamic Ambient Background & Scroll-Driven Parallax Clouds */}
       <AmbientBackground />
+      <ParallaxClouds />
+
+      {/* Top Scroll Progress Line */}
       <motion.div 
         className="fixed top-0 left-0 right-0 h-1 bg-gradient-to-r from-amber-400 via-emerald-400 to-amber-500 z-[100] origin-left will-change-transform transform-gpu"
         style={{ scaleX: scrollYProgress }}
       />
+      
       {/* Top Floating Navigation */}
       <Navbar onOpenModal={handleOpenModal} />
 
       {/* Main Content Sections */}
       <main>
+        {/* Entrance Qualification Form (Left Phone Reference) */}
+        <section id="brochure-section" className="relative pb-10 sm:pb-16 border-b border-theme-subtle">
+          <BrochureHeroBanner />
+          <BrochureQualificationForm />
+        </section>
+
+        {/* Cinematic Grand Entrance Showcase Runway */}
         <Hero onOpenModal={handleOpenModal} />
+        
+        {/* Core Layout Modules */}
         <ProjectStats onOpenModal={handleOpenModal} />
         <Pillars 
           onOpenModal={handleOpenModal} 
