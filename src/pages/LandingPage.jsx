@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { motion, useScroll, useSpring } from 'framer-motion';
 import Navbar from '../components/Navbar';
-import ParallaxClouds from '../components/ParallaxClouds';
 import BrochureEntranceSection from '../components/BrochureEntranceSection';
 import Hero from '../components/Hero';
 import ProjectStats from '../components/ProjectStats';
@@ -53,9 +52,8 @@ export default function LandingPage() {
 
   return (
     <div className="min-h-screen bg-page-main text-main-color font-sans selection:bg-amber-400 selection:text-black relative">
-      {/* Dynamic Ambient Background & Scroll-Driven Parallax Clouds */}
+      {/* Dynamic Ambient Background */}
       <AmbientBackground />
-      <ParallaxClouds />
 
       {/* Top Scroll Progress Line */}
       <motion.div 

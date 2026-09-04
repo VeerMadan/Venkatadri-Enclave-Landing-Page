@@ -1,59 +1,57 @@
 import React from 'react';
 import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
 
-export default function ParallaxClouds() {
-  const { scrollY } = useScroll();
-
-  // Butter-smooth spring physics for organic momentum
-  const smoothY = useSpring(scrollY, {
-    stiffness: 90,
-    damping: 22,
+export default function ParallaxClouds({ progress: externalProgress }) {
+  // Fallback internal scroll if external progress is not passed
+  const { scrollYProgress } = useScroll();
+  const internalSmooth = useSpring(scrollYProgress, {
+    stiffness: 100,
+    damping: 24,
     mass: 0.5
   });
 
+  const progress = externalProgress || internalSmooth;
+
   // =========================================================================
-  // SCROLL TRIGGER WINDOW: Starts AFTER the form field bottom (650px - 1600px)
-  // Zero interference while visitor is reading or filling the form at the top!
+  // SCROLL TRIGGER CURVE: Plays strictly WHEN SCROLLING PAST THE HERO IMAGE!
+  // [0.0 -> 0.75]: Main image & text STAY completely clear with zero obstruction.
+  // [0.75 -> 1.0]: Golden wind lines shoot up and pure white clouds burst open!
   // =========================================================================
 
-  // 1. GOLDEN AIR / WIND SPEED LINES (Golden Amber & Champagne Glow)
-  const windY1 = useTransform(smoothY, [650, 1250], ["40vh", "-70vh"]);
-  const windY2 = useTransform(smoothY, [700, 1320], ["45vh", "-75vh"]);
-  const windY3 = useTransform(smoothY, [670, 1220], ["35vh", "-65vh"]);
-  const windY4 = useTransform(smoothY, [720, 1360], ["50vh", "-80vh"]);
-  const windY5 = useTransform(smoothY, [690, 1290], ["40vh", "-70vh"]);
+  // 1. GOLDEN AIR / WIND SPEED LINES (0.75 -> 0.98)
+  const windY1 = useTransform(progress, [0.75, 0.95], ["40vh", "-75vh"]);
+  const windY2 = useTransform(progress, [0.77, 0.97], ["45vh", "-80vh"]);
+  const windY3 = useTransform(progress, [0.76, 0.94], ["35vh", "-70vh"]);
+  const windY4 = useTransform(progress, [0.78, 0.98], ["50vh", "-85vh"]);
+  const windY5 = useTransform(progress, [0.76, 0.96], ["40vh", "-75vh"]);
 
-  const windScaleY = useTransform(smoothY, [650, 950, 1350], [0.3, 1.4, 0.4]);
-  // Strictly 0 opacity before 650px, so form is 100% clean!
-  const windOpacity = useTransform(smoothY, [600, 700, 1150, 1380], [0, 1, 0.95, 0]);
+  const windScaleY = useTransform(progress, [0.75, 0.86, 0.98], [0.3, 1.4, 0.4]);
+  // 100% dormant/invisible while user is admiring the main picture (< 0.74)
+  const windOpacity = useTransform(progress, [0.73, 0.77, 0.92, 0.98], [0, 1, 0.9, 0]);
 
-  // Secondary ambient gold wind streaks deeper down the page
-  const deepWindY = useTransform(smoothY, [1800, 3200], ["60vh", "-80vh"]);
-  const deepWindOpacity = useTransform(smoothY, [1700, 2000, 2900, 3300], [0, 0.75, 0.75, 0]);
+  // 2. VOLUMETRIC PURE WHITE CLOUD BILLOWS (0.78 -> 1.0)
+  // Erupts upward, expands to 4.5x, then balloons to 20x to part open into next section!
+  const cloud1Y = useTransform(progress, [0.79, 0.91, 1.0], ["65vh", "-10vh", "-30vh"]);
+  const cloud1Scale = useTransform(progress, [0.79, 0.91, 1.0], [0.1, 4.2, 18]);
+  const cloud1Opacity = useTransform(progress, [0.77, 0.83, 0.94, 1.0], [0, 0.96, 0.96, 0]);
 
-  // 2. VOLUMETRIC PURE WHITE CLOUDS (100% Radiant Puffy White in both Light & Dark Mode)
-  // Erupts upwards past the form, expands to 4.2x, then blasts to 18x to part open!
-  const cloud1Y = useTransform(smoothY, [750, 1150, 1550], ["65vh", "-10vh", "-28vh"]);
-  const cloud1Scale = useTransform(smoothY, [750, 1150, 1550], [0.1, 4.0, 18]);
-  const cloud1Opacity = useTransform(smoothY, [700, 880, 1350, 1580], [0, 0.96, 0.96, 0]);
+  const cloud2Y = useTransform(progress, [0.81, 0.93, 1.0], ["70vh", "-15vh", "-35vh"]);
+  const cloud2Scale = useTransform(progress, [0.81, 0.93, 1.0], [0.1, 4.6, 20]);
+  const cloud2Opacity = useTransform(progress, [0.79, 0.85, 0.95, 1.0], [0, 0.98, 0.98, 0]);
 
-  const cloud2Y = useTransform(smoothY, [790, 1200, 1600], ["70vh", "-15vh", "-32vh"]);
-  const cloud2Scale = useTransform(smoothY, [790, 1200, 1600], [0.1, 4.5, 20]);
-  const cloud2Opacity = useTransform(smoothY, [740, 920, 1400, 1620], [0, 0.98, 0.98, 0]);
+  const cloud3Y = useTransform(progress, [0.80, 0.92, 1.0], ["60vh", "-5vh", "-28vh"]);
+  const cloud3Scale = useTransform(progress, [0.80, 0.92, 1.0], [0.1, 4.0, 16]);
+  const cloud3Opacity = useTransform(progress, [0.78, 0.84, 0.94, 1.0], [0, 0.95, 0.95, 0]);
 
-  const cloud3Y = useTransform(smoothY, [770, 1180, 1580], ["60vh", "-5vh", "-25vh"]);
-  const cloud3Scale = useTransform(smoothY, [770, 1180, 1580], [0.1, 3.8, 16]);
-  const cloud3Opacity = useTransform(smoothY, [720, 900, 1380, 1600], [0, 0.95, 0.95, 0]);
-
-  const cloud4Y = useTransform(smoothY, [820, 1250, 1650], ["75vh", "-20vh", "-38vh"]);
-  const cloud4Scale = useTransform(smoothY, [820, 1250, 1650], [0.1, 4.8, 22]);
-  const cloud4Opacity = useTransform(smoothY, [760, 960, 1450, 1680], [0, 0.98, 0.98, 0]);
+  const cloud4Y = useTransform(progress, [0.82, 0.94, 1.0], ["75vh", "-20vh", "-40vh"]);
+  const cloud4Scale = useTransform(progress, [0.82, 0.94, 1.0], [0.1, 5.0, 22]);
+  const cloud4Opacity = useTransform(progress, [0.80, 0.86, 0.96, 1.0], [0, 0.98, 0.98, 0]);
 
   return (
-    <div className="fixed inset-0 pointer-events-none z-25 overflow-hidden flex items-end justify-center select-none">
+    <div className="absolute inset-0 pointer-events-none z-30 overflow-hidden flex items-end justify-center select-none">
       
       {/* ======================================================================= */}
-      {/* 5 GOLDEN AIR / WIND SPEED LINES (Triggers past form field bottom)       */}
+      {/* 5 GOLDEN AIR / WIND SPEED LINES (Triggers strictly as image exits)       */}
       {/* ======================================================================= */}
       <motion.div
         style={{ y: windY1, scaleY: windScaleY, opacity: windOpacity }}
@@ -74,16 +72,6 @@ export default function ParallaxClouds() {
       <motion.div
         style={{ y: windY5, scaleY: windScaleY, opacity: windOpacity }}
         className="anime-wind absolute bottom-0 left-[92%] w-[2.5px] h-[46vh] bg-gradient-to-t from-transparent via-amber-300 to-transparent shadow-[0_0_18px_rgba(251,191,36,0.85)] transform-gpu will-change-transform"
-      />
-
-      {/* Deep Page Ambient Golden Wind Lines */}
-      <motion.div
-        style={{ y: deepWindY, opacity: deepWindOpacity }}
-        className="absolute bottom-0 left-[22%] w-[2px] h-[52vh] bg-gradient-to-t from-transparent via-amber-400/80 to-transparent shadow-[0_0_16px_rgba(245,158,11,0.6)] transform-gpu will-change-transform"
-      />
-      <motion.div
-        style={{ y: deepWindY, opacity: deepWindOpacity }}
-        className="absolute bottom-0 right-[25%] w-[2.5px] h-[58vh] bg-gradient-to-t from-transparent via-yellow-300/80 to-transparent shadow-[0_0_18px_rgba(253,224,71,0.6)] transform-gpu will-change-transform"
       />
 
       {/* ======================================================================= */}

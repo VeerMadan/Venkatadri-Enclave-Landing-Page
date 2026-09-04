@@ -2,6 +2,7 @@ import React, { useRef } from 'react';
 import { ShieldCheck, MapPin, ArrowRight, Download, ChevronDown, Sparkles } from 'lucide-react';
 import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
 import { PROJECT_INFO } from '../data/projectData';
+import ParallaxClouds from './ParallaxClouds';
 
 export default function Hero({ onOpenModal }) {
   const containerRef = useRef(null);
@@ -240,6 +241,9 @@ export default function Hero({ onOpenModal }) {
             <ChevronDown className="w-4 h-4 text-amber-400" />
           </motion.div>
         </motion.div>
+
+        {/* Anime-Wind & Volumetric Pure White Clouds (Triggers strictly as image exits into next section!) */}
+        <ParallaxClouds progress={smoothProgress} />
 
       </section>
     </div>
