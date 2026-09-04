@@ -46,7 +46,7 @@ export default function WhyInvest() {
                 whileHover={{ scale: 1.05, y: -4 }}
                 whileTap={{ scale: 0.95 }}
                 transition={{ type: "spring", stiffness: 380, damping: 22, delay: idx * 0.08 }}
-                className="glass-panel glass-panel-hover rounded-2xl p-3 sm:p-4 space-y-1.5 group cursor-pointer border border-white/50 dark:border-white/10 shadow-[0_8px_24px_rgba(0,0,0,0.06)] hover:shadow-[0_12px_32px_rgba(245,158,11,0.15)] transform-gpu will-change-transform"
+                className="apple-living-glass rounded-2xl p-3.5 sm:p-4 space-y-2 group cursor-pointer transform-gpu will-change-transform shadow-md"
               >
                 <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-500 group-hover:scale-105 transition-transform">
                   <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
@@ -73,7 +73,7 @@ export default function WhyInvest() {
             return (
               <div
                 key={index}
-                className="glass-panel rounded-xl overflow-hidden transition-all border border-white/40 dark:border-white/10 shadow-sm"
+                className="glass-panel rounded-xl overflow-hidden transition-all border-theme-subtle"
               >
                 <button
                   onClick={() => setOpenFaq(isOpen ? null : index)}

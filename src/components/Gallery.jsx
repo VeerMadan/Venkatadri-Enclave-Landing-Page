@@ -38,7 +38,7 @@ export default function Gallery() {
               whileTap={{ scale: 0.98 }}
               transition={{ type: "spring", stiffness: 350, damping: 24, delay: idx * 0.1 }}
               onClick={() => setSelectedImg(item)}
-              className="glass-panel rounded-2xl overflow-hidden group cursor-pointer relative border border-white/50 dark:border-white/10 shadow-[0_12px_36px_-8px_rgba(0,0,0,0.18)] transform-gpu will-change-transform"
+              className="glass-panel rounded-2xl overflow-hidden group cursor-pointer relative transform-gpu will-change-transform"
             >
 
               <div className="relative h-64 sm:h-72 overflow-hidden bg-black/40">

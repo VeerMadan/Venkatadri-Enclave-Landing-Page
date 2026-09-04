@@ -80,7 +80,7 @@ export default function LeadModal({ isOpen, onClose, initialType = 'brochure', c
   };
 
   const getTitle = () => {
-    if (initialType === 'visit') return 'Book Free Site Visit';
+    if (initialType === 'visit') return 'Site Information & Layout Details';
     if (initialType === 'quote') return `Quotation: ${contextData || 'Villa Plot'}`;
     if (initialType === 'calculator') return `Cost Sheet: ${contextData || 'Custom Plot'}`;
     return 'Brochure & Master Plan CAD';
@@ -93,7 +93,7 @@ export default function LeadModal({ isOpen, onClose, initialType = 'brochure', c
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="relative max-w-md w-full glass-panel rounded-3xl p-6 sm:p-7 border-theme-subtle shadow-2xl overflow-hidden"
+        className="relative max-w-md w-full apple-living-glass rounded-3xl p-6 sm:p-7 shadow-2xl overflow-hidden"
       >
         {/* Close Button */}
         <button
@@ -203,10 +203,10 @@ export default function LeadModal({ isOpen, onClose, initialType = 'brochure', c
                 className="w-full py-2.5 bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 font-bold text-xs rounded-xl shadow-md hover:brightness-110 transition-all flex items-center justify-center gap-1.5 cursor-pointer mt-1 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isSubmitting ? (
-                  <span>Securing slot...</span>
+                  <span>Sending inquiry...</span>
                 ) : (
                   <>
-                    <span>Submit & Confirm Slot</span>
+                    <span>Submit & Connect on WhatsApp</span>
                     <ArrowRight className="w-3.5 h-3.5" />
                   </>
                 )}

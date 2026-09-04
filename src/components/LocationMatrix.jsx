@@ -37,8 +37,8 @@ export default function LocationMatrix({ onSelectLocation }) {
           </p>
         </motion.div>
 
-        {/* Minimal Tabs with Sliding Indicator */}
-        <div className="relative flex flex-wrap items-center justify-center gap-2 mb-6 p-1.5 rounded-full neo-inset max-w-md mx-auto">
+        {/* Minimal Tabs with Sliding Highlight Pill */}
+        <div className="flex flex-wrap items-center justify-center gap-1.5 p-1.5 rounded-full neo-inset max-w-fit mx-auto mb-8 relative">
           {tabs.map((t) => {
             const Icon = t.icon;
             const isActive = activeTab === t.id;
@@ -47,17 +47,17 @@ export default function LocationMatrix({ onSelectLocation }) {
                 key={t.id}
                 type="button"
                 onClick={() => setActiveTab(t.id)}
-                className={`relative px-4 py-2 rounded-full text-xs font-semibold transition-colors duration-200 cursor-pointer flex items-center gap-1.5 shrink-0 z-10 ${
+                className={`relative px-4 py-1.5 rounded-full text-xs font-semibold transition-colors cursor-pointer flex items-center gap-1.5 shrink-0 z-10 select-none ${
                   isActive
                     ? 'text-slate-950 font-bold'
                     : 'text-sub-color hover:text-main-color'
                 }`}
               >
                 {isActive && (
-                  <motion.span
-                    layoutId="location-tab-highlight"
-                    className="absolute inset-0 rounded-full bg-gradient-to-r from-amber-400 to-amber-300 shadow-[0_2px_10px_rgba(245,158,11,0.5)] -z-10"
+                  <motion.div
+                    layoutId="activeLocationTab"
                     transition={{ type: "spring", stiffness: 450, damping: 32 }}
+                    className="absolute inset-0 bg-amber-400 rounded-full shadow-md -z-10"
                   />
                 )}
                 <Icon className="w-3.5 h-3.5" />
@@ -73,16 +73,16 @@ export default function LocationMatrix({ onSelectLocation }) {
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ type: "spring", stiffness: 400, damping: 25 }}
-          className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 max-h-[360px] sm:max-h-none overflow-y-auto pr-1 scrollbar-thin"
+          className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2.5 max-h-[380px] sm:max-h-none overflow-y-auto pr-1 scrollbar-thin"
         >
           {list.map((item, idx) => (
             <div
               key={idx}
               onClick={() => onSelectLocation && onSelectLocation(item)}
-              className={`glass-panel rounded-xl p-3 flex items-center justify-between transition-all cursor-pointer group hover:scale-[1.02] hover:border-amber-400/60 shadow-sm ${
+              className={`apple-living-glass rounded-2xl p-3.5 sm:p-4 flex items-center justify-between transition-all cursor-pointer group hover:scale-[1.02] shadow-sm ${
                 idx === 0 && activeTab === 'education'
                   ? 'border-amber-400/50 bg-amber-500/[0.05]'
-                  : 'hover:border-amber-400/30'
+                  : 'hover:border-amber-400/40'
               }`}
             >
               <div className="space-y-0.5 pr-2 min-w-0">

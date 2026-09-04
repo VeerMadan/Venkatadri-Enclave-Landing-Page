@@ -96,27 +96,27 @@ export default function Hero({ onOpenModal }) {
     v > 0.47 ? "none" : "block"
   );
 
-  // 5. Screen 2: Next Screen - Project Foundations Stage (Emerges strictly after clouds fully envelop the screen!)
+  // 5. Screen 2: Next Screen - Project Foundations Stage (Emerges cleanly as clouds balloon open!)
   const nextScreenOpacity = useTransform(
     smoothProgress,
-    [0, 0.74, 0.85, 1.0],
+    [0, 0.72, 0.84, 1.0],
     [0, 0, 1, 1]
   );
   const nextScreenY = useTransform(
     smoothProgress,
-    [0, 0.74, 0.85, 1.0],
-    [28, 28, 0, 0]
+    [0, 0.72, 0.84, 1.0],
+    [30, 30, 0, 0]
   );
   const nextScreenScale = useTransform(
     smoothProgress,
-    [0, 0.74, 0.85, 1.0],
+    [0, 0.72, 0.84, 1.0],
     [0.94, 0.94, 1.0, 1.0]
   );
   const nextScreenDisplay = useTransform(smoothProgress, (v) =>
-    v < 0.74 ? "none" : "block"
+    v < 0.72 ? "none" : "block"
   );
   const nextScreenPointerEvents = useTransform(smoothProgress, (v) =>
-    v >= 0.80 ? "auto" : "none"
+    v >= 0.78 ? "auto" : "none"
   );
 
   return (
@@ -278,7 +278,7 @@ export default function Hero({ onOpenModal }) {
                   whileHover={{ scale: 1.05, y: -4 }}
                   whileTap={{ scale: 0.95 }}
                   transition={{ type: "spring", stiffness: 350, damping: 22 }}
-                  className="glass-panel glass-panel-hover rounded-2xl p-3 sm:p-3.5 text-center flex flex-col items-center justify-center space-y-2 group cursor-pointer shadow-md border border-white/50 dark:border-white/10 transform-gpu will-change-transform"
+                  className="glass-panel glass-panel-hover rounded-2xl p-3 sm:p-3.5 text-center flex flex-col items-center justify-center space-y-2 group cursor-pointer shadow-sm transform-gpu will-change-transform"
                 >
                   <div className="w-8 h-8 rounded-full bg-amber-500/10 border border-amber-500/25 flex items-center justify-center text-amber-500 group-hover:bg-amber-400 group-hover:text-slate-950 transition-colors">
                     <Icon className="w-4 h-4" />

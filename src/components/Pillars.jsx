@@ -57,7 +57,7 @@ export default function Pillars({ onOpenModal, onOpenLayoutModal }) {
                 whileHover={{ scale: 1.03, y: -6 }}
                 whileTap={{ scale: 0.97 }}
                 transition={{ type: "spring", stiffness: 340, damping: 22, delay: idx * 0.12 }}
-                className="glass-panel glass-panel-hover rounded-2xl overflow-hidden group flex flex-col justify-between w-[72vw] max-w-[280px] md:w-auto md:max-w-none snap-start shrink-0 border border-white/50 dark:border-white/10 shadow-[0_12px_36px_-8px_rgba(0,0,0,0.15)] transform-gpu will-change-transform"
+                className="glass-panel glass-panel-hover rounded-2xl overflow-hidden group flex flex-col justify-between w-[72vw] max-w-[280px] md:w-auto md:max-w-none snap-start shrink-0 transform-gpu will-change-transform"
               >
                 <div className="relative h-36 sm:h-44 overflow-hidden">
                   <img
@@ -84,10 +84,10 @@ export default function Pillars({ onOpenModal, onOpenLayoutModal }) {
                   </p>
 
                   <button
-                    onClick={() => onOpenLayoutModal && onOpenLayoutModal()}
+                    onClick={() => onOpenLayoutModal ? onOpenLayoutModal() : onOpenModal('brochure')}
                     className="text-xs font-semibold text-amber-500 hover:text-amber-600 flex items-center gap-1 group-hover:translate-x-1 transition-transform cursor-pointer"
                   >
-                    <span>View Layout Blueprint</span>
+                    <span>View Layout</span>
                     <ArrowRight className="w-3.5 h-3.5" />
                   </button>
                 </div>
