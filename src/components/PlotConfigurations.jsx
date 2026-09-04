@@ -24,25 +24,36 @@ export default function PlotConfigurations({ onOpenModal }) {
           </p>
         </div>
 
-        {/* Minimal Neomorphic Tabs */}
-        <div className="flex flex-wrap items-center justify-center gap-2 mb-8">
-          {PLOT_TYPES.map((plot) => (
-            <button
-              key={plot.id}
-              onClick={() => setActiveId(plot.id)}
-              className={`px-4 py-2 rounded-full text-xs font-semibold transition-all cursor-pointer flex items-center gap-2 ${
-                activeId === plot.id
-                  ? 'bg-amber-400 text-slate-950 shadow-md font-bold'
-                  : 'glass-panel text-sub-color hover:text-main-color hover:border-amber-400/40'
-              }`}
-            >
-              <span
-                className="w-2.5 h-2.5 rounded-full"
-                style={{ backgroundColor: plot.color }}
-              ></span>
-              <span>{plot.dimensions}</span>
-            </button>
-          ))}
+        {/* Minimal Neomorphic Tabs with Sliding Indicator */}
+        <div className="relative flex flex-wrap items-center justify-center gap-2 mb-8 p-1.5 rounded-full neo-inset max-w-xl mx-auto">
+          {PLOT_TYPES.map((plot) => {
+            const isActive = activeId === plot.id;
+            return (
+              <button
+                key={plot.id}
+                type="button"
+                onClick={() => setActiveId(plot.id)}
+                className={`relative px-4 py-2 rounded-full text-xs font-semibold transition-colors duration-200 cursor-pointer flex items-center gap-2 z-10 ${
+                  isActive
+                    ? 'text-slate-950 font-bold'
+                    : 'text-sub-color hover:text-main-color'
+                }`}
+              >
+                {isActive && (
+                  <motion.span
+                    layoutId="plot-config-highlight"
+                    className="absolute inset-0 rounded-full bg-gradient-to-r from-amber-400 to-amber-300 shadow-[0_2px_10px_rgba(245,158,11,0.5)] -z-10"
+                    transition={{ type: "spring", stiffness: 450, damping: 32 }}
+                  />
+                )}
+                <span
+                  className="w-2.5 h-2.5 rounded-full"
+                  style={{ backgroundColor: plot.color }}
+                ></span>
+                <span>{plot.dimensions}</span>
+              </button>
+            );
+          })}
         </div>
 
         {/* Selected Plot Feature Glass Card */}
@@ -52,7 +63,7 @@ export default function PlotConfigurations({ onOpenModal }) {
           whileInView={{ opacity: 1, y: 0, scale: 1 }}
           viewport={{ once: true, amount: 0.2 }}
           transition={{ type: "spring", stiffness: 350, damping: 25 }}
-          className="glass-panel rounded-3xl p-6 sm:p-8 max-w-4xl mx-auto border-theme-subtle relative overflow-hidden transform-gpu will-change-transform"
+          className="glass-panel rounded-3xl p-6 sm:p-8 max-w-4xl mx-auto border border-white/50 dark:border-white/12 shadow-[0_16px_48px_-12px_rgba(0,0,0,0.18)] relative overflow-hidden transform-gpu will-change-transform"
         >
           <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
             
@@ -99,7 +110,7 @@ export default function PlotConfigurations({ onOpenModal }) {
             </div>
 
             {/* Right: Action */}
-            <div className="md:col-span-5 flex flex-col justify-center space-y-3 neo-inset p-5 rounded-2xl">
+            <div className="md:col-span-5 flex flex-col justify-center space-y-3 neo-inset p-5 rounded-2xl border border-white/30 dark:border-white/10">
               <div className="space-y-1.5">
                 {current.highlights.slice(0, 3).map((h, i) => (
                   <div key={i} className="flex items-center gap-2 text-xs text-sub-color">
@@ -109,13 +120,15 @@ export default function PlotConfigurations({ onOpenModal }) {
                 ))}
               </div>
 
-              <button
-                onClick={() => onOpenModal('quote', current.name)}
+              <a
+                href={`https://wa.me/919900090049?text=${encodeURIComponent(`Hi MVK Team! I am interested in ${current.name} (${current.dimensions}, ${current.areaSqFt} SqFt) at Venkatadri Enclave. Can you share the latest availability?`)}`}
+                target="_blank"
+                rel="noreferrer"
                 className="w-full py-2.5 bg-gradient-to-r from-amber-400 to-amber-500 text-slate-950 font-bold text-xs rounded-xl shadow-md hover:brightness-110 transition-all flex items-center justify-center gap-1.5 cursor-pointer mt-2"
               >
-                <span>Request Detailed Quote</span>
+                <span>Enquire via WhatsApp</span>
                 <ArrowRight className="w-3.5 h-3.5" />
-              </button>
+              </a>
 
               <a
                 href="#plot-finder"

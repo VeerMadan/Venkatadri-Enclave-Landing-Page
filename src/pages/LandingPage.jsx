@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import { motion, useScroll, useSpring } from 'framer-motion';
+import { motion, useScroll } from 'framer-motion';
 import Navbar from '../components/Navbar';
-import BrochureEntranceSection from '../components/BrochureEntranceSection';
 import Hero from '../components/Hero';
 import Pillars from '../components/Pillars';
 import PlotConfigurations from '../components/PlotConfigurations';
@@ -15,36 +14,13 @@ import WhyInvest from '../components/WhyInvest';
 import Gallery from '../components/Gallery';
 import ContactSection from '../components/ContactSection';
 import Footer from '../components/Footer';
-import LeadModal from '../components/LeadModal';
 import LayoutDetailsModal from '../components/LayoutDetailsModal';
 import GoogleMapsModal from '../components/GoogleMapsModal';
 
 export default function LandingPage() {
-  const [modalState, setModalState] = useState({
-    isOpen: false,
-    type: 'brochure',
-    context: ''
-  });
-
   const [isLayoutModalOpen, setIsLayoutModalOpen] = useState(false);
   const [selectedLocationForMap, setSelectedLocationForMap] = useState(null);
   const [matrixPlotTypeFilter, setMatrixPlotTypeFilter] = useState('all');
-
-  const handleOpenModal = (type = 'brochure', context = '') => {
-    setModalState({
-      isOpen: true,
-      type,
-      context
-    });
-  };
-
-  const handleCloseModal = () => {
-    setModalState({
-      isOpen: false,
-      type: 'brochure',
-      context: ''
-    });
-  };
 
   const { scrollYProgress } = useScroll();
 
@@ -60,32 +36,25 @@ export default function LandingPage() {
       />
       
       {/* Top Floating Navigation */}
-      <Navbar onOpenModal={handleOpenModal} />
+      <Navbar />
 
       {/* Main Content Sections */}
       <main>
-        {/* Entrance Showcase & 4-Question Qualification Form */}
-        <BrochureEntranceSection />
-
         {/* Cinematic Grand Entrance Showcase Runway & Project Foundations Screen */}
-        <Hero onOpenModal={handleOpenModal} />
+        <Hero />
         
-        {/* Core Layout Modules */}
+        {/* Core Architectural Modules */}
         <Pillars 
-          onOpenModal={handleOpenModal} 
           onOpenLayoutModal={() => setIsLayoutModalOpen(true)} 
         />
         <PlotConfigurations 
-          onOpenModal={handleOpenModal} 
           onOpenLayoutModal={() => setIsLayoutModalOpen(true)} 
         />
         <InteractivePlotSelector 
-          onOpenModal={handleOpenModal}
           initialTypeFilter={matrixPlotTypeFilter}
         />
-        <PriceCalculator onOpenModal={handleOpenModal} />
+        <PriceCalculator />
         <MasterPlanViewer 
-          onOpenModal={handleOpenModal} 
           onSelectPlotType={(type) => setMatrixPlotTypeFilter(type)}
         />
         <Amenities 
@@ -94,21 +63,13 @@ export default function LandingPage() {
         <LocationMatrix 
           onSelectLocation={(loc) => setSelectedLocationForMap(loc)} 
         />
-        <WhyInvest onOpenModal={handleOpenModal} />
-        <Gallery onOpenModal={handleOpenModal} />
-        <ContactSection onOpenModal={handleOpenModal} />
+        <WhyInvest />
+        <Gallery />
+        <ContactSection />
       </main>
 
       {/* Footer */}
-      <Footer onOpenModal={handleOpenModal} />
-
-      {/* Lead Capture Popup Modal */}
-      <LeadModal
-        isOpen={modalState.isOpen}
-        onClose={handleCloseModal}
-        initialType={modalState.type}
-        contextData={modalState.context}
-      />
+      <Footer />
 
       {/* Layout Details Dossier Modal */}
       <LayoutDetailsModal

@@ -194,7 +194,7 @@ export default function InteractivePlotSelector({ onOpenModal, initialTypeFilter
             Interactive Plot Matrix & <span className="gold-gradient-text">Live Availability</span>
           </h2>
           <p className="text-xs sm:text-sm text-sub-color mt-1">
-            Click any villa plot to view exact dimensions, pricing breakdown, Vastu orientation, and reserve your plot.
+            Click any villa plot to view exact dimensions, pricing breakdown, facing, and Vastu compliance.
           </p>
         </motion.div>
 
@@ -669,29 +669,19 @@ export default function InteractivePlotSelector({ onOpenModal, initialTypeFilter
                               </span>
                             </td>
                             <td className="py-2.5 px-2.5 text-right">
-                              {plot.status === 'available' ? (
-                                <button
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    setSelectedPlotId(plot.id);
-                                    onOpenModal('quote', plot.plotNo);
-                                  }}
-                                  className="px-2 py-1 bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold text-[10px] rounded-lg shadow cursor-pointer transition-all"
-                                >
-                                  Book
-                                </button>
-                              ) : (
-                                <button
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    setSelectedPlotId(plot.id);
-                                    onOpenModal('visit', `${plot.plotNo} Waitlist`);
-                                  }}
-                                  className="px-2 py-1 glass-panel text-sub-color hover:text-main-color font-semibold text-[10px] rounded-lg cursor-pointer transition-all"
-                                >
-                                  Waitlist
-                                </button>
-                              )}
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setSelectedPlotId(plot.id);
+                                }}
+                                className={`px-2.5 py-1 text-[10px] font-semibold rounded-lg transition-all cursor-pointer ${
+                                  selectedPlotId === plot.id
+                                    ? 'bg-amber-400 text-slate-950 font-bold shadow'
+                                    : 'glass-panel text-sub-color hover:text-main-color'
+                                }`}
+                              >
+                                View Specs
+                              </button>
                             </td>
                           </tr>
                         );
@@ -791,35 +781,21 @@ export default function InteractivePlotSelector({ onOpenModal, initialTypeFilter
                   
                   {/* CASE 1: AVAILABLE */}
                   {selectedPlot.status === 'available' && (
-                    <>
-                      <button
-                        onClick={() => onOpenModal('quote', `${selectedPlot.plotNo} (${selectedPlot.dimensions})`)}
-                        className="w-full py-2.5 bg-gradient-to-r from-amber-400 via-amber-300 to-amber-500 text-slate-950 font-bold text-xs rounded-xl shadow-md hover:brightness-110 transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+                    <div className="space-y-2">
+                      <a
+                        href={`https://wa.me/919900090049?text=${encodeURIComponent(`Hi MVK Team! I am interested in Plot ${selectedPlot.plotNo} (${selectedPlot.dimensions}, ${selectedPlot.areaSqFt} SqFt, ${selectedPlot.facing} Facing) at Venkatadri Enclave. Can you share the latest site details?`)}`}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="w-full py-3 bg-gradient-to-r from-amber-400 via-amber-300 to-amber-500 text-slate-950 font-bold text-xs rounded-xl shadow-md hover:brightness-110 transition-all flex items-center justify-center gap-2 cursor-pointer"
                       >
-                        <span>Reserve & Request Quote for {selectedPlot.plotNo}</span>
-                        <ArrowRight className="w-3.5 h-3.5" />
-                      </button>
+                        <MessageSquare className="w-4 h-4" />
+                        <span>Enquire About {selectedPlot.plotNo} on WhatsApp</span>
+                      </a>
 
-                      <div className="grid grid-cols-2 gap-2">
-                        <button
-                          onClick={() => onOpenModal('visit', `${selectedPlot.plotNo} Site Walk`)}
-                          className="py-2 px-2 rounded-xl glass-panel text-main-color hover:text-amber-500 text-[10.5px] font-semibold flex items-center justify-center gap-1 cursor-pointer transition-all"
-                        >
-                          <Car className="w-3 h-3 text-amber-500" />
-                          <span>Free Cab Visit</span>
-                        </button>
-
-                        <a
-                          href={`https://wa.me/919900090049?text=Hi%20MVK%20Team%2C%20I%20am%20interested%20in%20reserving%20${selectedPlot.plotNo}%20(${selectedPlot.dimensions}%2C%20${selectedPlot.areaSqFt}%20SqFt)%20at%20Venkatadri%20Enclave.`}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="py-2 px-2 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-500 hover:bg-emerald-500/20 text-[10.5px] font-semibold flex items-center justify-center gap-1 cursor-pointer transition-all"
-                        >
-                          <MessageSquare className="w-3 h-3" />
-                          <span>WhatsApp Plot</span>
-                        </a>
+                      <div className="p-2.5 rounded-xl neo-inset text-[10.5px] text-sub-color text-center">
+                        <span>✨ Ready for immediate demarcation & Khata registration</span>
                       </div>
-                    </>
+                    </div>
                   )}
 
                   {/* CASE 2: BOOKED */}
@@ -831,26 +807,18 @@ export default function InteractivePlotSelector({ onOpenModal, initialTypeFilter
                           <span>Under Token / Reserved</span>
                         </div>
                         <p className="text-[10px] text-sub-color">
-                          Advance token received. You can join the cancellation waitlist.
+                          Advance token received. Plot registration is in progress.
                         </p>
                       </div>
-
-                      <button
-                        onClick={() => onOpenModal('visit', `Waitlist for ${selectedPlot.plotNo}`)}
-                        className="w-full py-2.5 bg-amber-400 text-slate-950 font-bold text-xs rounded-xl shadow hover:bg-amber-300 transition-all flex items-center justify-center gap-1.5 cursor-pointer"
-                      >
-                        <BellRing className="w-3.5 h-3.5" />
-                        <span>Join Priority Cancellation Waitlist</span>
-                      </button>
 
                       <button
                         onClick={() => {
                           const nextAvail = inventory.find(p => p.status === 'available' && p.block === selectedPlot.block) || inventory.find(p => p.status === 'available');
                           if (nextAvail) setSelectedPlotId(nextAvail.id);
                         }}
-                        className="w-full py-2 rounded-xl glass-panel text-amber-500 hover:border-amber-500/40 text-xs font-semibold flex items-center justify-center gap-1 cursor-pointer"
+                        className="w-full py-2.5 rounded-xl bg-amber-400 text-slate-950 font-bold text-xs shadow hover:bg-amber-300 transition-all flex items-center justify-center gap-1.5 cursor-pointer"
                       >
-                        <span>View Next Available Plot in This Block</span>
+                        <span>View Next Available Plot in Block {selectedPlot.block}</span>
                         <ArrowUpRight className="w-3.5 h-3.5" />
                       </button>
                     </div>
@@ -865,7 +833,7 @@ export default function InteractivePlotSelector({ onOpenModal, initialTypeFilter
                           <span>Plot Sold & Registered</span>
                         </div>
                         <p className="text-[10px] text-sub-color">
-                          This unit has been sold out. Booking is closed for this plot.
+                          This unit has been sold out and registered with the sub-registrar office.
                         </p>
                       </div>
 

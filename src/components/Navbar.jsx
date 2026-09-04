@@ -19,13 +19,13 @@ export default function Navbar() {
 
   const links = [
     { label: 'Overview', href: '#overview' },
-    { label: 'Plot Matrix', href: '#plots' },
-    { label: 'Plot Sizes', href: '#configurations' },
+    { label: 'Plot Matrix', href: '#plot-finder' },
+    { label: 'Plot Sizes', href: '#plots' },
     { label: 'Calculator', href: '#calculator' },
-    { label: 'Master Plan', href: '#masterplan' },
+    { label: 'Master Plan', href: '#master-plan' },
     { label: 'Amenities', href: '#amenities' },
     { label: 'Location', href: '#location' },
-    { label: 'Why Us', href: '#why-invest' },
+    { label: 'Contact', href: '#contact' },
   ];
 
   return (

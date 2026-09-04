@@ -64,7 +64,7 @@ export default function Amenities({ onSelectLocation }) {
                   mapQuery: 'Bagaluru Main Road, Yelahanka, Bengaluru'
                 })}
                 transition={{ type: "spring", stiffness: 380, damping: 22, delay: (idx % 4) * 0.06 }}
-                className="glass-panel glass-panel-hover rounded-2xl p-3.5 sm:p-4 flex items-center gap-3 group cursor-pointer transform-gpu will-change-transform"
+                className="glass-panel glass-panel-hover rounded-2xl p-3.5 sm:p-4 flex items-center gap-3 group cursor-pointer border border-white/50 dark:border-white/10 shadow-[0_8px_24px_rgba(0,0,0,0.06)] hover:shadow-[0_12px_32px_rgba(245,158,11,0.15)] transform-gpu will-change-transform"
               >
                 <div className="w-9 h-9 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-500 group-hover:bg-amber-400 group-hover:text-slate-950 transition-colors shrink-0">
                   <Icon className="w-4 h-4" />

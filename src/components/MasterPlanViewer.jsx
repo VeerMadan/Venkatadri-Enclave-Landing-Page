@@ -52,40 +52,37 @@ export default function MasterPlanViewer({ onOpenModal, onSelectPlotType }) {
 
         {/* Minimal Controls */}
         <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
-          <div className="flex items-center gap-1.5 p-1 rounded-full neo-inset">
-            <button
-              onClick={() => setActiveView('blueprint')}
-              className={`px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${
-                activeView === 'blueprint'
-                  ? 'bg-amber-400 text-slate-950 font-bold shadow'
-                  : 'text-sub-color hover:text-main-color'
-              }`}
-            >
-              <Map className="w-3.5 h-3.5" />
-              <span>Blueprint Map</span>
-            </button>
-            <button
-              onClick={() => setActiveView('panoramic')}
-              className={`px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${
-                activeView === 'panoramic'
-                  ? 'bg-amber-400 text-slate-950 font-bold shadow'
-                  : 'text-sub-color hover:text-main-color'
-              }`}
-            >
-              <Eye className="w-3.5 h-3.5" />
-              <span>Sunset Boulevard</span>
-            </button>
-            <button
-              onClick={() => setActiveView('aerial')}
-              className={`px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 ${
-                activeView === 'aerial'
-                  ? 'bg-amber-400 text-slate-950 font-bold shadow'
-                  : 'text-sub-color hover:text-main-color'
-              }`}
-            >
-              <Eye className="w-3.5 h-3.5" />
-              <span>3D Aerial View</span>
-            </button>
+          <div className="relative flex items-center gap-1.5 p-1 rounded-full neo-inset">
+            {[
+              { id: 'blueprint', label: 'Blueprint Map', icon: Map },
+              { id: 'panoramic', label: 'Sunset Boulevard', icon: Eye },
+              { id: 'aerial', label: '3D Aerial View', icon: Eye },
+            ].map((v) => {
+              const Icon = v.icon;
+              const isActive = activeView === v.id;
+              return (
+                <button
+                  key={v.id}
+                  type="button"
+                  onClick={() => setActiveView(v.id)}
+                  className={`relative px-4 py-2 rounded-full text-xs font-semibold transition-colors duration-200 cursor-pointer flex items-center gap-1.5 z-10 ${
+                    isActive
+                      ? 'text-slate-950 font-bold'
+                      : 'text-sub-color hover:text-main-color'
+                  }`}
+                >
+                  {isActive && (
+                    <motion.span
+                      layoutId="masterplan-tab-highlight"
+                      className="absolute inset-0 rounded-full bg-gradient-to-r from-amber-400 to-amber-300 shadow-[0_2px_12px_rgba(245,158,11,0.45)] -z-10"
+                      transition={{ type: "spring", stiffness: 450, damping: 32 }}
+                    />
+                  )}
+                  <Icon className="w-3.5 h-3.5" />
+                  <span>{v.label}</span>
+                </button>
+              );
+            })}
           </div>
 
           {/* Interactive Legend Pills */}
@@ -140,7 +137,7 @@ export default function MasterPlanViewer({ onOpenModal, onSelectPlotType }) {
           whileInView={{ opacity: 1, y: 0, scale: 1 }}
           viewport={{ once: true, amount: 0.15 }}
           transition={{ type: "spring", stiffness: 320, damping: 24 }}
-          className="glass-panel rounded-3xl p-3 sm:p-5 border-theme-subtle relative overflow-hidden group shadow-lg transform-gpu will-change-transform"
+          className="glass-panel rounded-3xl p-3 sm:p-5 border border-white/50 dark:border-white/12 relative overflow-hidden group shadow-[0_16px_48px_-12px_rgba(0,0,0,0.18)] transform-gpu will-change-transform"
         >
           <div className="relative rounded-2xl overflow-hidden bg-black/5 dark:bg-black/40 flex items-center justify-center min-h-[380px] sm:min-h-[500px]">
             <img
