@@ -40,13 +40,13 @@ export default function WhyInvest() {
             return (
               <motion.div
                 key={idx}
-                initial={{ opacity: 0, y: 20, scale: 0.95 }}
+                initial={{ opacity: 0, y: 24, scale: 0.88 }}
                 whileInView={{ opacity: 1, y: 0, scale: 1 }}
-                viewport={{ once: false, margin: "-30px" }}
-                whileHover={{ scale: 1.03 }}
-                whileTap={{ scale: 0.96 }}
-                transition={{ type: "spring", stiffness: 350, damping: 25, delay: idx * 0.08 }}
-                className="glass-panel glass-panel-hover rounded-2xl p-3 sm:p-4 space-y-1.5 group cursor-pointer"
+                viewport={{ once: true, amount: 0.2 }}
+                whileHover={{ scale: 1.05, y: -4 }}
+                whileTap={{ scale: 0.95 }}
+                transition={{ type: "spring", stiffness: 380, damping: 22, delay: idx * 0.08 }}
+                className="glass-panel glass-panel-hover rounded-2xl p-3 sm:p-4 space-y-1.5 group cursor-pointer transform-gpu will-change-transform"
               >
                 <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-500 group-hover:scale-105 transition-transform">
                   <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />

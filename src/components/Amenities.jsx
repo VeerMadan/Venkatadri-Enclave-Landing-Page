@@ -51,10 +51,10 @@ export default function Amenities({ onSelectLocation }) {
             return (
               <motion.div
                 key={idx}
-                initial={{ opacity: 0, y: 30, scale: 0.9 }}
+                initial={{ opacity: 0, y: 24, scale: 0.88 }}
                 whileInView={{ opacity: 1, y: 0, scale: 1 }}
-                viewport={{ once: false, margin: "-50px" }}
-                whileHover={{ scale: 1.04 }}
+                viewport={{ once: true, amount: 0.15 }}
+                whileHover={{ scale: 1.05, y: -4 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => onSelectLocation && onSelectLocation({
                   name: `Venkatadri Enclave: ${item.title}`,
@@ -63,8 +63,8 @@ export default function Amenities({ onSelectLocation }) {
                   time: 'Inside Community',
                   mapQuery: 'Bagaluru Main Road, Yelahanka, Bengaluru'
                 })}
-                transition={{ type: "spring", stiffness: 350, damping: 20, delay: (idx % 4) * 0.08 }}
-                className="glass-panel glass-panel-hover rounded-2xl p-3.5 sm:p-4 flex items-center gap-3 group cursor-pointer"
+                transition={{ type: "spring", stiffness: 380, damping: 22, delay: (idx % 4) * 0.06 }}
+                className="glass-panel glass-panel-hover rounded-2xl p-3.5 sm:p-4 flex items-center gap-3 group cursor-pointer transform-gpu will-change-transform"
               >
                 <div className="w-9 h-9 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-500 group-hover:bg-amber-400 group-hover:text-slate-950 transition-colors shrink-0">
                   <Icon className="w-4 h-4" />

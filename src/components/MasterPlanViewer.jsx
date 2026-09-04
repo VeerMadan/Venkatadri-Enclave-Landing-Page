@@ -135,7 +135,13 @@ export default function MasterPlanViewer({ onOpenModal, onSelectPlotType }) {
         )}
 
         {/* Layout Visualizer Window */}
-        <div className="glass-panel rounded-3xl p-3 sm:p-5 border-theme-subtle relative overflow-hidden group shadow-lg">
+        <motion.div
+          initial={{ opacity: 0, y: 28, scale: 0.96 }}
+          whileInView={{ opacity: 1, y: 0, scale: 1 }}
+          viewport={{ once: true, amount: 0.15 }}
+          transition={{ type: "spring", stiffness: 320, damping: 24 }}
+          className="glass-panel rounded-3xl p-3 sm:p-5 border-theme-subtle relative overflow-hidden group shadow-lg transform-gpu will-change-transform"
+        >
           <div className="relative rounded-2xl overflow-hidden bg-black/5 dark:bg-black/40 flex items-center justify-center min-h-[380px] sm:min-h-[500px]">
             <img
               src={
@@ -146,6 +152,7 @@ export default function MasterPlanViewer({ onOpenModal, onSelectPlotType }) {
                   : "/images/aerial-layout-view.jpg"
               }
               alt="MVK Venkatadri Enclave Master Plan"
+              loading="lazy"
               className="w-full h-auto max-h-[700px] object-contain rounded-xl transition-all duration-300"
             />
             {activeView === 'blueprint' && (
@@ -167,16 +174,9 @@ export default function MasterPlanViewer({ onOpenModal, onSelectPlotType }) {
                 <ArrowRight className="w-3 h-3" />
               </a>
             </div>
-            <button
-              onClick={() => onOpenModal('visit')}
-              className="text-amber-500 font-semibold hover:underline flex items-center gap-1 cursor-pointer"
-            >
-              <span>Book Site Walk to Choose Plot</span>
-              <ArrowRight className="w-3.5 h-3.5" />
-            </button>
           </div>
 
-        </div>
+        </motion.div>
 
       </div>
     </section>

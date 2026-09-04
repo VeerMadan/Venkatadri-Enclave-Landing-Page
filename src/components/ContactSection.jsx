@@ -202,7 +202,7 @@ export default function ContactSection({ onOpenModal }) {
                   <span>Connecting to WhatsApp...</span>
                 ) : (
                   <>
-                    <span>Submit & Download Brochure</span>
+                    <span>Send Enquiry via WhatsApp</span>
                     <ArrowRight className="w-4 h-4" />
                   </>
                 )}

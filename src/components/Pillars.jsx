@@ -51,18 +51,19 @@ export default function Pillars({ onOpenModal, onOpenLayoutModal }) {
             return (
               <motion.div
                 key={item.title}
-                initial={{ opacity: 0, y: 30, scale: 0.95 }}
+                initial={{ opacity: 0, y: 36, scale: 0.90 }}
                 whileInView={{ opacity: 1, y: 0, scale: 1 }}
-                viewport={{ once: false, margin: "-50px" }}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                transition={{ type: "spring", stiffness: 300, damping: 25, delay: idx * 0.1 }}
-                className="glass-panel glass-panel-hover rounded-2xl overflow-hidden group flex flex-col justify-between w-[72vw] max-w-[280px] md:w-auto md:max-w-none snap-start shrink-0"
+                viewport={{ once: true, amount: 0.2 }}
+                whileHover={{ scale: 1.03, y: -6 }}
+                whileTap={{ scale: 0.97 }}
+                transition={{ type: "spring", stiffness: 340, damping: 22, delay: idx * 0.12 }}
+                className="glass-panel glass-panel-hover rounded-2xl overflow-hidden group flex flex-col justify-between w-[72vw] max-w-[280px] md:w-auto md:max-w-none snap-start shrink-0 transform-gpu will-change-transform"
               >
                 <div className="relative h-36 sm:h-44 overflow-hidden">
                   <img
                     src={item.img}
                     alt={item.title}
+                    loading="lazy"
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 filter brightness-90"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-[var(--bg-surface)] via-transparent to-transparent"></div>

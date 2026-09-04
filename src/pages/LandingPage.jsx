@@ -16,7 +16,6 @@ import WhyInvest from '../components/WhyInvest';
 import Gallery from '../components/Gallery';
 import ContactSection from '../components/ContactSection';
 import Footer from '../components/Footer';
-import StickyMobileBar from '../components/StickyMobileBar';
 import LeadModal from '../components/LeadModal';
 import LayoutDetailsModal from '../components/LayoutDetailsModal';
 import GoogleMapsModal from '../components/GoogleMapsModal';
@@ -104,9 +103,6 @@ export default function LandingPage() {
 
       {/* Footer */}
       <Footer onOpenModal={handleOpenModal} />
-
-      {/* Floating / Sticky Mobile Navigation */}
-      <StickyMobileBar onOpenModal={handleOpenModal} />
 
       {/* Lead Capture Popup Modal */}
       <LeadModal

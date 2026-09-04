@@ -46,8 +46,14 @@ export default function PriceCalculator({ onOpenModal }) {
           </h2>
         </motion.div>
 
-        {/* Minimalist Glass Card */}
-        <div className="glass-panel rounded-3xl p-6 sm:p-8 border-theme-subtle grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
+        {/* Calculator Main Grid */}
+        <motion.div
+          initial={{ opacity: 0, y: 28, scale: 0.95 }}
+          whileInView={{ opacity: 1, y: 0, scale: 1 }}
+          viewport={{ once: true, amount: 0.2 }}
+          transition={{ type: "spring", stiffness: 340, damping: 25 }}
+          className="glass-panel rounded-3xl p-6 sm:p-8 border-theme-subtle grid grid-cols-1 md:grid-cols-12 gap-8 items-center transform-gpu will-change-transform"
+        >
 
           
           {/* Controls */}
@@ -157,7 +163,7 @@ export default function PriceCalculator({ onOpenModal }) {
             </button>
           </div>
 
-        </div>
+        </motion.div>
 
       </div>
     </section>

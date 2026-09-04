@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { ShieldCheck, MapPin, ArrowRight, Download, ChevronDown, Sparkles } from 'lucide-react';
+import { ShieldCheck, MapPin, ChevronDown, Sparkles } from 'lucide-react';
 import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
 import { PROJECT_INFO } from '../data/projectData';
 import ParallaxClouds from './ParallaxClouds';
@@ -54,24 +54,28 @@ export default function Hero({ onOpenModal }) {
     ["12%", "12%", "0%", "0%"]
   );
 
-  // 4. Foreground Hero Stage (Title, Tagline, 4 Metric Boxes, CTAs, Trust Badges)
+  // 4. Foreground Hero Stage (Title, Tagline, 4 Metric Boxes, Trust Badges)
+  // Fully and cleanly dissolves to 0 before the clouds erupt, zero ghost cards remain!
   const contentOpacity = useTransform(
     smoothProgress,
-    [0, 0.10, 0.22, 0.55, 0.88],
-    [0, 0, 1, 1, 0.1]
+    [0, 0.08, 0.16, 0.38, 0.46, 1.0],
+    [0, 0, 1, 1, 0, 0]
   );
   const contentY = useTransform(
     smoothProgress,
-    [0, 0.10, 0.22, 0.55, 0.88],
-    [40, 40, 0, 0, -35]
+    [0, 0.08, 0.16, 0.38, 0.48],
+    [40, 40, 0, 0, -45]
   );
   const contentScale = useTransform(
     smoothProgress,
-    [0, 0.10, 0.22, 0.55, 0.88],
-    [0.96, 0.96, 1.0, 1.0, 0.98]
+    [0, 0.08, 0.16, 0.38, 0.48],
+    [0.96, 0.96, 1.0, 1.0, 0.90]
   );
   const pointerEvents = useTransform(smoothProgress, (v) =>
-    v >= 0.16 && v <= 0.60 ? "auto" : "none"
+    v >= 0.12 && v <= 0.42 ? "auto" : "none"
+  );
+  const contentDisplay = useTransform(smoothProgress, (v) =>
+    v > 0.47 ? "none" : "block"
   );
 
   return (
@@ -119,7 +123,8 @@ export default function Hero({ onOpenModal }) {
             y: contentY,
             opacity: contentOpacity,
             scale: contentScale,
-            pointerEvents: pointerEvents
+            pointerEvents: pointerEvents,
+            display: contentDisplay
           }}
           className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 text-center will-change-transform my-auto"
         >
@@ -170,29 +175,6 @@ export default function Hero({ onOpenModal }) {
               <p className="text-base sm:text-xl font-bold text-main-color font-serif-luxury mt-0.5">₹7,699</p>
               <span className="text-[9.5px] sm:text-[10px] text-sub-color">/ Sq.Ft</span>
             </motion.div>
-          </div>
-
-          {/* Action CTAs */}
-          <div className="flex flex-wrap items-center justify-center gap-2.5">
-            <motion.button
-              whileHover={{ scale: 1.03 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={() => onOpenModal('visit')}
-              className="px-5 sm:px-6 py-2.5 rounded-full bg-gradient-to-r from-amber-400 via-amber-300 to-amber-500 hover:brightness-110 text-slate-950 font-bold text-xs sm:text-sm shadow-md flex items-center gap-1.5 cursor-pointer"
-            >
-              <span>Book Free Site Visit</span>
-              <ArrowRight className="w-3.5 h-3.5" />
-            </motion.button>
-
-            <motion.a
-              href="#brochure-form"
-              whileHover={{ scale: 1.03 }}
-              whileTap={{ scale: 0.95 }}
-              className="px-4 sm:px-5 py-2.5 rounded-full glass-panel text-main-color font-semibold text-xs sm:text-sm flex items-center gap-1.5 cursor-pointer hover:border-amber-400/40 shadow-sm"
-            >
-              <Download className="w-3.5 h-3.5 text-amber-500" />
-              <span>Download Brochure</span>
-            </motion.a>
           </div>
 
           {/* Minimalist Trust Badges */}

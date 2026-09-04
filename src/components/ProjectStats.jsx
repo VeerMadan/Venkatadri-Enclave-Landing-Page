@@ -23,13 +23,13 @@ export default function ProjectStats() {
             return (
               <motion.div
                 key={index}
-                initial={{ opacity: 0, y: 30, scale: 0.9 }}
+                initial={{ opacity: 0, y: 24, scale: 0.88 }}
                 whileInView={{ opacity: 1, y: 0, scale: 1 }}
-                viewport={{ once: false, margin: "-20px" }}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                transition={{ type: "spring", stiffness: 350, damping: 25, delay: (index % 3) * 0.1 }}
-                className="glass-panel glass-panel-hover rounded-xl p-3 text-center flex flex-col items-center justify-center space-y-1.5 group cursor-pointer"
+                viewport={{ once: true, amount: 0.25 }}
+                whileHover={{ scale: 1.06, y: -4 }}
+                whileTap={{ scale: 0.94 }}
+                transition={{ type: "spring", stiffness: 420, damping: 22, delay: (index % 6) * 0.06 }}
+                className="glass-panel glass-panel-hover rounded-xl p-3 text-center flex flex-col items-center justify-center space-y-1.5 group cursor-pointer transform-gpu will-change-transform"
               >
                 <div className="w-7 h-7 rounded-full bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-500 group-hover:scale-105 transition-transform">
                   <Icon className="w-3.5 h-3.5" />

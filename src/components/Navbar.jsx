@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Download, Calendar, Menu, X, Sun, Moon, Sparkles } from 'lucide-react';
+import { Menu, X, Sun, Moon } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTheme } from '../context/ThemeContext';
 
-export default function Navbar({ onOpenModal }) {
+export default function Navbar() {
   const { theme, toggleTheme } = useTheme();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -88,10 +88,8 @@ export default function Navbar({ onOpenModal }) {
           })}
         </nav>
 
-        {/* Action CTAs & Theme Switcher (iOS Bubbles) */}
-        <div className="hidden sm:flex items-center gap-2">
-          
-          {/* Theme Toggle Bubble */}
+        {/* Theme Switcher Bubble */}
+        <div className="hidden sm:flex items-center">
           <motion.button
             whileHover={{ scale: 1.08 }}
             whileTap={{ scale: 0.92 }}
@@ -108,29 +106,6 @@ export default function Navbar({ onOpenModal }) {
               {theme === 'dark' ? <Sun className="w-3.5 h-3.5" /> : <Moon className="w-3.5 h-3.5" />}
             </motion.div>
           </motion.button>
-
-          {/* Brochure Pill Bubble */}
-          <motion.a
-            href="#brochure-form"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="px-3.5 py-1.5 rounded-full text-xs font-semibold text-sub-color hover:text-main-color bg-white/60 dark:bg-white/10 backdrop-blur-xl border border-white/60 dark:border-white/20 shadow-sm hover:border-amber-400/50 transition-all cursor-pointer flex items-center gap-1.5"
-          >
-            <Download className="w-3 h-3 text-amber-500" />
-            <span>Brochure</span>
-          </motion.a>
-
-          {/* Book Visit Capsule Bubble */}
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={() => onOpenModal('visit')}
-            className="px-4 py-1.5 rounded-full text-xs font-bold text-slate-950 bg-gradient-to-r from-amber-400 via-amber-300 to-amber-500 shadow-[0_4px_14px_rgba(245,158,11,0.35)] hover:shadow-[0_6px_20px_rgba(245,158,11,0.5)] transition-all cursor-pointer flex items-center gap-1.5"
-          >
-            <Calendar className="w-3 h-3" />
-            <span>Book Visit</span>
-          </motion.button>
-
         </div>
 
         {/* Mobile Nav & Toggle (iOS Bubbles) */}
@@ -177,27 +152,6 @@ export default function Navbar({ onOpenModal }) {
                   {link.label}
                 </a>
               ))}
-            </div>
-
-            <div className="pt-2 border-t border-theme-subtle flex gap-2">
-              <a
-                href="#brochure-form"
-                onClick={() => setMobileOpen(false)}
-                className="flex-1 py-2.5 rounded-2xl text-xs font-semibold text-sub-color bg-white/70 dark:bg-white/10 backdrop-blur-md border border-white/40 dark:border-white/15 flex items-center justify-center gap-1.5"
-              >
-                <Download className="w-3.5 h-3.5 text-amber-500" />
-                <span>Brochure</span>
-              </a>
-              <button
-                onClick={() => {
-                  setMobileOpen(false);
-                  onOpenModal('visit');
-                }}
-                className="flex-1 py-2.5 rounded-2xl text-xs font-bold text-slate-950 bg-gradient-to-r from-amber-400 to-amber-500 shadow-md flex items-center justify-center gap-1.5"
-              >
-                <Calendar className="w-3.5 h-3.5" />
-                <span>Book Visit</span>
-              </button>
             </div>
           </motion.div>
         )}

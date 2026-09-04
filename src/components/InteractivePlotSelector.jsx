@@ -583,6 +583,7 @@ export default function InteractivePlotSelector({ onOpenModal, initialTypeFilter
                   <img
                     src="/images/master-layout-plan.jpg"
                     alt="MVK Venkatadri Layout Plan"
+                    loading="lazy"
                     className="w-full h-auto max-h-[550px] object-contain rounded-xl mx-auto"
                   />
                   <div className="absolute top-4 right-4 px-3 py-1 rounded-full neo-inset text-[10px] text-amber-500 font-mono flex items-center gap-1">

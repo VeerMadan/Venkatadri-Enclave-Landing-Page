@@ -48,10 +48,11 @@ export default function PlotConfigurations({ onOpenModal }) {
         {/* Selected Plot Feature Glass Card */}
         <motion.div
           key={activeId}
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.35 }}
-          className="glass-panel rounded-3xl p-6 sm:p-8 max-w-4xl mx-auto border-theme-subtle relative overflow-hidden"
+          initial={{ opacity: 0, y: 24, scale: 0.95 }}
+          whileInView={{ opacity: 1, y: 0, scale: 1 }}
+          viewport={{ once: true, amount: 0.2 }}
+          transition={{ type: "spring", stiffness: 350, damping: 25 }}
+          className="glass-panel rounded-3xl p-6 sm:p-8 max-w-4xl mx-auto border-theme-subtle relative overflow-hidden transform-gpu will-change-transform"
         >
           <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
             
@@ -76,24 +77,24 @@ export default function PlotConfigurations({ onOpenModal }) {
                 {current.description}
               </p>
 
-              {/* Minimal Specs */}
+              {/* Minimal Specs with Spring Hover */}
               <div className="grid grid-cols-3 gap-2.5 pt-2">
-                <div className="neo-inset rounded-xl p-3 text-center">
+                <motion.div whileHover={{ scale: 1.05, y: -2 }} transition={{ type: "spring", stiffness: 400, damping: 20 }} className="neo-inset rounded-xl p-3 text-center cursor-pointer">
                   <p className="text-[10px] text-sub-color">Area</p>
                   <p className="text-sm font-bold text-main-color font-serif-luxury mt-0.5">
                     {typeof current.areaSqFt === 'number' ? `${current.areaSqFt} SqFt` : current.areaSqFt}
                   </p>
-                </div>
-                <div className="neo-inset rounded-xl p-3 text-center">
+                </motion.div>
+                <motion.div whileHover={{ scale: 1.05, y: -2 }} transition={{ type: "spring", stiffness: 400, damping: 20 }} className="neo-inset rounded-xl p-3 text-center cursor-pointer">
                   <p className="text-[10px] text-sub-color">Rate</p>
                   <p className="text-sm font-bold text-amber-500 font-serif-luxury mt-0.5">₹7,699</p>
-                </div>
-                <div className="neo-inset rounded-xl p-3 text-center">
+                </motion.div>
+                <motion.div whileHover={{ scale: 1.05, y: -2 }} transition={{ type: "spring", stiffness: 400, damping: 20 }} className="neo-inset rounded-xl p-3 text-center cursor-pointer">
                   <p className="text-[10px] text-sub-color">Est. Price</p>
                   <p className="text-sm font-bold text-emerald-500 font-serif-luxury mt-0.5">
                     {current.estPrice}
                   </p>
-                </div>
+                </motion.div>
               </div>
             </div>
 

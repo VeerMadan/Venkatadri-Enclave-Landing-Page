@@ -31,18 +31,21 @@ export default function Gallery() {
           {GALLERY_ITEMS.map((item, idx) => (
             <motion.div
               key={idx}
-              initial={{ opacity: 0, y: 15 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.4, delay: idx * 0.08 }}
+              initial={{ opacity: 0, y: 32, scale: 0.90 }}
+              whileInView={{ opacity: 1, y: 0, scale: 1 }}
+              viewport={{ once: true, amount: 0.15 }}
+              whileHover={{ scale: 1.025, y: -4 }}
+              whileTap={{ scale: 0.98 }}
+              transition={{ type: "spring", stiffness: 350, damping: 24, delay: idx * 0.1 }}
               onClick={() => setSelectedImg(item)}
-              className="glass-panel rounded-2xl overflow-hidden group cursor-pointer relative"
+              className="glass-panel rounded-2xl overflow-hidden group cursor-pointer relative transform-gpu will-change-transform"
             >
 
               <div className="relative h-64 sm:h-72 overflow-hidden bg-black/40">
                 <img
                   src={item.src}
                   alt={item.title}
+                  loading="lazy"
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 filter brightness-90"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[var(--bg-surface)] via-transparent to-transparent"></div>
