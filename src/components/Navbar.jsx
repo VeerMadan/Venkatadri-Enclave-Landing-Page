@@ -68,7 +68,7 @@ export default function Navbar() {
                 className={`relative px-3 py-1.5 rounded-full text-xs transition-all duration-200 cursor-pointer ${
                   isHovered 
                     ? 'text-slate-950 dark:text-white font-semibold' 
-                    : 'text-sub-color hover:text-main-color'
+                    : 'text-slate-700 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white'
                 }`}
               >
                 {/* Floating iOS Frosted Bubble Highlighter */}
@@ -103,7 +103,7 @@ export default function Navbar() {
               animate={{ rotate: 0, scale: 1, opacity: 1 }}
               transition={{ duration: 0.2 }}
             >
-              {theme === 'dark' ? <Sun className="w-3.5 h-3.5" /> : <Moon className="w-3.5 h-3.5" />}
+              {theme === 'dark' ? <Sun className="w-3.5 h-3.5 text-amber-400" /> : <Moon className="w-3.5 h-3.5 text-slate-700" />}
             </motion.div>
           </motion.button>
         </div>
@@ -114,16 +114,16 @@ export default function Navbar() {
           <button
             onClick={toggleTheme}
             aria-label="Toggle Theme"
-            className="w-7 h-7 rounded-full bg-white/60 dark:bg-white/10 backdrop-blur-xl border border-white/50 dark:border-white/15 shadow-sm flex items-center justify-center text-sub-color hover:text-amber-500"
+            className="w-7 h-7 rounded-full bg-white/60 dark:bg-white/10 backdrop-blur-xl border border-white/50 dark:border-white/15 shadow-sm flex items-center justify-center text-slate-800 dark:text-white"
           >
-            {theme === 'dark' ? <Sun className="w-3.5 h-3.5" /> : <Moon className="w-3.5 h-3.5" />}
+            {theme === 'dark' ? <Sun className="w-3.5 h-3.5 text-amber-400" /> : <Moon className="w-3.5 h-3.5 text-slate-700" />}
           </button>
 
           {/* Mobile Menu Trigger Bubble */}
           <button
             onClick={() => setMobileOpen(!mobileOpen)}
             aria-label="Toggle Menu"
-            className="w-8 h-8 rounded-full bg-white/70 dark:bg-white/15 backdrop-blur-xl border border-white/60 dark:border-white/20 shadow-sm flex items-center justify-center text-main-color"
+            className="w-8 h-8 rounded-full bg-white/70 dark:bg-white/15 backdrop-blur-xl border border-white/60 dark:border-white/20 shadow-sm flex items-center justify-center text-slate-900 dark:text-white cursor-pointer transition-colors"
           >
             {mobileOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
           </button>
@@ -131,25 +131,60 @@ export default function Navbar() {
 
       </div>
 
-      {/* Mobile Menu Dropdown (iOS Frosted Glass Sheet) */}
+      {/* Apple-Style Living Glass Mobile Menu Dropdown */}
       <AnimatePresence>
         {mobileOpen && (
           <motion.div
-            initial={{ opacity: 0, y: -10, scale: 0.96 }}
+            initial={{ opacity: 0, y: -12, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -10, scale: 0.96 }}
-            transition={{ type: "spring", stiffness: 400, damping: 28 }}
-            className="md:hidden mt-2 p-4 rounded-3xl bg-white/80 dark:bg-[#0e141a]/90 backdrop-blur-2xl border border-white/60 dark:border-white/15 shadow-2xl space-y-2"
+            exit={{ opacity: 0, y: -12, scale: 0.95 }}
+            transition={{ type: "spring", stiffness: 420, damping: 28 }}
+            className="relative md:hidden mt-2.5 p-3.5 sm:p-4 rounded-[28px] overflow-hidden backdrop-blur-3xl backdrop-saturate-200 bg-white/50 dark:bg-slate-950/50 border border-white/60 dark:border-white/15 shadow-[0_20px_50px_rgba(0,0,0,0.15),inset_0_1px_1px_rgba(255,255,255,0.7)] dark:shadow-[0_25px_60px_rgba(0,0,0,0.6),inset_0_1px_1px_rgba(255,255,255,0.12)] space-y-2.5"
           >
-            <div className="grid grid-cols-2 gap-1.5">
+            {/* Apple Living Fluid Moving Glow Orbs in Background */}
+            <div className="absolute inset-0 pointer-events-none overflow-hidden -z-10">
+              <motion.div
+                animate={{
+                  x: [0, 35, -25, 0],
+                  y: [0, -25, 20, 0],
+                  scale: [1, 1.25, 0.9, 1],
+                }}
+                transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+                className="absolute -top-12 -left-12 w-48 h-48 rounded-full bg-gradient-to-tr from-amber-400/35 via-amber-300/20 to-amber-500/30 dark:from-amber-500/25 dark:to-amber-300/15 blur-2xl transform-gpu will-change-transform"
+              />
+              <motion.div
+                animate={{
+                  x: [0, -30, 25, 0],
+                  y: [0, 25, -20, 0],
+                  scale: [1, 0.9, 1.2, 1],
+                }}
+                transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
+                className="absolute -bottom-12 -right-12 w-52 h-52 rounded-full bg-gradient-to-bl from-emerald-400/30 via-teal-300/20 to-emerald-500/30 dark:from-emerald-500/20 dark:to-cyan-400/15 blur-2xl transform-gpu will-change-transform"
+              />
+              <motion.div
+                animate={{
+                  x: [-15, 25, 0, -15],
+                  y: [10, -15, 25, 10],
+                  opacity: [0.2, 0.5, 0.3, 0.2],
+                }}
+                transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+                className="absolute top-1/2 left-1/3 -translate-x-1/2 -translate-y-1/2 w-40 h-40 rounded-full bg-amber-400/20 dark:bg-amber-300/10 blur-3xl transform-gpu will-change-transform"
+              />
+            </div>
+
+            {/* High-Contrast Interactive Navigation Grid */}
+            <div className="grid grid-cols-2 gap-2 relative z-10">
               {links.map((link) => (
                 <a
                   key={link.label}
                   href={link.href}
                   onClick={() => setMobileOpen(false)}
-                  className="px-3 py-2 rounded-2xl bg-black/5 dark:bg-white/5 backdrop-blur-md text-xs font-medium text-main-color hover:bg-amber-400/20 hover:text-amber-500 transition-colors"
+                  className="px-3.5 py-2.5 rounded-2xl bg-white/75 dark:bg-white/10 hover:bg-amber-400/25 dark:hover:bg-amber-400/20 active:scale-[0.97] backdrop-blur-xl border border-white/80 dark:border-white/10 shadow-sm flex items-center justify-between group transition-all duration-200 cursor-pointer"
                 >
-                  {link.label}
+                  <span className="text-xs font-bold tracking-wide text-slate-900 dark:text-white group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">
+                    {link.label}
+                  </span>
+                  <span className="w-1.5 h-1.5 rounded-full bg-amber-500/60 dark:bg-amber-400/80 group-hover:scale-150 transition-transform" />
                 </a>
               ))}
             </div>

@@ -3,7 +3,6 @@ import { motion, useScroll, useSpring } from 'framer-motion';
 import Navbar from '../components/Navbar';
 import BrochureEntranceSection from '../components/BrochureEntranceSection';
 import Hero from '../components/Hero';
-import ProjectStats from '../components/ProjectStats';
 import Pillars from '../components/Pillars';
 import PlotConfigurations from '../components/PlotConfigurations';
 import InteractivePlotSelector from '../components/InteractivePlotSelector';
@@ -68,11 +67,10 @@ export default function LandingPage() {
         {/* Entrance Showcase & 4-Question Qualification Form */}
         <BrochureEntranceSection />
 
-        {/* Cinematic Grand Entrance Showcase Runway */}
+        {/* Cinematic Grand Entrance Showcase Runway & Project Foundations Screen */}
         <Hero onOpenModal={handleOpenModal} />
         
         {/* Core Layout Modules */}
-        <ProjectStats onOpenModal={handleOpenModal} />
         <Pillars 
           onOpenModal={handleOpenModal} 
           onOpenLayoutModal={() => setIsLayoutModalOpen(true)} 
