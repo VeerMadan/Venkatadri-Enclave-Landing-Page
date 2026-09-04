@@ -33,59 +33,49 @@ export default function Hero({ onOpenModal }) {
   // - Gentle subtle parallax continuation (1.0 -> 1.03) during section handoff (0.82 -> 1.0)
   const imageScale = useTransform(
     smoothProgress,
-    [0, 0.38, 0.82, 1.0],
-    [1.26, 1.0, 1.0, 1.03]
+    [0, 0.22, 0.65, 1.0],
+    [1.24, 1.0, 1.0, 1.03]
   );
   const imageY = useTransform(
     smoothProgress,
-    [0, 0.38, 0.82, 1.0],
+    [0, 0.22, 0.65, 1.0],
     ["-2%", "0%", "0%", "-3%"]
   );
 
-  // 3. Theme-Adaptive Gradient Veil:
-  // - Rises and fades in smoothly as the gate zooms out (0.06 -> 0.35)
-  // - Maintains optimal contrast throughout the entire dwell window (0.35 -> 0.82)
-  // - Seamlessly blends into the incoming section
+  // 3. Theme-Adaptive Gradient Veil
   const overlayOpacity = useTransform(
     smoothProgress,
-    [0, 0.06, 0.35, 0.82, 1.0],
+    [0, 0.05, 0.22, 0.65, 1.0],
     [0, 0, 0.95, 0.95, 0.85]
   );
   const overlayY = useTransform(
     smoothProgress,
-    [0, 0.06, 0.35, 1.0],
+    [0, 0.05, 0.22, 1.0],
     ["12%", "12%", "0%", "0%"]
   );
 
-  // 4. Foreground Hero Stage (Title, Tagline, 4 Metric Boxes, CTAs, Trust Badges):
-  // - Stays hidden at the start to showcase the majestic entrance gate (0.0 -> 0.16)
-  // - Smoothly elevates and fades in (0.16 -> 0.38)
-  // - ROCK-SOLID DWELL & READING ZONE (0.38 -> 0.82):
-  //   Holds completely stable, centered, and 100% interactive for generous scroll travel (~900px)!
-  //   Completely eliminates the bug where text and boxes rushed away too quickly.
-  // - Graceful Exit Curve (0.82 -> 1.0):
-  //   Softly floats upward (-35px) and gently dims so ProjectStats rolls in naturally.
+  // 4. Foreground Hero Stage (Title, Tagline, 4 Metric Boxes, CTAs, Trust Badges)
   const contentOpacity = useTransform(
     smoothProgress,
-    [0, 0.16, 0.38, 0.82, 1.0],
-    [0, 0, 1, 1, 0.2]
+    [0, 0.10, 0.22, 0.55, 0.88],
+    [0, 0, 1, 1, 0.1]
   );
   const contentY = useTransform(
     smoothProgress,
-    [0, 0.16, 0.38, 0.82, 1.0],
-    [45, 45, 0, 0, -35]
+    [0, 0.10, 0.22, 0.55, 0.88],
+    [40, 40, 0, 0, -35]
   );
   const contentScale = useTransform(
     smoothProgress,
-    [0, 0.16, 0.38, 0.82, 1.0],
+    [0, 0.10, 0.22, 0.55, 0.88],
     [0.96, 0.96, 1.0, 1.0, 0.98]
   );
   const pointerEvents = useTransform(smoothProgress, (v) =>
-    v >= 0.25 && v <= 0.88 ? "auto" : "none"
+    v >= 0.16 && v <= 0.60 ? "auto" : "none"
   );
 
   return (
-    <div ref={containerRef} className="relative h-[270vh] sm:h-[310vh] w-full">
+    <div ref={containerRef} className="relative h-[195vh] sm:h-[230vh] w-full">
       {/* Sticky Viewport Stage */}
       <section 
         id="overview" 
