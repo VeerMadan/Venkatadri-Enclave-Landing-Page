@@ -1,92 +1,103 @@
 import React, { useState, useEffect } from 'react';
-import { Menu, X, Calendar, Download, Sun, Moon } from 'lucide-react';
+import { Download, Calendar, Menu, X, Sun, Moon, Sparkles } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTheme } from '../context/ThemeContext';
 
 export default function Navbar({ onOpenModal }) {
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [mobileOpen, setMobileOpen] = useState(false);
   const { theme, toggleTheme } = useTheme();
+  const [scrolled, setScrolled] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [hoveredLink, setHoveredLink] = useState(null);
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
+      setScrolled(window.scrollY > 20);
     };
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const [hoveredLink, setHoveredLink] = useState(null);
-
   const links = [
-    { label: "Overview", href: "#overview" },
-    { label: "Plot Matrix", href: "#plot-finder" },
-    { label: "Plot Sizes", href: "#plots" },
-    { label: "Calculator", href: "#calculator" },
-    { label: "Master Plan", href: "#master-plan" },
-    { label: "Amenities", href: "#amenities" },
-    { label: "Location", href: "#location" },
-    { label: "Why Us", href: "#why-us" },
+    { label: 'Overview', href: '#overview' },
+    { label: 'Plot Matrix', href: '#plots' },
+    { label: 'Plot Sizes', href: '#configurations' },
+    { label: 'Calculator', href: '#calculator' },
+    { label: 'Master Plan', href: '#masterplan' },
+    { label: 'Amenities', href: '#amenities' },
+    { label: 'Location', href: '#location' },
+    { label: 'Why Us', href: '#why-invest' },
   ];
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 px-4 sm:px-6 pt-3 transition-all duration-300">
-      <motion.div
-        initial={{ y: -20, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.4 }}
-        className={`max-w-6xl mx-auto rounded-full transition-all duration-300 ${
-          isScrolled
-            ? 'glass-panel py-2 px-4 sm:px-5 shadow-xl'
-            : 'glass-panel py-2.5 px-5'
+    <header className="fixed top-0 left-0 right-0 z-50 px-3 sm:px-6 pt-3 select-none">
+      {/* iOS Floating Island Capsule Container */}
+      <div 
+        className={`max-w-5xl mx-auto rounded-full transition-all duration-300 ${
+          scrolled 
+            ? 'py-2 px-3 sm:px-4 bg-white/70 dark:bg-[#0b0f14]/75 backdrop-blur-2xl border border-white/60 dark:border-white/15 shadow-[0_12px_40px_-8px_rgba(0,0,0,0.15),inset_0_1px_1px_rgba(255,255,255,0.7)]'
+            : 'py-2.5 px-4 bg-white/55 dark:bg-[#0b0f14]/60 backdrop-blur-xl border border-white/40 dark:border-white/10 shadow-[0_8px_30px_-6px_rgba(0,0,0,0.08),inset_0_1px_1px_rgba(255,255,255,0.5)]'
         } flex items-center justify-between`}
       >
-        {/* Brand */}
-        <a href="#" className="flex items-center gap-2 group">
-          <div className="w-7 h-7 rounded-full bg-gradient-to-tr from-amber-500 to-amber-200 flex items-center justify-center p-0.5 shadow-sm">
+        {/* Brand Bubble (iOS Style Pill) */}
+        <a 
+          href="#" 
+          className="flex items-center gap-2 px-2.5 py-1 rounded-full bg-white/40 dark:bg-white/5 backdrop-blur-md border border-white/40 dark:border-white/10 shadow-sm group hover:scale-[1.02] active:scale-[0.98] transition-all"
+        >
+          <div className="w-6 h-6 rounded-full bg-gradient-to-tr from-amber-500 to-amber-200 flex items-center justify-center p-0.5 shadow-sm">
             <div className="w-full h-full bg-[#070a0c] rounded-full flex items-center justify-center">
-              <span className="font-serif-luxury font-bold text-amber-400 text-[10px]">M</span>
+              <span className="font-serif-luxury font-bold text-amber-400 text-[9px]">M</span>
             </div>
           </div>
           <span className="font-serif-luxury text-xs sm:text-sm font-bold tracking-wider text-main-color group-hover:text-amber-500 transition-colors">
-            VENKATADRI <span className="text-amber-500 font-light text-[11px] uppercase">ENCLAVE</span>
+            VENKATADRI <span className="text-amber-500 font-light text-[10.5px] uppercase">ENCLAVE</span>
           </span>
         </a>
 
-        {/* Minimalist Desktop Nav with Sliding Underline Animation */}
+        {/* Desktop iOS Blur Bubbles Navigation */}
         <nav 
           onMouseLeave={() => setHoveredLink(null)}
-          className="hidden md:flex items-center gap-5 text-xs tracking-wide font-medium text-sub-color"
+          className="hidden md:flex items-center gap-1 p-1 rounded-full bg-black/5 dark:bg-white/5 backdrop-blur-md border border-white/30 dark:border-white/10 text-xs tracking-wide font-medium"
         >
-          {links.map((link) => (
-            <a
-              key={link.label}
-              href={link.href}
-              onMouseEnter={() => setHoveredLink(link.label)}
-              className="relative py-1 text-sub-color hover:text-main-color transition-colors duration-150"
-            >
-              <span>{link.label}</span>
-              {hoveredLink === link.label && (
-                <motion.span
-                  layoutId="navbar-underline"
-                  className="absolute -bottom-0.5 left-0 right-0 h-[2px] bg-gradient-to-r from-amber-400 via-amber-300 to-amber-500 rounded-full shadow-[0_0_8px_rgba(245,158,11,0.6)]"
-                  initial={{ scaleX: 0, opacity: 0 }}
-                  animate={{ scaleX: 1, opacity: 1 }}
-                  exit={{ scaleX: 0, opacity: 0 }}
-                  transition={{ type: "spring", stiffness: 400, damping: 30 }}
-                />
-              )}
-            </a>
-          ))}
+          {links.map((link) => {
+            const isHovered = hoveredLink === link.label;
+            return (
+              <a
+                key={link.label}
+                href={link.href}
+                onMouseEnter={() => setHoveredLink(link.label)}
+                className={`relative px-3 py-1.5 rounded-full text-xs transition-all duration-200 cursor-pointer ${
+                  isHovered 
+                    ? 'text-slate-950 dark:text-white font-semibold' 
+                    : 'text-sub-color hover:text-main-color'
+                }`}
+              >
+                {/* Floating iOS Frosted Bubble Highlighter */}
+                {isHovered && (
+                  <motion.span
+                    layoutId="ios-nav-bubble"
+                    className="absolute inset-0 rounded-full bg-white/90 dark:bg-white/20 backdrop-blur-xl border border-white/70 dark:border-white/25 shadow-[0_2px_10px_rgba(0,0,0,0.08),inset_0_1px_1px_rgba(255,255,255,0.9)] -z-10"
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    transition={{ type: "spring", stiffness: 450, damping: 32 }}
+                  />
+                )}
+                <span>{link.label}</span>
+              </a>
+            );
+          })}
         </nav>
 
-        {/* Action CTAs & Theme Switcher */}
+        {/* Action CTAs & Theme Switcher (iOS Bubbles) */}
         <div className="hidden sm:flex items-center gap-2">
-          {/* Theme Toggle Button */}
-          <button
+          
+          {/* Theme Toggle Bubble */}
+          <motion.button
+            whileHover={{ scale: 1.08 }}
+            whileTap={{ scale: 0.92 }}
             onClick={toggleTheme}
             aria-label="Toggle Dark / Light Theme"
-            className="p-1.5 rounded-full glass-panel hover:border-amber-400/40 text-sub-color hover:text-amber-500 transition-all cursor-pointer"
+            className="w-8 h-8 rounded-full bg-white/60 dark:bg-white/10 backdrop-blur-xl border border-white/60 dark:border-white/20 shadow-sm flex items-center justify-center text-sub-color hover:text-amber-500 transition-all cursor-pointer"
           >
             <motion.div
               key={theme}
@@ -96,94 +107,96 @@ export default function Navbar({ onOpenModal }) {
             >
               {theme === 'dark' ? <Sun className="w-3.5 h-3.5" /> : <Moon className="w-3.5 h-3.5" />}
             </motion.div>
-          </button>
+          </motion.button>
 
+          {/* Brochure Pill Bubble */}
           <motion.a
             href="#brochure-form"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className="px-3 py-1.5 rounded-full text-xs font-semibold text-sub-color hover:text-main-color glass-panel hover:border-amber-400/40 transition-all cursor-pointer flex items-center gap-1"
+            className="px-3.5 py-1.5 rounded-full text-xs font-semibold text-sub-color hover:text-main-color bg-white/60 dark:bg-white/10 backdrop-blur-xl border border-white/60 dark:border-white/20 shadow-sm hover:border-amber-400/50 transition-all cursor-pointer flex items-center gap-1.5"
           >
             <Download className="w-3 h-3 text-amber-500" />
             <span>Brochure</span>
           </motion.a>
 
+          {/* Book Visit Capsule Bubble */}
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => onOpenModal('visit')}
-            className="px-3.5 py-1.5 rounded-full text-xs font-bold text-slate-950 bg-gradient-to-r from-amber-400 via-amber-300 to-amber-500 hover:brightness-110 shadow-sm transition-all cursor-pointer flex items-center gap-1"
+            className="px-4 py-1.5 rounded-full text-xs font-bold text-slate-950 bg-gradient-to-r from-amber-400 via-amber-300 to-amber-500 shadow-[0_4px_14px_rgba(245,158,11,0.35)] hover:shadow-[0_6px_20px_rgba(245,158,11,0.5)] transition-all cursor-pointer flex items-center gap-1.5"
           >
             <Calendar className="w-3 h-3" />
             <span>Book Visit</span>
           </motion.button>
+
         </div>
 
-        {/* Mobile Nav & Toggle */}
+        {/* Mobile Nav & Toggle (iOS Bubbles) */}
         <div className="flex items-center gap-1.5 md:hidden">
-          {/* Mobile Theme Toggle */}
+          {/* Mobile Theme Toggle Bubble */}
           <button
             onClick={toggleTheme}
             aria-label="Toggle Theme"
-            className="p-1.5 rounded-full glass-panel text-sub-color hover:text-amber-500"
+            className="w-7 h-7 rounded-full bg-white/60 dark:bg-white/10 backdrop-blur-xl border border-white/50 dark:border-white/15 shadow-sm flex items-center justify-center text-sub-color hover:text-amber-500"
           >
             {theme === 'dark' ? <Sun className="w-3.5 h-3.5" /> : <Moon className="w-3.5 h-3.5" />}
           </button>
 
-          <button
-            onClick={() => onOpenModal('visit')}
-            className="px-2.5 py-1 text-xs font-bold text-slate-950 bg-amber-400 rounded-full"
-          >
-            Visit
-          </button>
-          
+          {/* Mobile Menu Trigger Bubble */}
           <button
             onClick={() => setMobileOpen(!mobileOpen)}
-            className="p-1.5 rounded-full glass-panel text-sub-color"
+            aria-label="Toggle Menu"
+            className="w-8 h-8 rounded-full bg-white/70 dark:bg-white/15 backdrop-blur-xl border border-white/60 dark:border-white/20 shadow-sm flex items-center justify-center text-main-color"
           >
             {mobileOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
           </button>
         </div>
-      </motion.div>
 
-      {/* Mobile Drawer */}
+      </div>
+
+      {/* Mobile Menu Dropdown (iOS Frosted Glass Sheet) */}
       <AnimatePresence>
         {mobileOpen && (
           <motion.div
-            initial={{ opacity: 0, height: 0, overflow: 'hidden' }}
-            animate={{ opacity: 1, height: 'auto', overflow: 'hidden' }}
-            exit={{ opacity: 0, height: 0, overflow: 'hidden' }}
-            transition={{ type: "spring", stiffness: 300, damping: 25 }}
-            className="md:hidden mt-2 max-w-6xl mx-auto glass-panel rounded-2xl p-4 border space-y-3 origin-top"
+            initial={{ opacity: 0, y: -10, scale: 0.96 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -10, scale: 0.96 }}
+            transition={{ type: "spring", stiffness: 400, damping: 28 }}
+            className="md:hidden mt-2 p-4 rounded-3xl bg-white/80 dark:bg-[#0e141a]/90 backdrop-blur-2xl border border-white/60 dark:border-white/15 shadow-2xl space-y-2"
           >
-            <div className="grid grid-cols-2 gap-2 text-xs font-medium">
+            <div className="grid grid-cols-2 gap-1.5">
               {links.map((link) => (
                 <a
                   key={link.label}
                   href={link.href}
                   onClick={() => setMobileOpen(false)}
-                  className="px-3 py-2 rounded-lg text-sub-color hover:text-amber-500 hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
+                  className="px-3 py-2 rounded-2xl bg-black/5 dark:bg-white/5 backdrop-blur-md text-xs font-medium text-main-color hover:bg-amber-400/20 hover:text-amber-500 transition-colors"
                 >
                   {link.label}
                 </a>
               ))}
             </div>
+
             <div className="pt-2 border-t border-theme-subtle flex gap-2">
               <a
                 href="#brochure-form"
                 onClick={() => setMobileOpen(false)}
-                className="flex-1 py-2 rounded-xl text-xs font-semibold text-sub-color glass-panel flex items-center justify-center gap-1"
+                className="flex-1 py-2.5 rounded-2xl text-xs font-semibold text-sub-color bg-white/70 dark:bg-white/10 backdrop-blur-md border border-white/40 dark:border-white/15 flex items-center justify-center gap-1.5"
               >
-                <Download className="w-3.5 h-3.5 text-amber-500" /> Brochure
+                <Download className="w-3.5 h-3.5 text-amber-500" />
+                <span>Brochure</span>
               </a>
               <button
                 onClick={() => {
                   setMobileOpen(false);
                   onOpenModal('visit');
                 }}
-                className="flex-1 py-2 rounded-xl text-xs font-bold text-slate-950 bg-amber-400 flex items-center justify-center gap-1"
+                className="flex-1 py-2.5 rounded-2xl text-xs font-bold text-slate-950 bg-gradient-to-r from-amber-400 to-amber-500 shadow-md flex items-center justify-center gap-1.5"
               >
-                <Calendar className="w-3.5 h-3.5" /> Book Visit
+                <Calendar className="w-3.5 h-3.5" />
+                <span>Book Visit</span>
               </button>
             </div>
           </motion.div>
@@ -192,5 +205,3 @@ export default function Navbar({ onOpenModal }) {
     </header>
   );
 }
-
-
