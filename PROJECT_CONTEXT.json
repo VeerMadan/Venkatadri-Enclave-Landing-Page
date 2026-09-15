@@ -1,6 +1,6 @@
 {
-  "project": {
-    "name": "MVK VENKATADRI ENCLAVE",
+  "metadata": {
+    "project": "MVK VENKATADRI ENCLAVE",
     "developer": "MVK Builders & Developers LLP",
     "slogan": "Build Better With MVK",
     "website": "https://www.mvkdevelopers.com",
@@ -8,96 +8,209 @@
     "salesPhone": "+91 99000 90049",
     "salesPhoneRaw": "9900090049",
     "whatsappUrl": "https://wa.me/919900090049",
-    "address": {
-      "full": "Bagaluru Main Road, Yelahanka, Bengaluru - 560064",
-      "short": "Bagaluru Main Road, Yelahanka",
-      "pincode": "560064",
+    "repository": "https://github.com/VeerMadan/Venkatadri-Enclave-Landing-Page.git",
+    "branch": "main",
+    "productionUrl": "https://venkatadri-enclave-landing-page.vercel.app/",
+    "adminPortalUrl": "https://venkatadri-enclave-landing-page.vercel.app/admin-portal/",
+    "lastUpdated": "2026-09-15"
+  },
+  "projectFacts": {
+    "location": {
+      "fullAddress": "Bagaluru Main Road, Yelahanka, Bengaluru - 560064, Karnataka, India",
+      "locality": "Yelahanka / Bagaluru Road",
       "city": "Bengaluru",
-      "state": "Karnataka",
-      "country": "India"
+      "pincode": "560064"
     },
-    "metrics": {
-      "projectSize": "6 Acres Gated Community",
-      "totalPlots": 111,
-      "availablePhase1": 55,
-      "baseRatePerSqFt": 7699,
-      "roadWidth": "30 Ft Wide Concrete Avenues",
-      "gateways": "3 Dedicated Grand Gateways"
-    },
+    "landArea": "6.0 Acres Gated Community",
+    "totalPlots": 111,
+    "availablePhase1": 55,
+    "bookedPhase1": 28,
+    "soldPhase1": 28,
+    "baseRatePerSqFt": 7699,
+    "roadWidth": "30 Ft Wide Concrete Avenues",
+    "gateways": "3 Dedicated Grand Gateways",
     "approvals": [
       "HPA Approved (Hoskote Planning Authority)",
       "BMRDA Approved (Bangalore Metropolitan Region Development Authority)",
       "100% Clear Titles with Individual A & E Khata",
-      "Immediate Registration & Bank Loan Eligible"
+      "Immediate Registration & Bank Loan Eligible (SBI, HDFC, ICICI, etc.)"
     ]
   },
-  "deployment": {
-    "repository": "https://github.com/VeerMadan/Venkatadri-Enclave-Landing-Page.git",
-    "branch": "main",
-    "productionUrl": "https://venkatadri-enclave-landing-page.vercel.app/",
-    "adminPortalUrl": "https://venkatadri-enclave-landing-page.vercel.app/admin-portal/"
-  },
-  "adminSecurity": {
-    "portalRoute": "/admin-portal/",
+  "adminPortal": {
+    "route": "/admin-portal/",
     "passcode": "MVK@enclave123",
     "sessionTokenKey": "mvk_admin_auth_token",
     "sessionTokenValue": "mvk_secure_session_token_granted",
-    "storageKey": "mvk_venkatadri_inventory_v2",
+    "inventoryStorageKey": "mvk_venkatadri_inventory_v2",
     "leadsStorageKey": "mvk_leads_db_v1",
     "settingsStorageKey": "mvk_site_settings_v1",
-    "syncEventName": "mvk_inventory_updated",
-    "leadsEventName": "mvk_lead_created",
-    "settingsEventName": "mvk_settings_updated"
+    "syncEvents": {
+      "inventoryUpdated": "mvk_inventory_updated",
+      "leadCreated": "mvk_lead_created",
+      "leadsUpdated": "mvk_leads_updated",
+      "settingsUpdated": "mvk_settings_updated"
+    },
+    "tabs": [
+      "inventory",
+      "leads",
+      "settings",
+      "system"
+    ]
   },
   "techStack": {
-    "frontend": "React 19",
-    "buildTool": "Vite 8",
-    "styling": "Tailwind CSS v4",
-    "animations": "Framer Motion 13",
-    "icons": "Lucide React",
-    "fx": "canvas-confetti",
-    "fonts": ["Outfit", "Cinzel", "Playfair Display"]
+    "framework": "React 19.2.8",
+    "bundler": "Vite 8.2.0",
+    "styling": "Tailwind CSS 4.3.3",
+    "animation": "Framer Motion 13.1.1",
+    "icons": "Lucide React 1.33.0",
+    "particles": "canvas-confetti 1.9.4",
+    "routing": "Vite Multi-Page Rollup (index.html & admin-portal/index.html)",
+    "linter": "oxlint 1.75.0"
   },
-  "themeConfig": {
-    "defaultTheme": "light",
-    "storageKey": "venkatadri_theme",
-    "lightBackground": "#FAF9F6",
-    "darkBackground": "#06090B",
-    "accentColor": "#F59E0B"
+  "designSystem": {
+    "themes": {
+      "default": "light",
+      "storageKey": "venkatadri_theme",
+      "light": {
+        "pageBg": "#f8fafc",
+        "altBg": "#f1f5f9",
+        "surfaceBg": "#ffffff",
+        "textMain": "#0f172a",
+        "textSub": "#475569"
+      },
+      "dark": {
+        "pageBg": "#06090b",
+        "altBg": "#040608",
+        "surfaceBg": "#0b1013",
+        "textMain": "#f8fafc",
+        "textSub": "#94a3b8"
+      },
+      "accents": {
+        "gold": "#f59e0b",
+        "amber": "#fbbf24",
+        "emerald": "#10b981",
+        "rose": "#f43f5e"
+      }
+    },
+    "typography": {
+      "sans": "Outfit, -apple-system, BlinkMacSystemFont, sans-serif",
+      "serif": "Cinzel, Playfair Display, Georgia, serif"
+    },
+    "keyClasses": {
+      "appleLivingGlass": ".apple-living-glass",
+      "glassPanel": ".glass-panel",
+      "luxurySlider": ".luxury-slider",
+      "neoInset": ".neo-inset",
+      "goldGradientText": ".gold-gradient-text"
+    }
   },
-  "componentsMap": {
-    "Navbar": "src/components/Navbar.jsx",
-    "Hero": "src/components/Hero.jsx",
-    "ProjectStats": "src/components/ProjectStats.jsx",
-    "Pillars": "src/components/Pillars.jsx",
-    "PlotConfigurations": "src/components/PlotConfigurations.jsx",
-    "InteractivePlotSelector": "src/components/InteractivePlotSelector.jsx",
-    "PriceCalculator": "src/components/PriceCalculator.jsx",
-    "MasterPlanViewer": "src/components/MasterPlanViewer.jsx",
-    "Amenities": "src/components/Amenities.jsx",
-    "LocationMatrix": "src/components/LocationMatrix.jsx",
-    "WhyInvest": "src/components/WhyInvest.jsx",
-    "Gallery": "src/components/Gallery.jsx",
-    "ContactSection": "src/components/ContactSection.jsx",
-    "Footer": "src/components/Footer.jsx",
-    "StickyMobileBar": "src/components/StickyMobileBar.jsx",
-    "LeadModal": "src/components/LeadModal.jsx",
-    "LayoutDetailsModal": "src/components/LayoutDetailsModal.jsx",
-    "GoogleMapsModal": "src/components/GoogleMapsModal.jsx",
-    "AmbientBackground": "src/components/AmbientBackground.jsx",
-    "AdminDashboard": "admin-portal/src/AdminDashboard.jsx",
-    "LeadsCRM": "src/data/leadsData.js",
-    "SiteSettings": "src/data/siteSettings.js"
-  },
-  "heroAnimationBehavior": {
-    "onLoad": "Grand entrance gate image is zoomed in (scale 1.26) with zero text and zero gradient visible; a glowing 'Scroll to Enter' pill pulses at bottom.",
-    "onScroll": "Image smoothly zooms out (1.26 -> 1.0 by progress 0.38), gradient veil fades in, and approval badge, gold typography, 4 metric cards, and CTAs float upwards and fade into view. From 0.38 to 0.82, a rock-solid reading dwell zone keeps all metrics locked and interactive (~900px scroll travel). From 0.82 to 1.0, a graceful upward exit softens into the next section.",
-    "performance": "120 FPS hardware compositor transforms only (scale, translate3d, opacity) with Framer Motion useSpring smoothing for buttery trackpad/wheel physics."
+  "components": {
+    "BrochureEntranceSection": {
+      "path": "src/components/BrochureEntranceSection.jsx",
+      "description": "4-step buyer qualification survey and typewriter prompt directing leads to WhatsApp bot automation.",
+      "questions": [
+        {
+          "id": "purpose",
+          "text": "What's bringing you to consider a residential plot in this location?"
+        },
+        {
+          "id": "budget",
+          "text": "What budget range are you considering for this plot?"
+        },
+        {
+          "id": "plotSizeInterest",
+          "text": "Which plot size are you interested in?"
+        },
+        {
+          "id": "timeline",
+          "text": "When are you looking to make this purchase?"
+        }
+      ]
+    },
+    "Hero": {
+      "path": "src/components/Hero.jsx",
+      "description": "Sticky 200vh runway featuring zoomed gate entrance reveal, parallax clouds, and Screen 2 foundations.",
+      "cloudThresholds": {
+        "canvasFadeOut": "0.44 -> 0.58",
+        "canvasDisplayNone": ">= 0.60",
+        "screen2Reveal": ">= 0.72",
+        "screen2BalloonOpen": "0.72 -> 0.84 -> 1.0"
+      }
+    },
+    "Navbar": {
+      "path": "src/components/Navbar.jsx",
+      "description": "iOS floating island capsule with layoutId blur bubble navigation and mobile living glass dropdown."
+    },
+    "PriceCalculator": {
+      "path": "src/components/PriceCalculator.jsx",
+      "description": "EMI and plot cost calculator with dynamic filled slider tracks, clean white 18px knobs (zero neon glow), and WhatsApp cost sheet inquiry."
+    },
+    "MasterPlanViewer": {
+      "path": "src/components/MasterPlanViewer.jsx",
+      "description": "Blueprint CAD visualizer with layoutId sliding segmented tabs and clickable interactive legend pills."
+    },
+    "LocationMatrix": {
+      "path": "src/components/LocationMatrix.jsx",
+      "description": "31 curated landmarks across Education, Healthcare, and Connectivity with layoutId sliding tabs and Google Maps modal."
+    },
+    "Amenities": {
+      "path": "src/components/Amenities.jsx",
+      "description": "12 BMRDA & HPA infrastructure cards with Apple living glass and spring hover."
+    },
+    "WhyInvest": {
+      "path": "src/components/WhyInvest.jsx",
+      "description": "4 MVK Advantage glass cards and key FAQ accordion."
+    },
+    "PlotConfigurations": {
+      "path": "src/components/PlotConfigurations.jsx",
+      "description": "Plot footprint selector with layoutId dimension tabs and WhatsApp inquiry."
+    },
+    "InteractivePlotSelector": {
+      "path": "src/components/InteractivePlotSelector.jsx",
+      "description": "111-plot live matrix with filtering, status badges, living glass plot detail drawer, and safe accessors."
+    },
+    "ContactSection": {
+      "path": "src/components/ContactSection.jsx",
+      "description": "Direct sales desk inquiry form with rate limiting (max 3/24h) and WhatsApp connector."
+    },
+    "ErrorBoundary": {
+      "path": "src/components/ErrorBoundary.jsx",
+      "description": "Component error boundary preventing white screen crashes."
+    }
   },
   "blueprintSpecs": {
-    "plots30x50": [24, 25, 26, 27, 28],
-    "plots30x45": [22, 23],
-    "plotsOdd": [1, 2, 3, 4, 5, 6, 13, 14, 21, 29, 30, 57, 58, 75, 76, 93, 94, 111],
+    "totalPlots": 111,
+    "plots30x50": [
+      24,
+      25,
+      26,
+      27,
+      28
+    ],
+    "plots30x45": [
+      22,
+      23
+    ],
+    "plotsOdd": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      13,
+      14,
+      21,
+      29,
+      30,
+      57,
+      58,
+      75,
+      76,
+      93,
+      94,
+      111
+    ],
     "plots30x40": "All remaining plots (7-12, 15-20, 31-43, 44-56, 59-74, 77-92, 95-110)",
     "avenues": [
       "Avenue 1: West Crescent (Plots 76-111, Entry 1)",
@@ -106,11 +219,11 @@
       "Avenue 4: CA & Eastern Enclave (Plots 1-6 & 21-29)"
     ]
   },
-  "mobileUxRules": [
-    "Plot Matrix grid has max-h-[65vh] with internal scrolling to prevent page bloat.",
-    "Pillars carousel uses compact cards (w-[72vw] max-w-[280px]).",
-    "Location Matrix uses a compact scrollable list instead of wide horizontal swipe.",
-    "Why Invest uses a 2x2 grid on mobile.",
-    "Bottom navigation is elevated as a floating glass bubble island (bottom-4)."
+  "strictRules": [
+    "NEVER remove the 4-question qualification survey in BrochureEntranceSection.jsx.",
+    "NEVER leave empty blank spaces or raw unstyled text when replacing action buttons.",
+    "NEVER re-introduce neon glow to range sliders; keep knobs clean, white, with amber ring and subtle shadow.",
+    "Keep Screen 2 in Hero strictly display: none until scroll progress >= 0.72 to avoid ghost card flashes.",
+    "Always run npm run build to verify zero build errors before completing tasks."
   ]
 }
