@@ -22,3 +22,25 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Environment & Secrets
+.env
+.env.*
+MVK_SECRETS_CREDENTIALS_AND_GATEWAYS.md
+
+# AI Context, Prompt Transcripts & Session Handoffs
+ANTIGRAVITY_CONTEXT.json
+ANTIGRAVITY_CONTEXT.md
+mvk_property_marketplace_antigravity_context.json
+mvk_property_marketplace_antigravity_context.md
+mvk_property_marketplace_session_handoff.json
+mvk_property_marketplace_session_handoff.md
+MVK_ARCHITECTURE_AND_TECH_SCOPE.md
+MVK_OPERATIONS_AND_CONTEXT_GUIDE.md
+MVK_PRD.md
+SECURITY.md
+SITE_LINKS.md
+last prompt.md
+last prompt from mac.md
+last pronot from mac.md
+.agents/
